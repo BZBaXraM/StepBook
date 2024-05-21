@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using StepBook.API.Entities;
+using StepBook.API.Data.Entities;
+using StepBook.API.Models;
 
 namespace StepBook.API.Data;
 
 public class StepContext(DbContextOptions<StepContext> options) : DbContext(options)
 {
-    public DbSet<AppUser> Users => Set<AppUser>();
+    public DbSet<User> Users => Set<User>();
 }
