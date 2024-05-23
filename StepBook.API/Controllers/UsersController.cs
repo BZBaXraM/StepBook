@@ -16,7 +16,7 @@ public class UsersController(StepContext context) : ControllerBase
         return Ok(users);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetUser(int id)
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
