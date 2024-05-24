@@ -32,9 +32,19 @@ public class AuthController(
 
         var user = new User
         {
+            UserName = dto.Username,
             Email = dto.Email,
             PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password)),
-            PasswordSalt = hmac.Key
+            PasswordSalt = hmac.Key,
+            DateOfBirth = dto.DateOfBirth,
+            KnownAs = dto.KnownAs,
+            Gender = dto.Gender,
+            Introduction = dto.Introduction,
+            LookingFor = dto.LookingFor,
+            Interests = dto.Interests,
+            Country = dto.Country,
+            City = dto.City,
+            PhotoUrl = dto.PhotoUrl,
         };
 
         context.Users.Add(user);

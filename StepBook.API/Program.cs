@@ -3,6 +3,8 @@ using StepBook.API;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -12,7 +14,6 @@ var logger = new LoggerConfiguration()
     .WriteTo.File("/Logs/StepBook.log", rollingInterval: RollingInterval.Day)
     .MinimumLevel.Information()
     .CreateLogger();
-
 
 builder.Services.AddCors();
 
@@ -30,8 +31,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseRouting();
 
+app.UseRouting();
 app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
@@ -44,5 +45,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 
 await app.RunAsync();
