@@ -1,41 +1,76 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StepBook.API.Data;
-using StepBook.API.Models;
+using StepBook.API.DTOs;
+using StepBook.API.Services.Interfaces;
 
 namespace StepBook.API.Controllers;
 
+/// <summary>
+/// The users controller
+/// </summary>
+/// <param name="userService"></param>
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController(StepContext context) : ControllerBase
+[Authorize]
+public class UsersController(IAsyncUserService userService, IMapper mapper) : ControllerBase
 {
+    /// <summary>
+    /// The user service
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> GetUsers()
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
     {
-        var users = await context.Users.ToListAsync();
-        return Ok(users);
+        var users = await userService.GetUsersAsync();
+
+        var mapperUsers = mapper.Map<IEnumerable<MemberDto>>(users);
+
+        return Ok(mapperUsers);
     }
 
+    /// <summary>
+    /// Get a user by their id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetUser(int id)
+    public async Task<ActionResult<User>> GetUser(int id)
+        => Ok(await userService.GetUserByIdAsync(id));
+
+    /// <summary>
+    /// Get a user by their username
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns></returns>
+    [HttpGet("{username}")]
+    public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
-        return Ok(user);
+        var user = await userService.GetUserByUserNameAsync(username);
+        return mapper.Map<MemberDto>(user);
     }
 
+    /// <summary>
+    /// Update a user
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    [HttpPut]
+    public async Task<ActionResult> UpdateUser(User user)
+    {
+        await userService.UpdateUserAsync(user);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Create a user
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> AddUser(User user)
+    public async Task<ActionResult> CreateUser(User user)
     {
-        context.Users.Add(user);
-        await context.SaveChangesAsync();
-        return Ok(user);
-    }
-
-    [HttpDelete("delete-all")]
-    public async Task<IActionResult> DeleteAllUsers()
-    {
-        context.Users.RemoveRange(context.Users);
-        await context.SaveChangesAsync();
-        return Ok();
+        await userService.UpdateUserAsync(user);
+        return NoContent();
     }
 }

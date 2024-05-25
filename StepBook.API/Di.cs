@@ -1,4 +1,6 @@
 using System.Text;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,8 @@ using Microsoft.OpenApi.Models;
 using StepBook.API.Auth;
 using StepBook.API.Data;
 using StepBook.API.Data.Entities;
+using StepBook.API.DTOs.Validation;
+using StepBook.API.Mappings;
 using StepBook.API.Providers;
 using StepBook.API.Services.Classes;
 using StepBook.API.Services.Interfaces;
@@ -68,6 +72,11 @@ public static class Di
             options.UseNpgsql(configuration.GetConnectionString("IdentityConnection"));
         });
 
+        services.AddScoped<IAsyncUserService, UserService>();
+        services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+        services.AddFluentValidationAutoValidation();
+        services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
         return services;
     }
@@ -86,6 +95,7 @@ public static class Di
             .AddEntityFrameworkStores<AuthContext>()
             .AddDefaultTokenProviders();
         services.AddScoped<IJwtService, JwtService>();
+
 
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);

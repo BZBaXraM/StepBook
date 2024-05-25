@@ -1,5 +1,6 @@
 using Serilog;
 using StepBook.API;
+using StepBook.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

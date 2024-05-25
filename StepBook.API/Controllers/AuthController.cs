@@ -6,10 +6,16 @@ using StepBook.API.DTOs;
 using StepBook.API.Services.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
-using StepBook.API.Models;
 
 namespace StepBook.API.Controllers;
 
+/// <summary>
+/// The authentication controller
+/// </summary>
+/// <param name="context"></param>
+/// <param name="jwtService"></param>
+/// <param name="userManager"></param>
+/// <param name="signInManager"></param>
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController(
@@ -19,10 +25,15 @@ public class AuthController(
     SignInManager<AppUser> signInManager)
     : ControllerBase
 {
+    /// <summary>
+    /// Register a new user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [HttpPost("register")]
     public async Task<ActionResult<LoginResponseDto>> RegisterAsync(RegisterDto dto)
     {
-        var existingUser = await userManager.FindByEmailAsync(dto.Email);
+        var existingUser = await userManager.FindByEmailAsync(dto.Username);
         if (existingUser is not null)
         {
             return Conflict("User with the same email already exists");
@@ -43,8 +54,7 @@ public class AuthController(
             LookingFor = dto.LookingFor,
             Interests = dto.Interests,
             Country = dto.Country,
-            City = dto.City,
-            PhotoUrl = dto.PhotoUrl,
+            City = dto.City
         };
 
         context.Users.Add(user);
@@ -53,7 +63,7 @@ public class AuthController(
         var appUser = new AppUser
         {
             Email = dto.Email,
-            UserName = dto.Email,
+            UserName = dto.Username,
             RefreshToken = Guid.NewGuid().ToString("N").ToLower()
         };
 
@@ -66,6 +76,11 @@ public class AuthController(
         return await GenerateToken(appUser);
     }
 
+    /// <summary>
+    /// Login a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponseDto>> LoginAsync(LoginDto dto)
     {

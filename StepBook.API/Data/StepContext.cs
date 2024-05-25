@@ -3,11 +3,11 @@ using StepBook.API.Models;
 
 namespace StepBook.API.Data;
 
-/// <inheritdoc />
-public class StepContext(DbContextOptions<StepContext> options) : DbContext(options)
+public class StepContext : DbContext
 {
-    /// <summary>
-    /// Users table
-    /// </summary>
+    public StepContext(DbContextOptions<StepContext> options) : base(options)
+    {
+    }
+
     public DbSet<User> Users => Set<User>();
 }
