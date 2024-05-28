@@ -12,8 +12,8 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240525214940_Initial")]
-    partial class Initial
+    [Migration("20240528093746_ExtentedUserModel")]
+    partial class ExtentedUserModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,11 +62,9 @@ namespace StepBook.API.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Created")
@@ -76,24 +74,16 @@ namespace StepBook.API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Interests")
                         .HasColumnType("text");
 
                     b.Property<string>("Introduction")
                         .HasColumnType("text");
 
                     b.Property<string>("KnownAs")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("LastActive")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("LookingFor")
-                        .HasColumnType("text");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()

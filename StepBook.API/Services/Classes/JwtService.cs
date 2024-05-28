@@ -9,23 +9,24 @@ namespace StepBook.API.Services.Classes;
 
 public class JwtService(JwtConfig config) : IJwtService
 {
-    public string GenerateSecurityToken(string id, string email, IEnumerable<string> roles,
-        IEnumerable<Claim> userClaims)
+    public string GenerateSecurityToken(User user)
     {
-        var claims = new[]
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(config.Secret);
+
+        var tokenDescriptor = new SecurityTokenDescriptor
         {
-            new Claim(ClaimsIdentity.DefaultNameClaimType, email),
-            new Claim(ClaimsIdentity.DefaultRoleClaimType, string.Join(",", roles)),
-            new Claim("userId", id)
-        }.Concat(userClaims);
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName)
+            }),
+            Expires = DateTime.UtcNow.AddHours(config.Expiration),
+            SigningCredentials =
+                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+        };
 
-        SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(config.Secret));
-        var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var token = new JwtSecurityToken(issuer: config.Issuer,
-            audience: config.Audience, expires: DateTime.UtcNow.AddMinutes(config.Expiration), claims: claims,
-            signingCredentials: signingCredentials);
-        var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-        return accessToken;
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
     }
 }

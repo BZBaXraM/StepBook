@@ -10,7 +10,6 @@ using StepBook.API.Auth;
 using StepBook.API.Data;
 using StepBook.API.Data.Entities;
 using StepBook.API.DTOs.Validation;
-using StepBook.API.Mappings;
 using StepBook.API.Providers;
 using StepBook.API.Services.Classes;
 using StepBook.API.Services.Interfaces;
@@ -31,6 +30,16 @@ public static class Di
     public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
+
+        services.AddDbContext<StepContext>(options =>
+        {
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+        });
+
+
+        services.AddScoped<IAsyncUserService, UserService>();
+        services.AddFluentValidationAutoValidation();
+        services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
 
         services.AddSwaggerGen(c =>
         {
@@ -63,21 +72,6 @@ public static class Di
             });
         });
 
-        services.AddDbContext<StepContext>(options =>
-        {
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-        });
-        services.AddDbContext<AuthContext>(options =>
-        {
-            options.UseNpgsql(configuration.GetConnectionString("IdentityConnection"));
-        });
-
-        services.AddScoped<IAsyncUserService, UserService>();
-        services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
-        services.AddFluentValidationAutoValidation();
-        services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
-        services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
-
         return services;
     }
 
@@ -91,37 +85,24 @@ public static class Di
         IConfiguration configuration)
     {
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
-        services.AddIdentity<AppUser, IdentityRole>()
-            .AddEntityFrameworkStores<AuthContext>()
-            .AddDefaultTokenProviders();
         services.AddScoped<IJwtService, JwtService>();
-
 
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);
         services.AddSingleton(jwtConfig);
 
-        services.AddAuthentication(options =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(jwt =>
-            {
-                jwt.SaveToken = true;
-                jwt.TokenValidationParameters = new TokenValidationParameters
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    RequireExpirationTime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtConfig.Issuer,
-                    ValidAudience = jwtConfig.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtConfig.Secret)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
                 };
             });
+
 
         services.AddAuthorizationBuilder()
             .AddPolicy("CanTest", policy =>

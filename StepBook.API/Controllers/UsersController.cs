@@ -23,10 +23,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper) : Co
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
     {
         var users = await userService.GetUsersAsync();
-
-        var mapperUsers = mapper.Map<IEnumerable<MemberDto>>(users);
-
-        return Ok(mapperUsers);
+        return Ok(users);
     }
 
     /// <summary>

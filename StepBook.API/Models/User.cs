@@ -5,20 +5,18 @@ public class User
 {
     public int Id { get; init; }
     public string UserName { get; set; } = null!;
-    public string Email { get; init; } = null!;
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
-    public DateTime DateOfBirth { get; init; }
-    public string KnownAs { get; init; } = null!;
-    public DateTime Created { get; init; } = DateTime.Now;
-    public DateTime LastActive { get; init; } = DateTime.Now;
-    public string Gender { get; init; } = null!;
-    public string? Introduction { get; init; }
-    public string? LookingFor { get; init; }
-    public string? Interests { get; init; }
-    public string Country { get; init; } = null!;
-    public string City { get; init; } = null!;
-    public ICollection<Photo>? Photos { get; init; } 
+    public DateTime DateOfBirth { get; set; }
+    public string? KnownAs { get; set; } 
+    public DateTime Created { get; set; } = DateTime.UtcNow;
+    public DateTime LastActive { get; set; } = DateTime.UtcNow;
+    public string? Gender { get; set; } 
+    public string? Introduction { get; set; }
+    public string? City { get; set; } 
+    public string? Country { get; set; }
+    public ICollection<Photo> Photos { get; set; } = new List<Photo>();
     
-    public int GetAge() => DateOfBirth.CalculateAge();
+    public int GetAge() 
+    => DateOfBirth.CalculateAge();
 }
