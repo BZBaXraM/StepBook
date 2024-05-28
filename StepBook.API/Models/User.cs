@@ -15,8 +15,8 @@ public class User
     public string? Introduction { get; set; }
     public string? City { get; set; } 
     public string? Country { get; set; }
-    public ICollection<Photo> Photos { get; set; } = new List<Photo>();
-    
-    public int GetAge() 
-    => DateOfBirth.CalculateAge();
+    public ICollection<Photo> Photos { get; set; } = [];
+
+    // public int GetAge() 
+    // => DateOfBirth.CalculateAge();
 }

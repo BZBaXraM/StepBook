@@ -16,6 +16,11 @@ public class MemberDto
     public string Username { get; init; } = null!;
 
     /// <summary>
+    /// The photo URL
+    /// </summary>
+    public string? PhotoUrl { get; init; }
+
+    /// <summary>
     /// The Age
     /// </summary>
     public int Age { get; init; }
@@ -38,41 +43,35 @@ public class MemberDto
     /// <summary>
     /// Gender
     /// </summary>
-    public string Gender { get; init; } = null!;
+    public string? Gender { get; init; } = null!;
 
     /// <summary>
     /// The Introduction
     /// </summary>
-    public string Introduction { get; init; } = null!;
+    public string? Introduction { get; init; } = null!;
 
     /// <summary>
     /// Looking for
     /// </summary>
-    public string LookingFor { get; init; } = null!;
+    public string? LookingFor { get; init; } = null!;
 
     /// <summary>
     /// Interests
     /// </summary>
-    public string Interests { get; init; } = null!;
+    public string? Interests { get; init; } = null!;
 
     /// <summary>
     /// City
     /// </summary>
-    public string City { get; init; } = null!;
+    public string? City { get; init; }
 
     /// <summary>
     /// Country
     /// </summary>
-    public string Country { get; init; } = null!;
-
-    /// <summary>
-    /// The photo URL
-    /// </summary>
-    public string? PhotoUrl { get; init; } // Add this property
-
+    public string? Country { get; init; }
 
     /// <summary>
     /// The photos of the user
     /// </summary>
-    public ICollection<PhotoDto>? Photos { get; init; }
+    public ICollection<PhotoDto> Photos { get; init; } = [];
 }

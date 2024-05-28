@@ -10,6 +10,7 @@ using StepBook.API.Auth;
 using StepBook.API.Data;
 using StepBook.API.Data.Entities;
 using StepBook.API.DTOs.Validation;
+using StepBook.API.Mappings;
 using StepBook.API.Providers;
 using StepBook.API.Services.Classes;
 using StepBook.API.Services.Interfaces;
@@ -39,6 +40,7 @@ public static class Di
 
         services.AddScoped<IAsyncUserService, UserService>();
         services.AddFluentValidationAutoValidation();
+        services.AddAutoMapper(typeof(MappingProfile).Assembly);
         services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
 
         services.AddSwaggerGen(c =>

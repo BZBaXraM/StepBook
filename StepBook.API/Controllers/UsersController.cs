@@ -21,10 +21,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper) : Co
     /// <returns></returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
-    {
-        var users = await userService.GetUsersAsync();
-        return Ok(users);
-    }
+        => Ok(mapper.Map<IEnumerable<MemberDto>>(await userService.GetMembersAsync()));
 
     /// <summary>
     /// Get a user by their id
@@ -32,7 +29,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper) : Co
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<User>> GetUser(int id)
+    public async Task<ActionResult<User>> GetUserByIdAsync(int id)
         => Ok(await userService.GetUserByIdAsync(id));
 
     /// <summary>
@@ -41,11 +38,8 @@ public class UsersController(IAsyncUserService userService, IMapper mapper) : Co
     /// <param name="username"></param>
     /// <returns></returns>
     [HttpGet("{username}")]
-    public async Task<ActionResult<MemberDto>> GetUser(string username)
-    {
-        var user = await userService.GetUserByUserNameAsync(username);
-        return mapper.Map<MemberDto>(user);
-    }
+    public async Task<ActionResult<MemberDto>> GetUserByUserNameAsync(string username)
+        => Ok(mapper.Map<MemberDto>(await userService.GetMemberAsync(username)));
 
     /// <summary>
     /// Update a user
@@ -65,7 +59,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper) : Co
     /// <param name="user"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<ActionResult> CreateUser(User user)
+    public async Task<ActionResult> CreateUserAsync(User user)
     {
         await userService.UpdateUserAsync(user);
         return NoContent();

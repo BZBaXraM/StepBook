@@ -5,8 +5,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace StepBook.API.Data;
 
+/// <summary>
+/// Seed the database with fake users
+/// </summary>
 public static class Seed
 {
+    /// <summary>
+    /// Seed the database with fake users
+    /// </summary>
+    /// <param name="context"></param>
     public static async Task SeedUsersAsync(StepContext context)
     {
         if (await context.Users.AnyAsync()) return;

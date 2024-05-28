@@ -3,7 +3,7 @@ namespace StepBook.API.DTOs;
 /// <summary>
 /// The photo DTO
 /// </summary>
-public class PhotoDto
+public class  PhotoDto
 {
     /// <summary>
     /// The id

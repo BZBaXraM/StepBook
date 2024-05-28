@@ -24,7 +24,7 @@ const Nav = () => {
             console.log("Logout successful");
             setIsLoggedIn(false);
             localStorage.removeItem("accessToken");
-            router.push("/"); // Redirect to login page after logout
+            router.push("/"); // Redirect to home page after logout
         } catch (error) {
             console.error("Logout failed:", error);
         }
@@ -37,13 +37,20 @@ const Nav = () => {
                     <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                         <div className="hidden sm:ml-6 sm:block">
                             <div className="flex space-x-4">
+                                <Link
+                                    href="/"
+                                    className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                                    aria-current="page"
+                                >
+                                    StepBook
+                                </Link>
                                 {isLoggedIn ? (
                                     <>
                                         <Link
-                                            href="/mathces"
+                                            href="/matches"
                                             className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                                         >
-                                            Mathces
+                                            Matches
                                         </Link>
                                         <Link
                                             href="/lists"
@@ -57,26 +64,28 @@ const Nav = () => {
                                         >
                                             Messages
                                         </Link>
-                                        <button
-                                            onClick={logout}
-                                            className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                                        >
-                                            Logout
-                                        </button>
                                     </>
                                 ) : (
-                                    <>
-                                        <Link
-                                            href="/login"
-                                            className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                                        >
-                                            Login
-                                        </Link>
-                                    </>
+                                    <Link
+                                        href="/login"
+                                        className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                                    >
+                                        Login
+                                    </Link>
                                 )}
                             </div>
                         </div>
                     </div>
+                    {isLoggedIn && (
+                        <div className="flex items-center">
+                            <button
+                                onClick={logout}
+                                className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </nav>

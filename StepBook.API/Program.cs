@@ -33,19 +33,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-using var scope = app.Services.CreateScope();
-var services = scope.ServiceProvider;
-try
-{
-    var context = services.GetRequiredService<StepContext>();
-    await context.Database.MigrateAsync();
-    await Seed.SeedUsersAsync(context);
-}
-catch (Exception e)
-{
-    var log = services.GetRequiredService<ILogger<Program>>();
-    log.LogError("An error occurred during migration: {Message}", e.Message);
-}
+// using var scope = app.Services.CreateScope();
+// var services = scope.ServiceProvider;
+// try
+// {
+//     var context = services.GetRequiredService<StepContext>();
+//     await context.Database.MigrateAsync();
+//     await Seed.SeedUsersAsync(context);
+// }
+// catch (Exception e)
+// {
+//     var log = services.GetRequiredService<ILogger<Program>>();
+//     log.LogError("An error occurred during migration: {Message}", e.Message);
+// }
 
 
 app.UseRouting();
