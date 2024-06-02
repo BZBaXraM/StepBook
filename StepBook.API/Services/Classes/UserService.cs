@@ -1,11 +1,3 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
-using StepBook.API.Data;
-using StepBook.API.DTOs;
-using StepBook.API.Models;
-using StepBook.API.Services.Interfaces;
-
 namespace StepBook.API.Services.Classes;
 
 /// <summary>

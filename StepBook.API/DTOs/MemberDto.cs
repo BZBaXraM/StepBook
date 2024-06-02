@@ -43,22 +43,22 @@ public class MemberDto
     /// <summary>
     /// Gender
     /// </summary>
-    public string? Gender { get; init; } = null!;
+    public string? Gender { get; init; }
 
     /// <summary>
     /// The Introduction
     /// </summary>
-    public string? Introduction { get; init; } = null!;
+    public string? Introduction { get; init; }
 
     /// <summary>
     /// Looking for
     /// </summary>
-    public string? LookingFor { get; init; } = null!;
+    public string? LookingFor { get; init; }
 
     /// <summary>
     /// Interests
     /// </summary>
-    public string? Interests { get; init; } = null!;
+    public string? Interests { get; init; }
 
     /// <summary>
     /// City

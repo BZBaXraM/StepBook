@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using StepBook.API.Data;
-using StepBook.API.Models;
-
 namespace StepBook.API.Controllers;
 
 /// <summary>

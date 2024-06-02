@@ -1,20 +1,3 @@
-using System.Text;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using StepBook.API.Auth;
-using StepBook.API.Data;
-using StepBook.API.Data.Entities;
-using StepBook.API.DTOs.Validation;
-using StepBook.API.Mappings;
-using StepBook.API.Providers;
-using StepBook.API.Services.Classes;
-using StepBook.API.Services.Interfaces;
-
 namespace StepBook.API;
 
 /// <summary>

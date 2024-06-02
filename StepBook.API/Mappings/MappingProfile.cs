@@ -1,8 +1,3 @@
-using AutoMapper;
-using StepBook.API.DTOs;
-using StepBook.API.Extensions;
-using StepBook.API.Models;
-
 namespace StepBook.API.Mappings;
 
 /// <inheritdoc />
@@ -21,5 +16,6 @@ public class MappingProfile : Profile
                 => opt.MapFrom(src
                     => src.DateOfBirth.CalculateAge()));
         CreateMap<Photo, PhotoDto>();
+        CreateMap<MemberUpdateDto, User>();
     }
 }
