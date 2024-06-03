@@ -53,22 +53,22 @@ public class MemberDto
     /// <summary>
     /// Looking for
     /// </summary>
-    public string? LookingFor { get; init; }
+    public string LookingFor { get; init; } = null!;
 
     /// <summary>
     /// Interests
     /// </summary>
-    public string? Interests { get; init; }
+    public string Interests { get; init; } = null!;
 
     /// <summary>
     /// City
     /// </summary>
-    public string? City { get; init; }
+    public string City { get; init; } = null!;
 
     /// <summary>
     /// Country
     /// </summary>
-    public string? Country { get; init; }
+    public string Country { get; init; } = null!;
 
     /// <summary>
     /// The photos of the user

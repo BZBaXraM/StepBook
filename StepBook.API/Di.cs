@@ -69,6 +69,7 @@ public static class Di
     public static IServiceCollection AuthenticationAndAuthorization(this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
         services.AddScoped<IJwtService, JwtService>();
 

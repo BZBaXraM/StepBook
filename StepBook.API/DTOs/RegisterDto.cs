@@ -1,12 +1,17 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace StepBook.API.DTOs;
 
 /// <summary>
-/// Data Transfer Object for user registration.
+/// DTO for user registration.
 /// </summary>
 public class RegisterDto
 {
-   public required string Username { get; set; } = null!;
-   public required string Password { get; set; } = null!;
+    /// <summary>
+    /// The username
+    /// </summary>
+    public required string Username { get; init; } = null!;
+
+    /// <summary>
+    /// The password
+    /// </summary>
+    public required string Password { get; init; } = null!;
 }

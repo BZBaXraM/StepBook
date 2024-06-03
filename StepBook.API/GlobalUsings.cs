@@ -20,3 +20,4 @@ global using StepBook.API.DTOs.Validation;
 global using StepBook.API.Mappings;
 global using StepBook.API.Providers;
 global using StepBook.API.Services.Classes;
+global using StepBook.API.Helpers;

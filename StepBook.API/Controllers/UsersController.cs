@@ -1,4 +1,3 @@
-using System.Security.Claims;
 
 namespace StepBook.API.Controllers;
 
@@ -12,11 +11,11 @@ namespace StepBook.API.Controllers;
 public class UsersController(IAsyncUserService userService, IMapper mapper) : ControllerBase
 {
     /// <summary>
-    /// The user service
+    /// Get all users
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsersAsync()
         => Ok(mapper.Map<IEnumerable<MemberDto>>(await userService.GetMembersAsync()));
 
     /// <summary>
@@ -43,15 +42,15 @@ public class UsersController(IAsyncUserService userService, IMapper mapper) : Co
     /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPut]
-    public async Task<ActionResult> UpdateUser(MemberUpdateDto dto)
+    public async Task<ActionResult> UpdateUserAsync(MemberUpdateDto dto)
     {
         var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var user = await userService.GetUserByUserNameAsync(userName!);
-        
+
         mapper.Map(dto, user);
         await userService.UpdateUserAsync(user);
+
         if (await userService.SaveAllAsync()) return NoContent();
-        
         return BadRequest("Failed to update user");
     }
 
