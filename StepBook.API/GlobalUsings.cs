@@ -21,3 +21,6 @@ global using StepBook.API.Mappings;
 global using StepBook.API.Providers;
 global using StepBook.API.Services.Classes;
 global using StepBook.API.Helpers;
+global using System.Security.Claims;
+global using CloudinaryDotNet.Actions;
+global using CloudinaryDotNet;

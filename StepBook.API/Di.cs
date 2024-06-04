@@ -72,6 +72,7 @@ public static class Di
         services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IAsyncPhotoService, PhotoService>();
 
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);

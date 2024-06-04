@@ -1,14 +1,13 @@
-
 namespace StepBook.API.Controllers;
 
 /// <summary>
 /// The users controller
 /// </summary>
-/// <param name="userService"></param>
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class UsersController(IAsyncUserService userService, IMapper mapper) : ControllerBase
+public class UsersController(IAsyncUserService userService, IMapper mapper, IAsyncPhotoService photoService)
+    : ControllerBase
 {
     /// <summary>
     /// Get all users
@@ -37,24 +36,6 @@ public class UsersController(IAsyncUserService userService, IMapper mapper) : Co
         => Ok(mapper.Map<MemberDto>(await userService.GetMemberAsync(username)));
 
     /// <summary>
-    /// Update a user
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <returns></returns>
-    [HttpPut]
-    public async Task<ActionResult> UpdateUserAsync(MemberUpdateDto dto)
-    {
-        var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var user = await userService.GetUserByUserNameAsync(userName!);
-
-        mapper.Map(dto, user);
-        await userService.UpdateUserAsync(user);
-
-        if (await userService.SaveAllAsync()) return NoContent();
-        return BadRequest("Failed to update user");
-    }
-
-    /// <summary>
     /// Create a user
     /// </summary>
     /// <param name="user"></param>
@@ -64,5 +45,79 @@ public class UsersController(IAsyncUserService userService, IMapper mapper) : Co
     {
         await userService.UpdateUserAsync(user);
         return NoContent();
+    }
+
+    /// <summary>
+    /// Update a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPut]
+    public async Task<ActionResult> UpdateUserAsync(MemberUpdateDto dto)
+    {
+        var userName = User.GetUsername();
+        if (string.IsNullOrEmpty(userName))
+        {
+            return BadRequest("Username claim not found");
+        }
+
+        var user = await userService.GetUserByUserNameAsync(userName);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        mapper.Map(dto, user);
+        await userService.UpdateUserAsync(user);
+
+        if (await userService.SaveAllAsync()) return NoContent();
+        return BadRequest("Failed to update user");
+    }
+
+    /// <summary>
+    /// Add a photo to a user
+    /// </summary>
+    /// <param name="file"></param>
+    /// <returns></returns>
+    [HttpPost("add-photo")]
+    public async Task<ActionResult<PhotoDto>> AddPhotoAsync([FromForm] IFormFile file)
+    {
+        var userName = User.GetUsername();
+        if (string.IsNullOrEmpty(userName))
+        {
+            return BadRequest("Username claim not found");
+        }
+
+        var user = await userService.GetUserByUserNameAsync(userName);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        var result = await photoService.AddPhotoAsync(file);
+        if (result.Error != null)
+        {
+            return BadRequest(result.Error.Message);
+        }
+
+        var photo = new Photo
+        {
+            Url = result.SecureUrl.AbsoluteUri,
+            PublicId = result.PublicId
+        };
+
+        if (user.Photos.Count == 0)
+        {
+            photo.IsMain = true;
+        }
+
+        user.Photos.Add(photo);
+
+        if (await userService.SaveAllAsync())
+        {
+            return Ok(mapper.Map<PhotoDto>(photo));
+        }
+
+        return BadRequest("Problem adding photo");
     }
 }

@@ -27,7 +27,7 @@ public class UserService(StepContext context, IMapper mapper) : IAsyncUserServic
     /// </summary>
     /// <param name="username"></param>
     /// <returns></returns>
-    public async Task<User> GetUserByUserNameAsync(string username)
+    public async Task<User> GetUserByUserNameAsync(string? username)
         => (await context.Users
             .Include(x => x.Photos)
             .FirstOrDefaultAsync(x => x.UserName == username))!;

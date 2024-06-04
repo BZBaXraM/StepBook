@@ -23,7 +23,7 @@ public interface IAsyncUserService
     /// </summary>
     /// <param name="username"></param>
     /// <returns></returns>
-    Task<User> GetUserByUserNameAsync(string username);
+    Task<User> GetUserByUserNameAsync(string? username);
 
     /// <summary>
     /// Save all changes
