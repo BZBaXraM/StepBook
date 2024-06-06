@@ -17,5 +17,6 @@ public class MappingProfile : Profile
                     => src.DateOfBirth.CalculateAge()));
         CreateMap<Photo, PhotoDto>();
         CreateMap<MemberUpdateDto, User>();
+        CreateMap<RegisterDto, User>();
     }
 }

@@ -31,8 +31,8 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
     /// </summary>
     /// <param name="username"></param>
     /// <returns></returns>
-    [HttpGet("{username}")]
-    public async Task<ActionResult<MemberDto>> GetUserByUserNameAsync(string username)
+    [HttpGet("{username}", Name = "GetUserByUserName")]
+    public async Task<ActionResult<MemberDto>> GetUserByUserName(string username)
         => Ok(mapper.Map<MemberDto>(await userService.GetMemberAsync(username)));
 
     /// <summary>
@@ -55,14 +55,13 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
     [HttpPut]
     public async Task<ActionResult> UpdateUserAsync(MemberUpdateDto dto)
     {
-        var userName = User.GetUsername();
-        if (string.IsNullOrEmpty(userName))
+        if (string.IsNullOrEmpty(User.GetUsername()))
         {
             return BadRequest("Username claim not found");
         }
 
-        var user = await userService.GetUserByUserNameAsync(userName);
-        if (user == null)
+        var user = await userService.GetUserByUserNameAsync(User.GetUsername());
+        if (user is null)
         {
             return NotFound("User not found");
         }
@@ -82,20 +81,19 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
     [HttpPost("add-photo")]
     public async Task<ActionResult<PhotoDto>> AddPhotoAsync([FromForm] IFormFile file)
     {
-        var userName = User.GetUsername();
-        if (string.IsNullOrEmpty(userName))
+        if (string.IsNullOrEmpty(User.GetUsername()))
         {
             return BadRequest("Username claim not found");
         }
 
-        var user = await userService.GetUserByUserNameAsync(userName);
-        if (user == null)
+        var user = await userService.GetUserByUserNameAsync(User.GetUsername());
+        if (user is null)
         {
             return NotFound("User not found");
         }
 
         var result = await photoService.AddPhotoAsync(file);
-        if (result.Error != null)
+        if (result.Error is null)
         {
             return BadRequest(result.Error.Message);
         }
@@ -115,9 +113,98 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
 
         if (await userService.SaveAllAsync())
         {
-            return Ok(mapper.Map<PhotoDto>(photo));
+            return CreatedAtRoute("GetUserByUserName", new { username = user.UserName }, mapper.Map<PhotoDto>(photo));
         }
 
         return BadRequest("Problem adding photo");
+    }
+
+    /// <summary>
+    /// Set a photo as the main photo in account
+    /// </summary>
+    /// <param name="photoId"></param>
+    /// <returns></returns>
+    [HttpPut("set-main-photo/{photoId}")]
+    public async Task<ActionResult> SetMainPhotoAsync(int photoId)
+    {
+        if (string.IsNullOrEmpty(User.GetUsername()))
+        {
+            return BadRequest("Username claim not found");
+        }
+
+        var user = await userService.GetUserByUserNameAsync(User.GetUsername());
+        if (user is null)
+        {
+            return NotFound("User not found");
+        }
+
+        var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+        if (photo is null)
+        {
+            return NotFound("Photo not found");
+        }
+
+        if (photo.IsMain)
+        {
+            return BadRequest("This is already your main photo");
+        }
+
+        var currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
+        if (currentMain is not null)
+        {
+            currentMain.IsMain = false;
+        }
+
+        photo.IsMain = true;
+
+        if (await userService.SaveAllAsync()) return NoContent();
+
+        return BadRequest("Failed to set main photo");
+    }
+    
+    /// <summary>
+    /// Delete a photo from a user
+    /// </summary>
+    /// <param name="photoId"></param>
+    /// <returns></returns>
+    [HttpDelete("delete-photo/{photoId:int}")]
+    public async Task<ActionResult> DeletePhotoAsync(int photoId)
+    {
+        if (string.IsNullOrEmpty(User.GetUsername()))
+        {
+            return BadRequest("Username claim not found");
+        }
+
+        var user = await userService.GetUserByUserNameAsync(User.GetUsername());
+        if (user is null)
+        {
+            return NotFound("User not found");
+        }
+
+        var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+        if (photo is null)
+        {
+            return NotFound("Photo not found");
+        }
+
+        if (photo.IsMain)
+        {
+            return BadRequest("You cannot delete your main photo");
+        }
+
+        if (photo.PublicId is not null)
+        {
+            var result = await photoService.DeletePhotoAsync(photo.PublicId);
+            if (result.Error is not null)
+            {
+                return BadRequest(result.Error.Message);
+            }
+        }
+
+        user.Photos.Remove(photo);
+
+        if (await userService.SaveAllAsync()) return NoContent();
+
+        return BadRequest("Failed to delete photo");
     }
 }

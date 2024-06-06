@@ -1,11 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StepBook.API.Data;
-using StepBook.API.DTOs;
-using StepBook.API.Services.Interfaces;
-
 namespace StepBook.API.Controllers;
 
 /// <summary>
@@ -15,7 +7,7 @@ namespace StepBook.API.Controllers;
 /// <param name="jwtService"></param>
 [Route("api/[controller]")]
 [ApiController]
-public class AccountController(StepContext context, IJwtService jwtService) : ControllerBase
+public class AccountController(StepContext context, IJwtService jwtService, IMapper mapper) : ControllerBase
 {
     /// <summary>
     /// Register a new user
@@ -25,19 +17,15 @@ public class AccountController(StepContext context, IJwtService jwtService) : Co
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> RegisterAsync([FromBody] RegisterDto dto)
     {
-        if (await UserExists(dto.Username))
-        {
-            return BadRequest("Username is already taken");
-        }
+        if (await UserExists(dto.Username)) return BadRequest("Username is already taken");
+
+        var user = mapper.Map<User>(dto);
 
         using var hmac = new HMACSHA512();
 
-        var user = new User
-        {
-            UserName = dto.Username,
-            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password)),
-            PasswordSalt = hmac.Key,
-        };
+        user.UserName = dto.Username;
+        user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password));
+        user.PasswordSalt = hmac.Key;
 
         context.Users.Add(user);
         await context.SaveChangesAsync();
@@ -45,7 +33,8 @@ public class AccountController(StepContext context, IJwtService jwtService) : Co
         return new UserDto
         {
             Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user)
+            Token = jwtService.GenerateSecurityToken(user),
+            KnownAs = user.KnownAs!
         };
     }
 
@@ -57,7 +46,7 @@ public class AccountController(StepContext context, IJwtService jwtService) : Co
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> LoginAsync([FromBody] RegisterDto dto)
     {
-        var user = await context.Users.SingleOrDefaultAsync(x => x.UserName == dto.Username);
+        var user = await context.Users.Include(user => user.Photos).SingleOrDefaultAsync(x => x.UserName == dto.Username);
 
         if (user == null)
         {
@@ -75,7 +64,9 @@ public class AccountController(StepContext context, IJwtService jwtService) : Co
         return new UserDto
         {
             Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user)
+            Token = jwtService.GenerateSecurityToken(user),
+            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+            KnownAs = user.KnownAs!
         };
     }
 
