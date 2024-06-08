@@ -42,7 +42,7 @@ public interface IAsyncUserService
     /// Get all members
     /// </summary>
     /// <returns></returns>
-    Task<IEnumerable<MemberDto>> GetMembersAsync();
+    Task<PageList<MemberDto>> GetMembersAsync(PageParams pageParams);
 
     /// <summary>
     /// Get a member by their username

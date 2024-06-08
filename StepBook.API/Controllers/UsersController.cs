@@ -14,8 +14,24 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsersAsync()
-        => Ok(mapper.Map<IEnumerable<MemberDto>>(await userService.GetMembersAsync()));
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsersAsync([FromQuery] PageParams pageParams)
+    {
+        var user = await userService.GetUserByUserNameAsync(User.GetUsername());
+        pageParams.CurrentUsername = User.GetUsername();
+
+        if (string.IsNullOrEmpty(pageParams.Gender))
+        {
+            pageParams.Gender = user.Gender == "male" ? "female" : "male";
+        }
+
+        var users = await userService.GetMembersAsync(pageParams);
+        Response.AddPagination(users.CurrentPage,
+            users.PageSize,
+            users.TotalCount,
+            users.TotalPages);
+
+        return Ok(users);
+    }
 
     /// <summary>
     /// Get a user by their id
@@ -95,7 +111,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
         var result = await photoService.AddPhotoAsync(file);
         if (result.Error is null)
         {
-            return BadRequest(result.Error.Message);
+            return BadRequest(result.Error!.Message);
         }
 
         var photo = new Photo
@@ -161,11 +177,11 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
 
         return BadRequest("Failed to set main photo");
     }
-    
+
     /// <summary>
     /// Delete a photo from a user
     /// </summary>
-    /// <param name="photoId"></param>
+    /// <param nam e="photoId"></param>
     /// <returns></returns>
     [HttpDelete("delete-photo/{photoId:int}")]
     public async Task<ActionResult> DeletePhotoAsync(int photoId)

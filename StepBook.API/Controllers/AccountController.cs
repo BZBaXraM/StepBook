@@ -44,9 +44,10 @@ public class AccountController(StepContext context, IJwtService jwtService, IMap
     /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost("login")]
-    public async Task<ActionResult<UserDto>> LoginAsync([FromBody] RegisterDto dto)
+    public async Task<ActionResult<UserDto>> LoginAsync([FromBody] LoginDto dto)
     {
-        var user = await context.Users.Include(user => user.Photos).SingleOrDefaultAsync(x => x.UserName == dto.Username);
+        var user = await context.Users.Include(user => user.Photos)
+            .SingleOrDefaultAsync(x => x.UserName == dto.Username);
 
         if (user == null)
         {

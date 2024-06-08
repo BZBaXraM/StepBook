@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace StepBook.API.Models;
 
 /// <summary>

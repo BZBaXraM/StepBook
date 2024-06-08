@@ -25,3 +25,4 @@ global using System.Security.Claims;
 global using CloudinaryDotNet.Actions;
 global using CloudinaryDotNet;
 global using System.Security.Cryptography;
+global using System.ComponentModel.DataAnnotations.Schema;

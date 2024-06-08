@@ -52,10 +52,24 @@ public class UserService(StepContext context, IMapper mapper) : IAsyncUserServic
     /// Get all members
     /// </summary>
     /// <returns></returns>
-    public async Task<IEnumerable<MemberDto>> GetMembersAsync()
-        => await context.Users
-            .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
-            .ToListAsync();
+    public async Task<PageList<MemberDto>> GetMembersAsync(PageParams pageParams)
+    {
+        var query = context.Users
+            .AsQueryable();
+
+        query = query.Where(x => x.UserName != pageParams.CurrentUsername);
+        query = query.Where(x => x.Gender == pageParams.Gender);
+
+        var minDob = DateTime.Today.AddYears(-pageParams.MaxAge - 1);
+        var maxDob = DateTime.Today.AddYears(-pageParams.MinAge);
+
+        query = query.Where(x => x.DateOfBirth >= minDob && x.DateOfBirth <= maxDob);
+
+        return await PageList<MemberDto>.CreateAsync(
+            query.ProjectTo<MemberDto>(mapper.ConfigurationProvider).AsNoTracking(),
+            pageParams.PageNumber,
+            pageParams.PageSize);
+    }
 
     /// <summary>
     /// Get a member by their username
