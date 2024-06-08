@@ -1,14 +1,16 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using StepBook.API.Data.Entities;
-using StepBook.API.Services.Interfaces;
-
 namespace StepBook.API.Services.Classes;
 
+/// <summary>
+/// The JWT service
+/// </summary>
+/// <param name="config"></param>
 public class JwtService(JwtConfig config) : IJwtService
 {
+    /// <summary>
+    /// The JWT service configuration
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
     public string GenerateSecurityToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -18,8 +20,8 @@ public class JwtService(JwtConfig config) : IJwtService
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
             }),
             Expires = DateTime.UtcNow.AddHours(config.Expiration),
             SigningCredentials =

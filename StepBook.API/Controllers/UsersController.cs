@@ -3,6 +3,7 @@ namespace StepBook.API.Controllers;
 /// <summary>
 /// The users controller
 /// </summary>
+[ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]

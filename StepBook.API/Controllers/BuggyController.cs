@@ -4,6 +4,7 @@ namespace StepBook.API.Controllers;
 /// Controller for testing error handling
 /// </summary>
 /// <param name="context"></param>
+[ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
 [ApiController]
 public class BuggyController(StepContext context) : ControllerBase
@@ -12,7 +13,7 @@ public class BuggyController(StepContext context) : ControllerBase
     [HttpGet("auth")]
     public async Task<ActionResult<string>> GetSecret()
     {
-        await Task.CompletedTask; // No async operation here, so we just return a completed Task
+        await Task.CompletedTask;
         return "Secret text";
     }
 

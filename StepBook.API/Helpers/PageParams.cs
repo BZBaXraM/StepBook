@@ -10,7 +10,7 @@ public class PageParams
     /// <summary>
     /// The page number
     /// </summary>
-    public int PageNumber { get; set; } = 1;
+    public static int PageNumber => 1;
 
     private int _pageSize = 10;
 
@@ -23,9 +23,25 @@ public class PageParams
         set => _pageSize = value > MaxPageSize ? MaxPageSize : value;
     }
 
-    public string CurrentUsername { get; set; } = string.Empty;
+    /// <summary>
+    /// The current username
+    /// </summary>
+    public string? CurrentUsername { get; set; } = string.Empty;
+    /// <summary>
+    /// The gender
+    /// </summary>
     public string Gender { get; set; } = string.Empty;
     
+    /// <summary>
+    /// The minimum age
+    /// </summary>
     public int MinAge { get; set; } = 18;
+    /// <summary>
+    /// The maximum age
+    /// </summary>
     public int MaxAge { get; set; } = 77;
+    /// <summary>
+    /// The order by 
+    /// </summary>
+    public string OrderBy { get; set; } = "lastActive";
 }

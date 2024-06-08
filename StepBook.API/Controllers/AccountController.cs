@@ -5,6 +5,7 @@ namespace StepBook.API.Controllers;
 /// </summary>
 /// <param name="context"></param>
 /// <param name="jwtService"></param>
+[ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
 [ApiController]
 public class AccountController(StepContext context, IJwtService jwtService, IMapper mapper) : ControllerBase

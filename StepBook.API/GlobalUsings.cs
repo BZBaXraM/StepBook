@@ -26,3 +26,6 @@ global using CloudinaryDotNet.Actions;
 global using CloudinaryDotNet;
 global using System.Security.Cryptography;
 global using System.ComponentModel.DataAnnotations.Schema;
+global using Microsoft.AspNetCore.Mvc.Filters;
+global using StepBook.API.Filters;
+global using System.IdentityModel.Tokens.Jwt;

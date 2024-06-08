@@ -73,6 +73,8 @@ public static class Di
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAsyncPhotoService, PhotoService>();
+        services.AddScoped<IAsyncLikesService, LikesService>();
+        services.AddScoped<LogUserActivity>();
 
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);
