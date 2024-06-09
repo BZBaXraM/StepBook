@@ -29,30 +29,29 @@ public class LikesService(StepContext context) : IAsyncLikesService
     /// <summary>
     ///    Gets a user's likes.
     /// </summary>
-    /// <param name="predicate"></param>
-    /// <param name="userId"></param>
+    /// <param name="likeParams"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task<IEnumerable<LikeDto>> GetUserLikesAsync(string predicate, int userId)
+    public async Task<PageList<LikeDto>> GetUserLikesAsync(LikeParams likeParams)
     {
         var users = context.Users.OrderBy(x => x.UserName).AsQueryable();
         var likes = context.Likes.AsQueryable();
 
-        switch (predicate)
+        switch (likeParams.Predicate)
         {
             case "liked":
-                likes = likes.Where(x => x.SourceUserId == userId);
+                likes = likes.Where(x => x.SourceUserId == likeParams.UserId);
                 users = likes.Select(x => x.LikedUser);
                 break;
             case "likedBy":
-                likes = likes.Where(x => x.LikedUserId == userId);
+                likes = likes.Where(x => x.LikedUserId == likeParams.UserId);
                 users = likes.Select(x => x.SourceUser);
                 break;
             default:
                 throw new ArgumentException("Invalid predicate");
         }
 
-        return await users.Select(user => new LikeDto
+        var likedUsers = users.Select(user => new LikeDto
         {
             Username = user.UserName,
             Age = user.DateOfBirth.CalculateAge(),
@@ -60,6 +59,11 @@ public class LikesService(StepContext context) : IAsyncLikesService
             PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain)!.Url,
             City = user.City!,
             Id = user.Id
-        }).ToListAsync();
+        });
+
+        return await PageList<LikeDto>
+            .CreateAsync(likedUsers,
+                PaginationParams.PageNumber,
+                likeParams.PageSize);
     }
 }

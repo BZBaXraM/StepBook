@@ -51,18 +51,20 @@ public class LikesController(IAsyncUserService userService, IAsyncLikesService l
     /// <summary>
     /// Get a user's likes
     /// </summary>
-    /// <param name="predicate"></param>
+    /// <param name="likeParams"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<LikeDto>>> GetUserLikesAsync([FromQuery] string predicate)
+    public async Task<ActionResult<IEnumerable<LikeDto>>> GetUserLikesAsync([FromQuery] LikeParams likeParams)
     {
-        if (string.IsNullOrEmpty(predicate))
-        {
-            return BadRequest("Predicate is required.");
-        }
+        likeParams.UserId = User.GetUserId();
 
-        var userId = User.GetUserId();
-        var result = await likesService.GetUserLikesAsync(predicate, userId);
-        return Ok(result);
+        var users = await likesService.GetUserLikesAsync(likeParams);
+
+        Response.AddPagination(users.CurrentPage,
+            users.PageSize,
+            users.TotalCount,
+            users.TotalPages);
+
+        return Ok(users);
     }
 }

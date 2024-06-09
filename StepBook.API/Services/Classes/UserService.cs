@@ -64,7 +64,7 @@ public class UserService(StepContext context, IMapper mapper) : IAsyncUserServic
         var maxDob = DateTime.Today.AddYears(-pageParams.MinAge);
 
         query = query.Where(x => x.DateOfBirth >= minDob && x.DateOfBirth <= maxDob);
-        
+
         query = pageParams.OrderBy switch
         {
             "created" => query.OrderByDescending(x => x.Created),
@@ -73,7 +73,7 @@ public class UserService(StepContext context, IMapper mapper) : IAsyncUserServic
 
         return await PageList<MemberDto>.CreateAsync(
             query.ProjectTo<MemberDto>(mapper.ConfigurationProvider).AsNoTracking(),
-            PageParams.PageNumber,
+            PaginationParams.PageNumber,
             pageParams.PageSize);
     }
 
