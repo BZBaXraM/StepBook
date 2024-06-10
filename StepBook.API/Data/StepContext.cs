@@ -25,6 +25,8 @@ public class StepContext : DbContext
     /// </summary>
     public DbSet<UserLike> Likes => Set<UserLike>();
 
+    public DbSet<Message> Messages => Set<Message>();
+
     /// <summary>
     /// Configure the database context.
     /// </summary>
@@ -47,5 +49,10 @@ public class StepContext : DbContext
             .WithMany(x => x.LikedByUsers)
             .HasForeignKey(x => x.LikedUserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Message>()
+            .HasOne(x => x.Sender)
+            .WithMany(x => x.MessagesSent)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
