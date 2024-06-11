@@ -18,5 +18,12 @@ public class MappingProfile : Profile
         CreateMap<Photo, PhotoDto>();
         CreateMap<MemberUpdateDto, User>();
         CreateMap<RegisterDto, User>();
+        CreateMap<Message, MessageDto>()
+            .ForMember(x => x.SenderPhotoUrl, opt
+                => opt.MapFrom(src
+                    => src.Sender.Photos.FirstOrDefault(x => x.IsMain)!.Url))
+            .ForMember(x => x.RecipientPhotoUrl, opt
+                => opt.MapFrom(src
+                    => src.Recipient.Photos.FirstOrDefault(x => x.IsMain)!.Url));
     }
 }

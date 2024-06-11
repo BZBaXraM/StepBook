@@ -1,9 +1,9 @@
-namespace StepBook.API.Models;
+namespace StepBook.API.DTOs;
 
 /// <summary>
-/// Represents a message in the application.
+/// Represents a message data transfer object.
 /// </summary>
-public class Message
+public class MessageDto
 {
     /// <summary>
     /// The unique identifier for the message.
@@ -21,9 +21,9 @@ public class Message
     public string SenderUsername { get; set; } = default!;
 
     /// <summary>
-    /// The sender of the message.
+    /// The photo URL of the sender.
     /// </summary>
-    public User Sender { get; set; } = default!;
+    public string SenderPhotoUrl { get; set; } = default!;
 
     /// <summary>
     /// The unique identifier of the recipient.
@@ -33,12 +33,12 @@ public class Message
     /// <summary>
     /// The username of the recipient.
     /// </summary>
-    public string RecipientUsername { get; set; } = default!;
+    public string RecipientPhotoUrl { get; set; } = default!;
 
     /// <summary>
     /// The recipient of the message.
     /// </summary>
-    public User Recipient { get; set; }
+    public User Recipient { get; set; } = default!;
 
     /// <summary>
     /// The content of the message.
@@ -53,15 +53,5 @@ public class Message
     /// <summary>
     /// The date the message was sent.
     /// </summary>
-    public DateTime MessageSent { get; set; } = DateTime.Now;
-
-    /// <summary>
-    /// The sender deleted the message.
-    /// </summary>
-    public bool SenderDeleted { get; set; }
-
-    /// <summary>
-    /// The recipient deleted the message.
-    /// </summary>
-    public bool RecipientDeleted { get; set; }
+    public DateTime MessageSent { get; set; }
 }

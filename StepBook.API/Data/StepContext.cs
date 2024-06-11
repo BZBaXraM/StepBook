@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace StepBook.API.Data;
 
 /// <summary>
@@ -25,6 +23,9 @@ public class StepContext : DbContext
     /// </summary>
     public DbSet<UserLike> Likes => Set<UserLike>();
 
+    /// <summary>
+    /// Messages table.
+    /// </summary>
     public DbSet<Message> Messages => Set<Message>();
 
     /// <summary>

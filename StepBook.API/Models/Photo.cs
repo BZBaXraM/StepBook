@@ -6,10 +6,33 @@ namespace StepBook.API.Models;
 [Table("Photos")]
 public class Photo
 {
+    /// <summary>
+    /// The unique identifier for the photo.
+    /// </summary>
     public int Id { get; set; }
+
+    /// <summary>
+    /// The url of the photo.
+    /// </summary>
     public string Url { get; set; } = null!;
+
+    /// <summary>
+    /// Main photo or not.
+    /// </summary>
     public bool IsMain { get; set; }
+
+    /// <summary>
+    /// Public id of the photo.
+    /// </summary>
     public string? PublicId { get; set; }
-    public User User { get; set; }
+
+    /// <summary>
+    /// User of the photo.
+    /// </summary>
+    public User User { get; set; } = default!;
+
+    /// <summary>
+    /// User id of the photo.
+    /// </summary>
     public int UserId { get; set; }
 }
