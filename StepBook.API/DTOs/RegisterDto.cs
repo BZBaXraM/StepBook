@@ -6,6 +6,11 @@ namespace StepBook.API.DTOs;
 public class RegisterDto
 {
     /// <summary>
+    /// The user's email
+    /// </summary>
+    public required string Email { get; init; } = null!;
+
+    /// <summary>
     /// The username
     /// </summary>
     public required string Username { get; init; } = null!;
@@ -34,7 +39,6 @@ public class RegisterDto
     /// The user's country
     /// </summary>
     public required string Country { get; init; } = null!;
-
 
     /// <summary>
     /// The password

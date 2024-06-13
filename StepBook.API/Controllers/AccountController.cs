@@ -18,7 +18,7 @@ public class AccountController(StepContext context, IJwtService jwtService, IMap
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> RegisterAsync([FromBody] RegisterDto dto)
     {
-        if (await UserExists(dto.Username)) return BadRequest("Username is already taken");
+        if (await UserExists(dto.Username, dto.Email)) return BadRequest("Username or Email is already taken");
 
         var user = mapper.Map<User>(dto);
 
@@ -47,12 +47,13 @@ public class AccountController(StepContext context, IJwtService jwtService, IMap
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> LoginAsync([FromBody] LoginDto dto)
     {
-        var user = await context.Users.Include(user => user.Photos)
-            .SingleOrDefaultAsync(x => x.UserName == dto.Username);
+        var user = await context.Users
+            .Include(u => u.Photos)
+            .SingleOrDefaultAsync(x => x.UserName == dto.UsernameOrEmail || x.Email == dto.UsernameOrEmail);
 
         if (user == null)
         {
-            return Unauthorized("Invalid username");
+            return Unauthorized("Invalid username or email");
         }
 
         using var hmac = new HMACSHA512(user.PasswordSalt);
@@ -72,6 +73,8 @@ public class AccountController(StepContext context, IJwtService jwtService, IMap
         };
     }
 
-    private async Task<bool> UserExists(string username)
-        => await context.Users.AnyAsync(x => x.UserName == username);
+    private async Task<bool> UserExists(string username, string email)
+    {
+        return await context.Users.AnyAsync(x => x.UserName == username || x.Email == email);
+    }
 }
