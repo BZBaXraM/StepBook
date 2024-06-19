@@ -61,17 +61,22 @@ public class MessageService(StepContext context, IMapper mapper) : IAsyncMessage
             .ProjectTo<MessageDto>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-        var unreadMessages = messages.Where(m => m.DateRead is null
-                                                 && m.SenderUsername == currentUsername).ToList();
+        var unreadMessages = messages.Where(m =>
+                m.DateRead is null
+                && m.SenderUsername == currentUsername)
+            .ToList();
 
-        if (unreadMessages.Count == 0) return mapper.Map<IEnumerable<MessageDto>>(messages);
+        if (unreadMessages.Count == 0)
+        {
+            return mapper.Map<IEnumerable<MessageDto>>(messages);
+        }
+
         foreach (var item in unreadMessages)
         {
             item.DateRead = DateTime.UtcNow;
         }
 
         await context.SaveChangesAsync();
-
         return mapper.Map<IEnumerable<MessageDto>>(messages);
     }
 

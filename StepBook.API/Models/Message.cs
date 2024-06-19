@@ -53,7 +53,7 @@ public class Message
     /// <summary>
     /// The date the message was sent.
     /// </summary>
-    public DateTime MessageSent { get; set; } = DateTime.Now;
+    public DateTime MessageSent { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// The sender deleted the message.
