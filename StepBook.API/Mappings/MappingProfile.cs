@@ -19,7 +19,8 @@ public class MappingProfile : Profile
         CreateMap<MemberUpdateDto, User>();
         CreateMap<RegisterDto, User>();
         CreateMap<Message, MessageDto>()
-            .ForMember(dest => dest.SenderUsername, opt => opt.MapFrom(src => src.Sender.UserName))
+            .ForMember(dest => dest.SenderUsername,
+                opt => opt.MapFrom(src => src.Sender.UserName))
             .ForMember(dest => dest.RecipientPhotoUrl,
                 opt => opt.MapFrom(src => src.Recipient.Photos.FirstOrDefault(p => p.IsMain)!.Url));
     }

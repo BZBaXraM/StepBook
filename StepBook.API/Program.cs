@@ -1,8 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Serilog;
-using StepBook.API;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -70,5 +65,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<MessageHub>("hubs/message");
 
 await app.RunAsync();

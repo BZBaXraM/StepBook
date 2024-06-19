@@ -29,6 +29,16 @@ public class StepContext : DbContext
     public DbSet<Message> Messages => Set<Message>();
 
     /// <summary>
+    /// Groups table.
+    /// </summary>
+    public DbSet<Group> Groups => Set<Group>();
+
+    /// <summary>
+    /// Connections table.
+    /// </summary>
+    public DbSet<Connection> Connections => Set<Connection>();
+
+    /// <summary>
     /// Configure the database context.
     /// </summary>
     /// <param name="modelBuilder"></param>

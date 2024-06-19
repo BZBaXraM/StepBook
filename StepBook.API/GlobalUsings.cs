@@ -29,3 +29,8 @@ global using System.ComponentModel.DataAnnotations.Schema;
 global using Microsoft.AspNetCore.Mvc.Filters;
 global using StepBook.API.Filters;
 global using System.IdentityModel.Tokens.Jwt;
+global using Microsoft.AspNetCore.SignalR;
+global using System.Text.Json.Serialization;
+global using Serilog;
+global using StepBook.API;
+global using StepBook.API.Hubs;

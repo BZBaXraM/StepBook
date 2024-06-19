@@ -14,14 +14,12 @@ public static class Di
     public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
-
         services.AddDbContext<StepContext>(options =>
         {
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
         });
 
 
-        services.AddScoped<IAsyncUserService, UserService>();
         services.AddFluentValidationAutoValidation();
         services.AddAutoMapper(typeof(MappingProfile).Assembly);
         services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
@@ -52,7 +50,7 @@ public static class Di
                             Id = "Bearer"
                         }
                     },
-                    Array.Empty<string>()
+                    []
                 }
             });
         });
@@ -69,8 +67,10 @@ public static class Di
     public static IServiceCollection AuthenticationAndAuthorization(this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddScoped<PresenceTracker>();
         services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
+        services.AddScoped<IAsyncUserService, UserService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAsyncPhotoService, PhotoService>();
         services.AddScoped<IAsyncLikesService, LikesService>();
@@ -81,6 +81,8 @@ public static class Di
         configuration.GetSection("JWT").Bind(jwtConfig);
         services.AddSingleton(jwtConfig);
 
+        services.AddSignalR();
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -90,6 +92,22 @@ public static class Di
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtConfig.Secret)),
                     ValidateIssuer = false,
                     ValidateAudience = false
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        context.Token = string.IsNullOrEmpty(accessToken) switch
+                        {
+                            false when path.StartsWithSegments("/hubs") => accessToken,
+                            _ => context.Token
+                        };
+
+                        return Task.CompletedTask;
+                    }
                 };
             });
 
