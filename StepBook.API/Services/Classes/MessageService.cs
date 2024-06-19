@@ -5,7 +5,7 @@ namespace StepBook.API.Services.Classes;
 /// </summary>
 /// <param name="context"></param>
 /// <param name="mapper"></param>
-public class MessageService(StepContext context, IMapper mapper) : IAsyncMessageService
+public class MessageService(StepContext context, IMapper mapper) : IMessageService
 {
     /// <summary>
     /// Add message to the database
@@ -101,5 +101,13 @@ public class MessageService(StepContext context, IMapper mapper) : IAsyncMessage
         return (await context.Groups
             .Include(x => x.Connections)
             .FirstOrDefaultAsync(x => x.Name == groupName))!;
+    }
+
+    public async Task<Group> GetGroupForConnectionAsynv(string connectionId)
+    {
+        return (await context.Groups
+            .Include(x => x.Connections)
+            .Where(x => x.Connections.Any(c => c.ConnectionId == connectionId))
+            .FirstOrDefaultAsync())!;
     }
 }

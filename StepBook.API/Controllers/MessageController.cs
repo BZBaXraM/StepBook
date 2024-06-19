@@ -12,7 +12,7 @@ namespace StepBook.API.Controllers;
 [Authorize]
 public class MessageController(
     IAsyncUserService userService,
-    IAsyncMessageService messageService,
+    IMessageService messageService,
     IMapper mapper)
     : ControllerBase
 {

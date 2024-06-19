@@ -52,17 +52,6 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
     public async Task<ActionResult<MemberDto>> GetUserByUserName(string username)
         => Ok(mapper.Map<MemberDto>(await userService.GetMemberAsync(username)));
 
-    /// <summary>
-    /// Create a user
-    /// </summary>
-    /// <param name="user"></param>
-    /// <returns></returns>
-    [HttpPost]
-    public async Task<ActionResult> CreateUserAsync(User user)
-    {
-        await userService.UpdateUserAsync(user);
-        return NoContent();
-    }
 
     /// <summary>
     /// Update a user
@@ -96,38 +85,46 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
     /// <param name="file"></param>
     /// <returns></returns>
     [HttpPost("add-photo")]
-    public async Task<ActionResult<PhotoDto>> AddPhotoAsync([FromForm] IFormFile file)
+    public async Task<ActionResult<PhotoDto>> AddPhotoAsync(IFormFile file)
     {
-        if (string.IsNullOrEmpty(User.GetUsername()))
+        // Check if the username claim is present
+        var username = User.GetUsername();
+        if (string.IsNullOrEmpty(username))
         {
             return BadRequest("Username claim not found");
         }
 
-        var user = await userService.GetUserByUserNameAsync(User.GetUsername());
+        // Fetch the user from the database
+        var user = await userService.GetUserByUserNameAsync(username);
         if (user is null)
         {
             return NotFound("User not found");
         }
 
+        // Add the photo using the photo service
         var result = await photoService.AddPhotoAsync(file);
-        if (result.Error is null)
+        if (result.Error != null)
         {
-            return BadRequest(result.Error!.Message);
+            return BadRequest(result.Error.Message);
         }
 
+        // Create a new Photo object
         var photo = new Photo
         {
             Url = result.SecureUrl.AbsoluteUri,
             PublicId = result.PublicId
         };
 
-        if (user.Photos.Count == 0)
+        // Check if this is the user's first photo
+        if (user.Photos == null || user.Photos.Count == 0)
         {
             photo.IsMain = true;
         }
 
-        user.Photos.Add(photo);
+        // Add the photo to the user's photo collection
+        user.Photos!.Add(photo);
 
+        // Save the changes to the database
         if (await userService.SaveAllAsync())
         {
             return CreatedAtRoute("GetUserByUserName", new { username = user.UserName }, mapper.Map<PhotoDto>(photo));
@@ -135,6 +132,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
 
         return BadRequest("Problem adding photo");
     }
+
 
     /// <summary>
     /// Set a photo as the main photo in account

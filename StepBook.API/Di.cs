@@ -74,7 +74,7 @@ public static class Di
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAsyncPhotoService, PhotoService>();
         services.AddScoped<IAsyncLikesService, LikesService>();
-        services.AddScoped<IAsyncMessageService, MessageService>();
+        services.AddScoped<IMessageService, MessageService>();
         services.AddScoped<LogUserActivity>();
 
         JwtConfig jwtConfig = new();

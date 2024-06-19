@@ -1,6 +1,6 @@
 namespace StepBook.API.Services.Interfaces;
 
-public interface IAsyncMessageService
+public interface IMessageService
 {
     void AddMessage(Message message);
     void DeleteMessage(Message message);
@@ -12,4 +12,5 @@ public interface IAsyncMessageService
     void RemoveConnection(Connection connection);
     Task<Connection> GetConnectionAsync(string connectionId);
     Task<Group> GetMessageGroupAsync(string groupName);
+    Task<Group> GetGroupForConnectionAsynv(string connectionId);
 }

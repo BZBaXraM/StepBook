@@ -1,7 +1,7 @@
 namespace StepBook.API.Hubs;
 
 public class MessageHub(
-    IAsyncMessageService messageService,
+    IMessageService messageService,
     IAsyncUserService userService,
     IMapper mapper,
     IHubContext<PresenceHub> context,
@@ -14,16 +14,19 @@ public class MessageHub(
         var groupName = GetGroupName(Context.User!.GetUsername()!, otherUser!);
 
         await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-        await AddToGroupAsync(Context, groupName);
+        var group = await AddToGroupAsync(groupName);
+
+        await Clients.Group(groupName).SendAsync("UpdatedGroup", group);
 
         var messages = await messageService.GetMessageThreadAsync(Context.User!.GetUsername()!, otherUser!);
 
-        await Clients.Group(groupName).SendAsync("ReceiveMessageThread", messages);
+        await Clients.Caller.SendAsync("ReceiveMessageThread", messages);
     }
 
     public override async Task OnDisconnectedAsync(Exception exception)
     {
-        await RemoveFromGroupAsync(Context.ConnectionId);
+        var group = await RemoveFromGroupAsync();
+        await Clients.Group(group.Name).SendAsync("UpdatedGroup", group);
         await base.OnDisconnectedAsync(exception);
     }
 
@@ -75,14 +78,10 @@ public class MessageHub(
         }
     }
 
-    private async Task AddToGroupAsync(HubCallerContext context, string groupName)
+    private async Task<Group> AddToGroupAsync(string groupName)
     {
         var group = await messageService.GetMessageGroupAsync(groupName);
-        var connection = new Connection
-        {
-            ConnectionId = context.ConnectionId,
-            Username = context.User!.GetUsername()!
-        };
+        var connection = new Connection(Context.ConnectionId, Context.User!.GetUsername()!);
 
         if (group is null)
         {
@@ -91,15 +90,20 @@ public class MessageHub(
         }
 
         group.Connections.Add(connection);
+        if (await messageService.SaveAllAsync()) return group;
 
-        await messageService.SaveAllAsync();
+        throw new HubException("Failed to add to group");
     }
 
-    private async Task RemoveFromGroupAsync(string connectionId)
+    private async Task<Group> RemoveFromGroupAsync()
     {
-        var connection = await messageService.GetConnectionAsync(connectionId);
-        messageService.RemoveConnection(connection);
-        await messageService.SaveAllAsync();
+        var group = await messageService.GetGroupForConnectionAsynv(Context.ConnectionId);
+        var connection = group.Connections.FirstOrDefault(x => x.ConnectionId == Context.ConnectionId);
+
+        messageService.RemoveConnection(connection!);
+        if (await messageService.SaveAllAsync()) return group;
+
+        throw new HubException("Failed to remove from group");
     }
 
     private string GetGroupName(string caller, string other)
