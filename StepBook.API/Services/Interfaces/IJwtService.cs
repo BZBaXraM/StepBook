@@ -17,4 +17,5 @@ public interface IJwtService
     /// </summary>
     /// <returns></returns>
     string GenerateRefreshToken();
+    string GenerateEmailConfirmationToken(User user);
 }

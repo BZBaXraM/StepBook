@@ -93,4 +93,5 @@ public class User
     public ICollection<Message> MessagesReceived { get; set; } = [];
 
     public string? RefreshToken { get; set; }
+    public bool IsEmailConfirmed { get; set; }
 }

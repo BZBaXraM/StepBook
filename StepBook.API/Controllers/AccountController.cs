@@ -8,7 +8,10 @@ namespace StepBook.API.Controllers;
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
 [ApiController]
-public class AccountController(StepContext context, IJwtService jwtService, IMapper mapper) : ControllerBase
+public class AccountController(
+    StepContext context,
+    IJwtService jwtService,
+    IMapper mapper) : ControllerBase
 {
     /// <summary>
     /// Register a new user
@@ -18,7 +21,10 @@ public class AccountController(StepContext context, IJwtService jwtService, IMap
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> RegisterAsync([FromBody] RegisterDto dto)
     {
-        if (await UserExists(dto.Username, dto.Email)) return BadRequest("Username or Email is already taken");
+        if (await context.Users.AnyAsync(x => x.UserName == dto.Username || x.Email == dto.Email))
+        {
+            return BadRequest("Username or Email is already taken");
+        }
 
         var user = mapper.Map<User>(dto);
 
@@ -36,7 +42,7 @@ public class AccountController(StepContext context, IJwtService jwtService, IMap
         return new UserDto
         {
             Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
+            Token = jwtService.GenerateEmailConfirmationToken(user),
             KnownAs = user.KnownAs!,
             RefreshToken = user.RefreshToken
         };
@@ -79,8 +85,47 @@ public class AccountController(StepContext context, IJwtService jwtService, IMap
         };
     }
 
-    private async Task<bool> UserExists(string username, string email)
+    [HttpGet("confirm-email")]
+    public async Task<ActionResult<UserDto>> ConfirmEmailAsync([FromQuery] string token, string email)
     {
-        return await context.Users.AnyAsync(x => x.UserName == username || x.Email == email);
+        JwtConfig config = new JwtConfig();
+        var user = await context.Users.Include(user => user.Photos).SingleOrDefaultAsync(x => x.Email == email);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(config.Secret);
+
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+
+        try
+        {
+            tokenHandler.ValidateToken(token, validationParameters, out _);
+        }
+        catch
+        {
+            return BadRequest("Invalid token");
+        }
+
+        user.IsEmailConfirmed = true;
+        await context.SaveChangesAsync();
+
+        return new UserDto
+        {
+            Username = user.UserName,
+            Token = jwtService.GenerateSecurityToken(user),
+            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+            KnownAs = user.KnownAs!,
+            RefreshToken = user.RefreshToken
+        };
     }
 }
