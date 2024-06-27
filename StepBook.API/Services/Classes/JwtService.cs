@@ -31,4 +31,16 @@ public class JwtService(JwtConfig config) : IJwtService
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+
+    /// <summary>
+    /// Generate a refresh token
+    /// </summary>
+    /// <returns></returns>
+    public string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
+    }
 }

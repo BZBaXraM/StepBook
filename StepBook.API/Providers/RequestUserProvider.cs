@@ -1,6 +1,3 @@
-using System.Security.Claims;
-using StepBook.API.Data.Entities;
-
 namespace StepBook.API.Providers;
 
 /// <summary>

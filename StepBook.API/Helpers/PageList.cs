@@ -13,7 +13,7 @@ public class PageList<T> : List<T>
     /// <param name="count"></param>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
-    public PageList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
+    private PageList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
     {
         CurrentPage = pageNumber;
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);

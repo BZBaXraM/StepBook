@@ -1,5 +1,3 @@
-using System.Security.Claims;
-
 namespace StepBook.API.Services.Interfaces;
 
 /// <summary>
@@ -13,4 +11,10 @@ public interface IJwtService
     /// <param name="user"></param>
     /// <returns></returns>
     string GenerateSecurityToken(User user);
+
+    /// <summary>
+    /// Generate a refresh token
+    /// </summary>
+    /// <returns></returns>
+    string GenerateRefreshToken();
 }
