@@ -91,4 +91,6 @@ public class User
     /// List of messages received by the current user.
     /// </summary>
     public ICollection<Message> MessagesReceived { get; set; } = [];
+
+    public string? RefreshToken { get; set; }
 }

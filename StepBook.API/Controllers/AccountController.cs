@@ -31,19 +31,18 @@ public class AccountController(StepContext context, IJwtService jwtService, IMap
         context.Users.Add(user);
         await context.SaveChangesAsync();
 
+        // Generate a refresh token
+        user.RefreshToken = GenerateRefreshToken();
+
         return new UserDto
         {
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
-            KnownAs = user.KnownAs!
+            KnownAs = user.KnownAs!,
+            RefreshToken = user.RefreshToken // Include the refresh token in the response
         };
     }
 
-    /// <summary>
-    /// Login a user
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <returns></returns>
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> LoginAsync([FromBody] LoginDto dto)
     {
@@ -64,17 +63,29 @@ public class AccountController(StepContext context, IJwtService jwtService, IMap
             return Unauthorized("Invalid password");
         }
 
+        // Generate a new refresh token
+        user.RefreshToken = GenerateRefreshToken();
+
         return new UserDto
         {
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs!
+            KnownAs = user.KnownAs!,
+            RefreshToken = user.RefreshToken // Include the refresh token in the response
         };
     }
 
     private async Task<bool> UserExists(string username, string email)
     {
         return await context.Users.AnyAsync(x => x.UserName == username || x.Email == email);
+    }
+
+    private static string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
     }
 }

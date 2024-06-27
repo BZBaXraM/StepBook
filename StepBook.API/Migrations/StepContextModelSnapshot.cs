@@ -170,6 +170,9 @@ namespace StepBook.API.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("text");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("text");
