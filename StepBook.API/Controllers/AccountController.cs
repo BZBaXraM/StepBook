@@ -11,6 +11,7 @@ namespace StepBook.API.Controllers;
 public class AccountController(
     StepContext context,
     IJwtService jwtService,
+    IEmailService emailService,
     IMapper mapper) : ControllerBase
 {
     /// <summary>
@@ -33,20 +34,19 @@ public class AccountController(
         user.UserName = dto.Username;
         user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password));
         user.PasswordSalt = hmac.Key;
+        user.EmailConfirmationToken = jwtService.GenerateEmailConfirmationToken(user);
 
         context.Users.Add(user);
         await context.SaveChangesAsync();
 
-        user.RefreshToken = jwtService.GenerateRefreshToken();
+        var confirmLink = Url.Action("ConfirmEmail", "Account",
+            new { token = user.EmailConfirmationToken, email = user.Email }, Request.Scheme);
+        await emailService.SendEmailAsync(user.Email, "Confirm your email",
+            $"Please confirm your email by clicking <a href='{confirmLink}'>here</a>.");
 
-        return new UserDto
-        {
-            Username = user.UserName,
-            Token = jwtService.GenerateEmailConfirmationToken(user),
-            KnownAs = user.KnownAs!,
-            RefreshToken = user.RefreshToken
-        };
+        return Ok("Registration successful. Please check your email for confirmation link.");
     }
+
 
     /// <summary>
     /// Login a user
@@ -63,6 +63,11 @@ public class AccountController(
         if (user == null)
         {
             return Unauthorized("Invalid username or email");
+        }
+
+        if (!user.IsEmailConfirmed)
+        {
+            return Unauthorized("Email not confirmed. Please check your email.");
         }
 
         using var hmac = new HMACSHA512(user.PasswordSalt);
@@ -85,33 +90,24 @@ public class AccountController(
         };
     }
 
+    /// <summary>
+    /// Confirm the email of a user
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="email"></param>
+    /// <returns></returns>
     [HttpGet("confirm-email")]
-    public async Task<ActionResult<UserDto>> ConfirmEmailAsync([FromQuery] string token, string email)
+    public async Task<ActionResult> ConfirmEmailAsync([FromQuery] string token, string email)
     {
-        JwtConfig config = new JwtConfig();
-        var user = await context.Users.Include(user => user.Photos).SingleOrDefaultAsync(x => x.Email == email);
+        var user = await context.Users.SingleOrDefaultAsync(x => x.Email == email);
 
         if (user == null)
         {
             return NotFound("User not found");
         }
 
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(config.Secret);
-
-        var validationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-
-        try
-        {
-            tokenHandler.ValidateToken(token, validationParameters, out _);
-        }
-        catch
+        var isValid = jwtService.ValidateEmailConfirmationToken(user, token);
+        if (!isValid)
         {
             return BadRequest("Invalid token");
         }
@@ -119,13 +115,6 @@ public class AccountController(
         user.IsEmailConfirmed = true;
         await context.SaveChangesAsync();
 
-        return new UserDto
-        {
-            Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs!,
-            RefreshToken = user.RefreshToken
-        };
+        return Ok("Email confirmed successfully. You can now log in.");
     }
 }

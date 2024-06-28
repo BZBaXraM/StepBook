@@ -41,7 +41,9 @@ namespace StepBook.API.Migrations
                     Introduction = table.Column<string>(type: "text", nullable: true),
                     City = table.Column<string>(type: "text", nullable: true),
                     Country = table.Column<string>(type: "text", nullable: true),
-                    RefreshToken = table.Column<string>(type: "text", nullable: true)
+                    RefreshToken = table.Column<string>(type: "text", nullable: true),
+                    IsEmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    EmailConfirmationToken = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

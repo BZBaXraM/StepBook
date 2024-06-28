@@ -70,4 +70,31 @@ public class JwtService(JwtConfig config) : IJwtService
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+
+    public bool ValidateEmailConfirmationToken(User user, string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(config.Secret);
+
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        };
+
+        try
+        {
+            tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+            var jwtToken = (JwtSecurityToken)validatedToken;
+
+            return jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Email).Value == user.Email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

@@ -67,9 +67,11 @@ public static class Di
     public static IServiceCollection AuthenticationAndAuthorization(this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.Configure<EmailConfig>(configuration.GetSection("EmailConfig"));
         services.AddScoped<PresenceTracker>();
         services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
+        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IAsyncUserService, UserService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAsyncPhotoService, PhotoService>();
