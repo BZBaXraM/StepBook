@@ -91,6 +91,33 @@ public class AccountController(
     }
 
     /// <summary>
+    /// Refresh the token of a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPost("refresh-token")]
+    public async Task<ActionResult<UserDto>> RefreshTokenAsync([FromBody] RefreshTokenDto dto)
+    {
+        var user = await context.Users.Include(user => user.Photos).SingleOrDefaultAsync(x => x.RefreshToken == dto.RefreshToken);
+
+        if (user == null)
+        {
+            return Unauthorized("Invalid refresh token");
+        }
+
+        user.RefreshToken = jwtService.GenerateRefreshToken();
+
+        return new UserDto
+        {
+            Username = user.UserName,
+            Token = jwtService.GenerateSecurityToken(user),
+            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+            KnownAs = user.KnownAs!,
+            RefreshToken = user.RefreshToken
+        };
+    }
+
+    /// <summary>
     /// Confirm the email of a user
     /// </summary>
     /// <param name="token"></param>
