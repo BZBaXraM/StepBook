@@ -1,8 +1,10 @@
+using StepBook.API.Repositories.Interfaces;
+
 namespace StepBook.API.Hubs;
 
 public class MessageHub(
-    IMessageService messageService,
-    IAsyncUserService userService,
+    IMessageRepository messageRepository,
+    IUserRepository userRepository,
     IMapper mapper,
     IHubContext<PresenceHub> context,
     PresenceTracker tracker) : Hub
@@ -18,7 +20,7 @@ public class MessageHub(
 
         await Clients.Group(groupName).SendAsync("UpdatedGroup", group);
 
-        var messages = await messageService.GetMessageThreadAsync(Context.User!.GetUsername()!, otherUser!);
+        var messages = await messageRepository.GetMessageThreadAsync(Context.User!.GetUsername()!, otherUser!);
 
         await Clients.Caller.SendAsync("ReceiveMessageThread", messages);
     }
@@ -37,8 +39,8 @@ public class MessageHub(
         if (username == dto.RecipientUsername)
             throw new HubException("You cannot send messages to yourself");
 
-        var sender = await userService.GetUserByUserNameAsync(username);
-        var recipient = await userService.GetUserByUserNameAsync(dto.RecipientUsername);
+        var sender = await userRepository.GetUserByUserNameAsync(username);
+        var recipient = await userRepository.GetUserByUserNameAsync(dto.RecipientUsername);
 
         if (recipient is null) throw new HubException("Not found user");
 
@@ -53,7 +55,7 @@ public class MessageHub(
 
         var groupName = GetGroupName(sender.UserName, recipient.UserName);
 
-        var group = await messageService.GetMessageGroupAsync(groupName);
+        var group = await messageRepository.GetMessageGroupAsync(groupName);
 
         if (group.Connections.Any(x => x.Username == recipient.UserName))
         {
@@ -70,9 +72,9 @@ public class MessageHub(
         }
 
 
-        messageService.AddMessage(message);
+        messageRepository.AddMessage(message);
 
-        if (await messageService.SaveAllAsync())
+        if (await messageRepository.SaveAllAsync())
         {
             await Clients.Group(groupName).SendAsync("NewMessage", mapper.Map<MessageDto>(message));
         }
@@ -80,28 +82,28 @@ public class MessageHub(
 
     private async Task<Group> AddToGroupAsync(string groupName)
     {
-        var group = await messageService.GetMessageGroupAsync(groupName);
+        var group = await messageRepository.GetMessageGroupAsync(groupName);
         var connection = new Connection(Context.ConnectionId, Context.User!.GetUsername()!);
 
         if (group is null)
         {
             group = new Group(groupName);
-            messageService.AddGroup(group);
+            messageRepository.AddGroup(group);
         }
 
         group.Connections.Add(connection);
-        if (await messageService.SaveAllAsync()) return group;
+        if (await messageRepository.SaveAllAsync()) return group;
 
         throw new HubException("Failed to add to group");
     }
 
     private async Task<Group> RemoveFromGroupAsync()
     {
-        var group = await messageService.GetGroupForConnectionAsynv(Context.ConnectionId);
+        var group = await messageRepository.GetGroupForConnectionAsynv(Context.ConnectionId);
         var connection = group.Connections.FirstOrDefault(x => x.ConnectionId == Context.ConnectionId);
 
-        messageService.RemoveConnection(connection!);
-        if (await messageService.SaveAllAsync()) return group;
+        messageRepository.RemoveConnection(connection!);
+        if (await messageRepository.SaveAllAsync()) return group;
 
         throw new HubException("Failed to remove from group");
     }

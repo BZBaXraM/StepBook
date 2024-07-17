@@ -1,6 +1,6 @@
-namespace StepBook.API.Services.Interfaces;
+namespace StepBook.API.Repositories.Interfaces;
 
-public interface IMessageService
+public interface IMessageRepository
 {
     void AddMessage(Message message);
     void DeleteMessage(Message message);

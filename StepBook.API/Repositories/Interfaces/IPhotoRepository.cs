@@ -1,9 +1,9 @@
-namespace StepBook.API.Services.Interfaces;
+namespace StepBook.API.Repositories.Interfaces;
 
 /// <summary>
 /// Interface for the photo service.
 /// </summary>
-public interface IAsyncPhotoService
+public interface IPhotoRepository
 {
     /// <summary>
     /// Add a photo to the cloudinary service.

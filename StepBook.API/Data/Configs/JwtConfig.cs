@@ -1,4 +1,4 @@
-namespace StepBook.API.Data.Entities;
+namespace StepBook.API.Data.Configs;
 
 /// <summary>
 /// JWT configuration

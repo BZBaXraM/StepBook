@@ -1,9 +1,9 @@
-namespace StepBook.API.Services.Interfaces;
+namespace StepBook.API.Repositories.Interfaces;
 
 /// <summary>
 /// Interface for the User Service
 /// </summary>
-public interface IAsyncUserService
+public interface IUserRepository
 {
     /// <summary>
     /// Get all users

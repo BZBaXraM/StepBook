@@ -1,3 +1,5 @@
+using StepBook.API.Repositories.Interfaces;
+
 namespace StepBook.API.Filters;
 
 /// <summary>
@@ -17,7 +19,7 @@ public class LogUserActivity : IAsyncActionFilter
         if (!resultContext.HttpContext.User.Identity!.IsAuthenticated) return;
         var userId = resultContext.HttpContext.User.GetUserId();
 
-        var userService = resultContext.HttpContext.RequestServices.GetService<IAsyncUserService>();
+        var userService = resultContext.HttpContext.RequestServices.GetService<IUserRepository>();
         var user = await userService!.GetUserByIdAsync(userId);
 
         user.LastActive = DateTime.UtcNow;

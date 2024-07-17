@@ -1,10 +1,13 @@
-namespace StepBook.API.Services.Classes;
+using StepBook.API.Data.Configs;
+using StepBook.API.Repositories.Interfaces;
+
+namespace StepBook.API.Repositories.Classes;
 
 /// <summary>
 /// The JWT service
 /// </summary>
 /// <param name="config"></param>
-public class JwtService(JwtConfig config) : IJwtService
+public class JwtRepository(JwtConfig config) : IJwtRepository
 {
     /// <summary>
     /// The JWT service configuration

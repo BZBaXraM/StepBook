@@ -1,3 +1,5 @@
+using StepBook.API.Repositories.Interfaces;
+
 namespace StepBook.API.Controllers;
 
 /// <summary>
@@ -7,7 +9,7 @@ namespace StepBook.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class UsersController(IAsyncUserService userService, IMapper mapper, IAsyncPhotoService photoService)
+public class UsersController(IUserRepository userRepository, IMapper mapper, IPhotoRepository photoRepository)
     : ControllerBase
 {
     /// <summary>
@@ -17,7 +19,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsersAsync([FromQuery] PageParams pageParams)
     {
-        var user = await userService.GetUserByUserNameAsync(User.GetUsername());
+        var user = await userRepository.GetUserByUserNameAsync(User.GetUsername());
         pageParams.CurrentUsername = User.GetUsername();
 
         if (string.IsNullOrEmpty(pageParams.Gender))
@@ -25,7 +27,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
             pageParams.Gender = user.Gender == "male" ? "female" : "male";
         }
 
-        var users = await userService.GetMembersAsync(pageParams);
+        var users = await userRepository.GetMembersAsync(pageParams);
         Response.AddPagination(users.CurrentPage,
             users.PageSize,
             users.TotalCount,
@@ -41,7 +43,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
     /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<User>> GetUserByIdAsync(int id)
-        => Ok(await userService.GetUserByIdAsync(id));
+        => Ok(await userRepository.GetUserByIdAsync(id));
 
     /// <summary>
     /// Get a user by their username
@@ -50,7 +52,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
     /// <returns></returns>
     [HttpGet("{username}", Name = "GetUserByUserName")]
     public async Task<ActionResult<MemberDto>> GetUserByUserName(string username)
-        => Ok(mapper.Map<MemberDto>(await userService.GetMemberAsync(username)));
+        => Ok(mapper.Map<MemberDto>(await userRepository.GetMemberAsync(username)));
 
 
     /// <summary>
@@ -66,16 +68,16 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
             return BadRequest("Username claim not found");
         }
 
-        var user = await userService.GetUserByUserNameAsync(User.GetUsername());
+        var user = await userRepository.GetUserByUserNameAsync(User.GetUsername());
         if (user is null)
         {
             return NotFound("User not found");
         }
 
         mapper.Map(dto, user);
-        await userService.UpdateUserAsync(user);
+        await userRepository.UpdateUserAsync(user);
 
-        if (await userService.SaveAllAsync()) return NoContent();
+        if (await userRepository.SaveAllAsync()) return NoContent();
         return BadRequest("Failed to update user");
     }
 
@@ -95,14 +97,14 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
         }
 
         // Fetch the user from the database
-        var user = await userService.GetUserByUserNameAsync(username);
+        var user = await userRepository.GetUserByUserNameAsync(username);
         if (user is null)
         {
             return NotFound("User not found");
         }
 
         // Add the photo using the photo service
-        var result = await photoService.AddPhotoAsync(file);
+        var result = await photoRepository.AddPhotoAsync(file);
         if (result.Error != null)
         {
             return BadRequest(result.Error.Message);
@@ -125,7 +127,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
         user.Photos!.Add(photo);
 
         // Save the changes to the database
-        if (await userService.SaveAllAsync())
+        if (await userRepository.SaveAllAsync())
         {
             return CreatedAtRoute("GetUserByUserName", new { username = user.UserName }, mapper.Map<PhotoDto>(photo));
         }
@@ -147,7 +149,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
             return BadRequest("Username claim not found");
         }
 
-        var user = await userService.GetUserByUserNameAsync(User.GetUsername());
+        var user = await userRepository.GetUserByUserNameAsync(User.GetUsername());
         if (user is null)
         {
             return NotFound("User not found");
@@ -172,7 +174,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
 
         photo.IsMain = true;
 
-        if (await userService.SaveAllAsync()) return NoContent();
+        if (await userRepository.SaveAllAsync()) return NoContent();
 
         return BadRequest("Failed to set main photo");
     }
@@ -190,7 +192,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
             return BadRequest("Username claim not found");
         }
 
-        var user = await userService.GetUserByUserNameAsync(User.GetUsername());
+        var user = await userRepository.GetUserByUserNameAsync(User.GetUsername());
         if (user is null)
         {
             return NotFound("User not found");
@@ -209,7 +211,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
 
         if (photo.PublicId is not null)
         {
-            var result = await photoService.DeletePhotoAsync(photo.PublicId);
+            var result = await photoRepository.DeletePhotoAsync(photo.PublicId);
             if (result.Error is not null)
             {
                 return BadRequest(result.Error.Message);
@@ -218,7 +220,7 @@ public class UsersController(IAsyncUserService userService, IMapper mapper, IAsy
 
         user.Photos.Remove(photo);
 
-        if (await userService.SaveAllAsync()) return NoContent();
+        if (await userRepository.SaveAllAsync()) return NoContent();
 
         return BadRequest("Failed to delete photo");
     }

@@ -1,9 +1,11 @@
-namespace StepBook.API.Services.Classes;
+using StepBook.API.Repositories.Interfaces;
+
+namespace StepBook.API.Repositories.Classes;
 
 /// <summary>
 /// Service for the User
 /// </summary>
-public class UserService(StepContext context, IMapper mapper) : IAsyncUserService
+public class UserRepository(StepContext context, IMapper mapper) : IUserRepository
 {
     /// <summary>
     /// Get all users

@@ -1,13 +1,15 @@
-namespace StepBook.API.Services.Classes;
+using StepBook.API.Repositories.Interfaces;
+
+namespace StepBook.API.Repositories.Classes;
 
 /// <summary>
 /// Represents a service for likes.
 /// </summary>
 /// <param name="context"></param>
-public class LikesService(StepContext context) : IAsyncLikesService
+public class LikesRepository(StepContext context) : ILikesRepository
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="LikesService"/> class.
+    /// Initializes a new instance of the <see cref="LikesRepository"/> class.
     /// </summary>
     /// <param name="sourceUserId"></param>
     /// <param name="likedUserId"></param>

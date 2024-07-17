@@ -1,17 +1,19 @@
+using StepBook.API.Repositories.Interfaces;
+
 namespace StepBook.API.Controllers;
 
 /// <summary>
 /// Account controller
 /// </summary>
 /// <param name="context"></param>
-/// <param name="jwtService"></param>
+/// <param name="jwtRepository"></param>
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
 [ApiController]
 public class AccountController(
     StepContext context,
-    IJwtService jwtService,
-    IEmailService emailService,
+    IJwtRepository jwtRepository,
+    IEmailRepository emailRepository,
     IMapper mapper) : ControllerBase
 {
     /// <summary>
@@ -34,14 +36,14 @@ public class AccountController(
         user.UserName = dto.Username;
         user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password));
         user.PasswordSalt = hmac.Key;
-        user.EmailConfirmationToken = jwtService.GenerateEmailConfirmationToken(user);
+        user.EmailConfirmationToken = jwtRepository.GenerateEmailConfirmationToken(user);
 
         context.Users.Add(user);
         await context.SaveChangesAsync();
 
         var confirmLink = Url.Action("ConfirmEmail", "Account",
             new { token = user.EmailConfirmationToken, email = user.Email }, Request.Scheme);
-        await emailService.SendEmailAsync(user.Email, "Confirm your email",
+        await emailRepository.SendEmailAsync(user.Email, "Confirm your email",
             $"Please confirm your email by clicking <a href='{confirmLink}'>here</a>.");
 
         return Ok("Registration successful. Please check your email for confirmation link.");
@@ -78,12 +80,12 @@ public class AccountController(
             return Unauthorized("Invalid password");
         }
 
-        user.RefreshToken = jwtService.GenerateRefreshToken();
+        user.RefreshToken = jwtRepository.GenerateRefreshToken();
 
         return new UserDto
         {
             Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
+            Token = jwtRepository.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs!,
             RefreshToken = user.RefreshToken
@@ -105,12 +107,12 @@ public class AccountController(
             return Unauthorized("Invalid refresh token");
         }
 
-        user.RefreshToken = jwtService.GenerateRefreshToken();
+        user.RefreshToken = jwtRepository.GenerateRefreshToken();
 
         return new UserDto
         {
             Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
+            Token = jwtRepository.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs!,
             RefreshToken = user.RefreshToken
@@ -133,7 +135,7 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        var isValid = jwtService.ValidateEmailConfirmationToken(user, token);
+        var isValid = jwtRepository.ValidateEmailConfirmationToken(user, token);
         if (!isValid)
         {
             return BadRequest("Invalid token");

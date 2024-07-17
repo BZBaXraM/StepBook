@@ -12,7 +12,7 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240628151951_Initial")]
+    [Migration("20240717125124_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -108,6 +108,9 @@ namespace StepBook.API.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsMain")
                         .HasColumnType("boolean");

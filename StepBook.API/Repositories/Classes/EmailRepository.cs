@@ -2,14 +2,16 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using StepBook.API.Data.Configs;
+using StepBook.API.Repositories.Interfaces;
 
-namespace StepBook.API.Services.Classes;
+namespace StepBook.API.Repositories.Classes;
 
-public class EmailService : IEmailService
+public class EmailRepository : IEmailRepository
 {
     private readonly EmailConfig _config;
 
-    public EmailService(IOptions<EmailConfig> options)
+    public EmailRepository(IOptions<EmailConfig> options)
     {
         _config = options.Value;
     }

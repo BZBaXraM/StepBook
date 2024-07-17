@@ -1,9 +1,9 @@
-namespace StepBook.API.Services.Interfaces;
+namespace StepBook.API.Repositories.Interfaces;
 
 /// <summary>
 /// The likes service interface
 /// </summary>
-public interface IAsyncLikesService
+public interface ILikesRepository
 {
     /// <summary>
     /// Get a user like
@@ -19,7 +19,7 @@ public interface IAsyncLikesService
     /// <param name="userId"></param>
     /// <returns></returns>
     Task<User> GetUserWithLikesAsync(int userId);
-    
+
     /// <summary>
     /// Get a user's likes with pagination
     /// </summary>

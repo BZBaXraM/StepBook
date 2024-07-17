@@ -1,3 +1,7 @@
+using StepBook.API.Data.Configs;
+using StepBook.API.Repositories.Classes;
+using StepBook.API.Repositories.Interfaces;
+
 namespace StepBook.API;
 
 /// <summary>
@@ -71,12 +75,13 @@ public static class Di
         services.AddScoped<PresenceTracker>();
         services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
-        services.AddScoped<IEmailService, EmailService>();
-        services.AddScoped<IAsyncUserService, UserService>();
-        services.AddScoped<IJwtService, JwtService>();
-        services.AddScoped<IAsyncPhotoService, PhotoService>();
-        services.AddScoped<IAsyncLikesService, LikesService>();
-        services.AddScoped<IMessageService, MessageService>();
+        services.AddScoped<IEmailRepository, EmailRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IJwtRepository, JwtRepository>();
+        services.AddScoped<IPhotoRepository, PhotoRepository>();
+        
+        services.AddScoped<ILikesRepository, LikesRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<LogUserActivity>();
 
         JwtConfig jwtConfig = new();

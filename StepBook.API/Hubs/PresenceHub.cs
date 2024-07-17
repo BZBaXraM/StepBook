@@ -1,20 +1,23 @@
 namespace StepBook.API.Hubs;
 
+/// <inheritdoc />
 [Authorize]
 public class PresenceHub(PresenceTracker tracker) : Hub
 {
+    /// <inheritdoc />
     public override async Task OnConnectedAsync()
     {
-        var isOnline = await tracker.UserConnected(Context.User.GetUsername(), Context.ConnectionId);
+        var isOnline = await tracker.UserConnected(Context.User?.GetUsername()!, Context.ConnectionId);
         if (isOnline)
         {
-            await Clients.Others.SendAsync("UserIsOnline", Context.User.GetUsername());
+            await Clients.Others.SendAsync("UserIsOnline", Context.User?.GetUsername());
         }
 
         await Clients.Caller.SendAsync("GetOnlineUsers", tracker.GetOnlineUsers());
     }
 
-    public override async Task OnDisconnectedAsync(Exception exception)
+    /// <inheritdoc />
+    public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var isOffline = await tracker.UserDisconnected(Context.User!.GetUsername()!, Context.ConnectionId);
         if (isOffline)

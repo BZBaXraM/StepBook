@@ -14,7 +14,7 @@ public class Photo
     /// <summary>
     /// The url of the photo.
     /// </summary>
-    public string Url { get; set; } = null!;
+    public required string Url { get; set; } = null!;
 
     /// <summary>
     /// Main photo or not.
@@ -25,6 +25,11 @@ public class Photo
     /// Public id of the photo.
     /// </summary>
     public string? PublicId { get; set; }
+
+    /// <summary>
+    /// Is approved or not.
+    /// </summary>
+    public bool IsApproved { get; set; } = false;
 
     /// <summary>
     /// User of the photo.

@@ -1,11 +1,13 @@
-namespace StepBook.API.Services.Classes;
+using StepBook.API.Repositories.Interfaces;
+
+namespace StepBook.API.Repositories.Classes;
 
 /// <summary>
 /// Message service
 /// </summary>
 /// <param name="context"></param>
 /// <param name="mapper"></param>
-public class MessageService(StepContext context, IMapper mapper) : IMessageService
+public class MessageRepository(StepContext context, IMapper mapper) : IMessageRepository
 {
     /// <summary>
     /// Add message to the database
