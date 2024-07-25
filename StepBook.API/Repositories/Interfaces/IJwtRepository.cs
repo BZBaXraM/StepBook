@@ -17,13 +17,14 @@ public interface IJwtRepository
     /// </summary>
     /// <returns></returns>
     string GenerateRefreshToken();
+
     /// <summary>
     /// Generate an email confirmation token
     /// </summary>
     /// <param name="user"></param>
     /// <returns></returns>
     string GenerateEmailConfirmationToken(User user);
-    
+
     /// <summary>
     /// Validate an email confirmation token
     /// </summary>
@@ -31,4 +32,7 @@ public interface IJwtRepository
     /// <param name="token"></param>
     /// <returns></returns>
     bool ValidateEmailConfirmationToken(User user, string token);
+
+    string GenerateForgetPasswordToken(User user);
+    bool ValidateForgetPasswordToken(User user, string token);
 }

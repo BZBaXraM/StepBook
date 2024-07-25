@@ -104,4 +104,5 @@ public class User
     /// The email confirmation token of the user.
     /// </summary>
     public string? EmailConfirmationToken { get; set; }
+    public string? ForgotPasswordToken { get; set; }
 }

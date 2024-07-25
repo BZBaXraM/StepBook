@@ -19,13 +19,14 @@ var logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .CreateLogger();
 
-builder.Services.AddCors();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 builder.Services.AddSwagger(builder.Configuration);
+
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -35,27 +36,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// using var scope = app.Services.CreateScope();
-// var services = scope.ServiceProvider;
-// try
-// {
-//     var context = services.GetRequiredService<StepContext>();
-//     await context.Database.MigrateAsync();
-//     await Seed.SeedUsersAsync(context);
-// }
-// catch (Exception e)
-// {
-//     var log = services.GetRequiredService<ILogger<Program>>();
-//     log.LogError("An error occurred during migration: {Message}", e.Message);
-// }
-
-
 app.UseRouting();
-app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(_ => true)
-    .AllowCredentials());
+// app.UseCors(x => x
+//     .AllowAnyMethod()
+//     .AllowAnyHeader()
+//     .SetIsOriginAllowed(_ => true)
+//     .AllowCredentials());
+
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod()
+    .WithOrigins("http://localhost:4200"));
 
 app.UseHttpsRedirection();
 

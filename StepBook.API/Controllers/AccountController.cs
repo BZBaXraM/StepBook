@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.WebUtilities;
 using StepBook.API.Repositories.Interfaces;
 
 namespace StepBook.API.Controllers;
@@ -100,7 +101,8 @@ public class AccountController(
     [HttpPost("refresh-token")]
     public async Task<ActionResult<UserDto>> RefreshTokenAsync([FromBody] RefreshTokenDto dto)
     {
-        var user = await context.Users.Include(user => user.Photos).SingleOrDefaultAsync(x => x.RefreshToken == dto.RefreshToken);
+        var user = await context.Users.Include(user => user.Photos)
+            .SingleOrDefaultAsync(x => x.RefreshToken == dto.RefreshToken);
 
         if (user == null)
         {
@@ -145,5 +147,92 @@ public class AccountController(
         await context.SaveChangesAsync();
 
         return Ok("Email confirmed successfully. You can now log in.");
+    }
+
+    /// <summary>
+    /// Change the password of a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPut("change-password")]
+    public async Task<ActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequestDto dto)
+    {
+        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        using var hmac = new HMACSHA512(user.PasswordSalt);
+        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.CurrentPassword));
+
+        if (!computedHash.SequenceEqual(user.PasswordHash))
+        {
+            return Unauthorized("Invalid password");
+        }
+
+        if (dto.NewPassword != dto.ConfirmNewPassword)
+        {
+            return BadRequest("Passwords do not match");
+        }
+
+        using var newHmac = new HMACSHA512();
+        user.PasswordHash = newHmac.ComputeHash(Encoding.UTF8.GetBytes(dto.NewPassword));
+        user.PasswordSalt = newHmac.Key;
+
+        await context.SaveChangesAsync();
+
+        return Ok("Password changed successfully");
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<ActionResult> ForgotPasswordAsync([FromBody] ForgetUserPasswordRequestDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest();
+
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Email == dto.Email);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        user.ForgotPasswordToken = jwtRepository.GenerateForgetPasswordToken(user);
+
+        Dictionary<string, string?> param = new()
+        {
+            { "token", user.ForgotPasswordToken },
+            { "email", user.Email }
+        };
+
+        var callBack = QueryHelpers.AddQueryString(dto.ClientURI!, param);
+
+        await emailRepository.SendEmailAsync(user.Email, "Reset your password",
+            $"Please reset your password by clicking <a href='{callBack}'>here</a>.");
+        return Ok();
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<ActionResult> ResetPasswordAsync([FromBody] ResetPasswordDto dto)
+    {
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Email == dto.Email);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        var isValid = jwtRepository.ValidateForgetPasswordToken(user, dto.Token);
+        if (!isValid)
+        {
+            return BadRequest("Invalid token");
+        }
+
+        using var hmac = new HMACSHA512();
+        user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.NewPassword));
+        user.PasswordSalt = hmac.Key;
+
+        await context.SaveChangesAsync();
+
+        return Ok("Password reset successfully");
     }
 }

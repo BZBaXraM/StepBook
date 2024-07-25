@@ -1,12 +1,10 @@
-using FluentValidation;
-
 namespace StepBook.API.DTOs.Validation;
 
 /// <inheritdoc />
-public class RegisterRequestValidator : AbstractValidator<RegisterDto>
+public abstract class RegisterRequestValidator : AbstractValidator<RegisterDto>
 {
     /// <inheritdoc />
-    public RegisterRequestValidator()
+    protected RegisterRequestValidator()
     {
         RuleFor(x => x.Username).Username();
         RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
