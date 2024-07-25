@@ -8,7 +8,7 @@ namespace StepBook.API.Controllers;
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
 [ApiController]
-// [Authorize]
+[Authorize]
 public class UsersController(IUserRepository userRepository, IMapper mapper, IPhotoRepository photoRepository)
     : ControllerBase
 {

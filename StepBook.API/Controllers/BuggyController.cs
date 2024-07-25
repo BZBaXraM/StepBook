@@ -1,47 +1,43 @@
 namespace StepBook.API.Controllers;
 
 /// <summary>
-/// Controller for testing error handling
+/// This controller is used to test the exception middleware.
 /// </summary>
 /// <param name="context"></param>
-[ServiceFilter(typeof(LogUserActivity))]
-[Route("api/[controller]")]
-[ApiController]
 public class BuggyController(StepContext context) : ControllerBase
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     [Authorize]
     [HttpGet("auth")]
-    public async Task<ActionResult<string>> GetSecret()
+    public ActionResult<string> GetAuth()
     {
-        await Task.CompletedTask;
-        return "Secret text";
+        return "secret text";
     }
 
     [HttpGet("not-found")]
-    public async Task<ActionResult<User>> GetNotFound()
+    public ActionResult<User> GetNotFound()
     {
-        var thing = await context.Users.FindAsync(-1);
+        var thing = context.Users.Find(-1);
 
-        if (thing == null)
-            return NotFound();
+        if (thing == null) return NotFound();
 
-        return Ok(thing);
+        return thing;
     }
 
     [HttpGet("server-error")]
-    public async Task<ActionResult<string>> GetServerError()
+    public ActionResult<User> GetServerError()
     {
-        var thing = await context.Users.FindAsync(-1);
+        var thing = context.Users.Find(-1) ?? throw new Exception("A bad thing has happened");
 
-        var thingToReturn = thing?.ToString();
-
-        return thingToReturn!;
+        return thing;
     }
 
     [HttpGet("bad-request")]
-    public async Task<ActionResult<string>> GetBadRequest()
+    public ActionResult<string> GetBadRequest()
     {
-        await Task.CompletedTask;
-        return BadRequest("This was not a good request.");
+        return BadRequest("This was not a good request");
     }
 }

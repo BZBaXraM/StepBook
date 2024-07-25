@@ -1,3 +1,5 @@
+using StepBook.API.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -43,6 +45,7 @@ app.UseRouting();
 //     .SetIsOriginAllowed(_ => true)
 //     .AllowCredentials());
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod()
     .WithOrigins("http://localhost:4200"));
 
