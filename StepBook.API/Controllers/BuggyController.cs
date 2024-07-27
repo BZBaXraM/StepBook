@@ -7,7 +7,7 @@ namespace StepBook.API.Controllers;
 public class BuggyController(StepContext context) : ControllerBase
 {
     /// <summary>
-    /// 
+    ///     This method is used to test the exception middleware.
     /// </summary>
     /// <returns></returns>
     [Authorize]
@@ -17,6 +17,10 @@ public class BuggyController(StepContext context) : ControllerBase
         return "secret text";
     }
 
+    /// <summary>
+    ///    This method is used to test the exception middleware.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("not-found")]
     public ActionResult<User> GetNotFound()
     {
@@ -27,6 +31,11 @@ public class BuggyController(StepContext context) : ControllerBase
         return thing;
     }
 
+    /// <summary>
+    ///    This method is used to test the exception middleware.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     [HttpGet("server-error")]
     public ActionResult<User> GetServerError()
     {
@@ -35,6 +44,10 @@ public class BuggyController(StepContext context) : ControllerBase
         return thing;
     }
 
+    /// <summary>
+    ///   This method is used to test the exception middleware.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("bad-request")]
     public ActionResult<string> GetBadRequest()
     {

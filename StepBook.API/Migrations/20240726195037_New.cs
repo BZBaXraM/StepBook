@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace StepBook.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class New : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,7 +43,8 @@ namespace StepBook.API.Migrations
                     Country = table.Column<string>(type: "text", nullable: true),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     IsEmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    EmailConfirmationToken = table.Column<string>(type: "text", nullable: true)
+                    EmailConfirmationToken = table.Column<string>(type: "text", nullable: true),
+                    ForgotPasswordToken = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

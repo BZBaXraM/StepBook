@@ -20,7 +20,8 @@ public static class Di
         services.AddHttpContextAccessor();
         services.AddDbContext<StepContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+            // options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+            options.UseNpgsql(configuration.GetConnectionString("DockerConnection"));
         });
 
 
@@ -79,7 +80,7 @@ public static class Di
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IJwtRepository, JwtRepository>();
         services.AddScoped<IPhotoRepository, PhotoRepository>();
-        
+
         services.AddScoped<ILikesRepository, LikesRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<LogUserActivity>();

@@ -13,7 +13,7 @@ namespace StepBook.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class MessageController(
+public class MessagesController(
     IUserRepository userRepository,
     IMessageRepository messageRepository,
     IMapper mapper)

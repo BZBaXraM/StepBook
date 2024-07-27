@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace StepBook.API.DTOs;
 
 /// <summary>
@@ -43,5 +45,6 @@ public class RegisterDto
     /// <summary>
     /// The password
     /// </summary>
-    public required string Password { get; init; } = null!;
+   // [StringLength(11, MinimumLength = 11)]
+    public required string Password { get; set; } = null!;
 }

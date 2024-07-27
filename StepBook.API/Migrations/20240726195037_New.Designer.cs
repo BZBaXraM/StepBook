@@ -12,8 +12,8 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240722224054_Initial")]
-    partial class Initial
+    [Migration("20240726195037_New")]
+    partial class New
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -157,6 +157,9 @@ namespace StepBook.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("EmailConfirmationToken")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ForgotPasswordToken")
                         .HasColumnType("text");
 
                     b.Property<string>("Gender")
