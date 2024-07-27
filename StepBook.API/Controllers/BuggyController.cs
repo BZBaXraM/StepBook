@@ -7,7 +7,7 @@ namespace StepBook.API.Controllers;
 public class BuggyController(StepContext context) : ControllerBase
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <returns></returns>
     [Authorize]
