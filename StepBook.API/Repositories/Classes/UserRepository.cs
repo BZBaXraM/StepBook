@@ -18,10 +18,9 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     /// Update a user
     /// </summary>
     /// <param name="user"></param>
-    public async Task UpdateUserAsync(User user)
+    public void UpdateUser(User user)
     {
         context.Entry(user).State = EntityState.Modified;
-        await context.SaveChangesAsync();
     }
 
     /// <summary>

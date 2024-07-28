@@ -12,7 +12,7 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240722224054_Initial")]
+    [Migration("20240728180906_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -159,7 +159,14 @@ namespace StepBook.API.Migrations
                     b.Property<string>("EmailConfirmationToken")
                         .HasColumnType("text");
 
+                    b.Property<string>("ForgotPasswordToken")
+                        .HasColumnType("text");
+
                     b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Interests")
                         .HasColumnType("text");
 
                     b.Property<string>("Introduction")
@@ -173,6 +180,9 @@ namespace StepBook.API.Migrations
 
                     b.Property<DateTime>("LastActive")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LookingFor")
+                        .HasColumnType("text");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()

@@ -160,6 +160,10 @@ namespace StepBook.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Interests")
                         .HasColumnType("text");
 
                     b.Property<string>("Introduction")
@@ -173,6 +177,9 @@ namespace StepBook.API.Migrations
 
                     b.Property<DateTime>("LastActive")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LookingFor")
+                        .HasColumnType("text");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()

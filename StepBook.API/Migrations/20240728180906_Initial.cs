@@ -37,13 +37,16 @@ namespace StepBook.API.Migrations
                     KnownAs = table.Column<string>(type: "text", nullable: true),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastActive = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Gender = table.Column<string>(type: "text", nullable: true),
+                    Gender = table.Column<string>(type: "text", nullable: false),
                     Introduction = table.Column<string>(type: "text", nullable: true),
+                    Interests = table.Column<string>(type: "text", nullable: true),
+                    LookingFor = table.Column<string>(type: "text", nullable: true),
                     City = table.Column<string>(type: "text", nullable: true),
                     Country = table.Column<string>(type: "text", nullable: true),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     IsEmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    EmailConfirmationToken = table.Column<string>(type: "text", nullable: true)
+                    EmailConfirmationToken = table.Column<string>(type: "text", nullable: true),
+                    ForgotPasswordToken = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

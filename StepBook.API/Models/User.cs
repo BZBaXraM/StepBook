@@ -50,12 +50,21 @@ public class User
     /// <summary>
     /// Gender of the user.
     /// </summary>
-    public string? Gender { get; set; }
+    public string Gender { get; set; } = null!;
 
     /// <summary>
     /// The user's self-introduction.
     /// </summary>
     public string? Introduction { get; set; }
+
+    /// <summary>
+    /// The user's interests.
+    /// </summary>
+    public string? Interests { get; set; }
+    /// <summary>
+    /// The user's looking for.
+    /// </summary>
+    public string? LookingFor { get; set; }
 
     /// <summary>
     /// City of the user.
@@ -96,13 +105,19 @@ public class User
     /// Refresh token of the user.
     /// </summary>
     public string? RefreshToken { get; set; }
+
     /// <summary>
     /// Is the email of the user confirmed?
     /// </summary>
     public bool IsEmailConfirmed { get; set; }
+
     /// <summary>
     /// The email confirmation token of the user.
     /// </summary>
     public string? EmailConfirmationToken { get; set; }
+
+    /// <summary>
+    /// The forgot password token of the user.
+    /// </summary>
     public string? ForgotPasswordToken { get; set; }
 }
