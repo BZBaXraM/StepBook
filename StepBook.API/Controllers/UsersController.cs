@@ -20,7 +20,7 @@ public class UsersController(IUserRepository userRepository, IMapper mapper, IPh
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsersAsync([FromQuery] PageParams pageParams)
     {
         var user = await userRepository.GetUserByUserNameAsync(User.GetUsername());
-        pageParams.CurrentUsername = User.GetUsername();
+        pageParams.CurrentUsername = User.GetUsername()!;
 
         if (string.IsNullOrEmpty(pageParams.Gender))
         {
@@ -75,7 +75,7 @@ public class UsersController(IUserRepository userRepository, IMapper mapper, IPh
         }
 
         mapper.Map(dto, user);
-        await userRepository.UpdateUserAsync(user);
+        userRepository.UpdateUser(user);
 
         if (await userRepository.SaveAllAsync()) return NoContent();
         return BadRequest("Failed to update user");
@@ -89,44 +89,37 @@ public class UsersController(IUserRepository userRepository, IMapper mapper, IPh
     [HttpPost("add-photo")]
     public async Task<ActionResult<PhotoDto>> AddPhotoAsync(IFormFile file)
     {
-        // Check if the username claim is present
         var username = User.GetUsername();
         if (string.IsNullOrEmpty(username))
         {
             return BadRequest("Username claim not found");
         }
 
-        // Fetch the user from the database
         var user = await userRepository.GetUserByUserNameAsync(username);
         if (user is null)
         {
             return NotFound("User not found");
         }
 
-        // Add the photo using the photo service
         var result = await photoRepository.AddPhotoAsync(file);
         if (result.Error != null)
         {
             return BadRequest(result.Error.Message);
         }
 
-        // Create a new Photo object
         var photo = new Photo
         {
             Url = result.SecureUrl.AbsoluteUri,
             PublicId = result.PublicId
         };
 
-        // Check if this is the user's first photo
         if (user.Photos == null || user.Photos.Count == 0)
         {
             photo.IsMain = true;
         }
 
-        // Add the photo to the user's photo collection
         user.Photos!.Add(photo);
 
-        // Save the changes to the database
         if (await userRepository.SaveAllAsync())
         {
             return CreatedAtRoute("GetUserByUserName", new { username = user.UserName }, mapper.Map<PhotoDto>(photo));

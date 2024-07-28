@@ -15,8 +15,7 @@ public interface IUserRepository
     /// Update a user
     /// </summary>
     /// <param name="user"></param>
-    /// <returns></returns>
-    Task UpdateUserAsync(User user);
+    void UpdateUser(User user);
 
     /// <summary>
     /// Get a user by their username

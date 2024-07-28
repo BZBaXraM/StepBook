@@ -12,8 +12,8 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240726195037_New")]
-    partial class New
+    [Migration("20240728122721_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -163,6 +163,10 @@ namespace StepBook.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Interests")
                         .HasColumnType("text");
 
                     b.Property<string>("Introduction")
@@ -176,6 +180,9 @@ namespace StepBook.API.Migrations
 
                     b.Property<DateTime>("LastActive")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LookingFor")
+                        .HasColumnType("text");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
