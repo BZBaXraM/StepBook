@@ -121,4 +121,9 @@ public class User
     /// The forgot password token of the user.
     /// </summary>
     public string? ForgotPasswordToken { get; set; }
+
+    /// <summary>
+    /// The random code of the user.
+    /// </summary>
+    public string? RandomCode { get; set; }
 }
