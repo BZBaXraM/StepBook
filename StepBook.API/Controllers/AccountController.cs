@@ -186,7 +186,12 @@ public class AccountController(
         return Ok("Password changed successfully");
     }
 
-    [HttpPost("forgot-password")]
+    /// <summary>
+    /// Forget the password of a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPost("forget-password")]
     public async Task<ActionResult> ForgotPasswordAsync([FromBody] ForgetUserPasswordRequestDto dto)
     {
         if (!ModelState.IsValid) return BadRequest();
@@ -209,9 +214,15 @@ public class AccountController(
 
         await emailRepository.SendEmailAsync(user.Email, "Reset your password",
             $"Please reset your password by clicking <a href='{callBack}'>here</a>.");
-        return Ok();
+        
+        return Ok("An email has been sent to your email address. Please check your email to reset your password.");
     }
 
+    /// <summary>
+    /// Reset the password of a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [HttpPost("reset-password")]
     public async Task<ActionResult> ResetPasswordAsync([FromBody] ResetPasswordDto dto)
     {
@@ -232,7 +243,12 @@ public class AccountController(
         user.PasswordSalt = hmac.Key;
 
         await context.SaveChangesAsync();
-
         return Ok("Password reset successfully");
+    }
+
+    private string GenerateRandomCodeForResetPassword()
+    {
+        var random = new Random();
+        return random.Next(100000, 999999).ToString();
     }
 }

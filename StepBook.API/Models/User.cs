@@ -57,7 +57,14 @@ public class User
     /// </summary>
     public string? Introduction { get; set; }
 
+    /// <summary>
+    /// The user's interests.
+    /// </summary>
     public string? Interests { get; set; }
+
+    /// <summary>
+    /// The user's looking for.
+    /// </summary>
     public string? LookingFor { get; set; }
 
     /// <summary>
@@ -110,5 +117,8 @@ public class User
     /// </summary>
     public string? EmailConfirmationToken { get; set; }
 
+    /// <summary>
+    /// The forgot password token of the user.
+    /// </summary>
     public string? ForgotPasswordToken { get; set; }
 }
