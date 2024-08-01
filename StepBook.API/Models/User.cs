@@ -61,6 +61,7 @@ public class User
     /// The user's interests.
     /// </summary>
     public string? Interests { get; set; }
+
     /// <summary>
     /// The user's looking for.
     /// </summary>
@@ -117,7 +118,7 @@ public class User
     public string? EmailConfirmationToken { get; set; }
 
     /// <summary>
-    /// The forgot password token of the user.
+    /// The random code of the user.
     /// </summary>
-    public string? ForgotPasswordToken { get; set; }
+    public string? RandomCode { get; set; }
 }

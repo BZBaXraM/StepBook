@@ -156,9 +156,6 @@ namespace StepBook.API.Migrations
                     b.Property<string>("EmailConfirmationToken")
                         .HasColumnType("text");
 
-                    b.Property<string>("ForgotPasswordToken")
-                        .HasColumnType("text");
-
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasColumnType("text");
@@ -188,6 +185,9 @@ namespace StepBook.API.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
                         .HasColumnType("bytea");
+
+                    b.Property<string>("RandomCode")
+                        .HasColumnType("text");
 
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");

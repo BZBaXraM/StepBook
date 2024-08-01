@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.WebUtilities;
 using StepBook.API.Repositories.Interfaces;
 
 namespace StepBook.API.Controllers;
@@ -186,7 +185,12 @@ public class AccountController(
         return Ok("Password changed successfully");
     }
 
-    [HttpPost("forgot-password")]
+    /// <summary>
+    ///     Forget the password of a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPost("forget-password")]
     public async Task<ActionResult> ForgotPasswordAsync([FromBody] ForgetUserPasswordRequestDto dto)
     {
         if (!ModelState.IsValid) return BadRequest();
@@ -197,21 +201,21 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        user.ForgotPasswordToken = jwtRepository.GenerateForgetPasswordToken(user);
-
-        Dictionary<string, string?> param = new()
-        {
-            { "token", user.ForgotPasswordToken },
-            { "email", user.Email }
-        };
-
-        var callBack = QueryHelpers.AddQueryString(dto.ClientURI!, param);
+        var resetCode = GenerateRandomCode();
+        user.RandomCode = resetCode;
+        await context.SaveChangesAsync();
 
         await emailRepository.SendEmailAsync(user.Email, "Reset your password",
-            $"Please reset your password by clicking <a href='{callBack}'>here</a>.");
-        return Ok();
+            $"Your password reset code is: {resetCode}.");
+
+        return Ok("Password reset code sent to your email");
     }
 
+    /// <summary>
+    /// Reset the password of a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [HttpPost("reset-password")]
     public async Task<ActionResult> ResetPasswordAsync([FromBody] ResetPasswordDto dto)
     {
@@ -221,18 +225,26 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        var isValid = jwtRepository.ValidateForgetPasswordToken(user, dto.Token);
-        if (!isValid)
+        if (user.RandomCode != dto.Code)
         {
-            return BadRequest("Invalid token");
+            return BadRequest("Invalid reset code");
         }
 
         using var hmac = new HMACSHA512();
         user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.NewPassword));
         user.PasswordSalt = hmac.Key;
+        user.RandomCode = null; // Clear the reset code after successful reset
 
         await context.SaveChangesAsync();
-
         return Ok("Password reset successfully");
+    }
+
+    private string GenerateRandomCode(int length = 6)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new();
+
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 }

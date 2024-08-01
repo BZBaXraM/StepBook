@@ -46,7 +46,7 @@ namespace StepBook.API.Migrations
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     IsEmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     EmailConfirmationToken = table.Column<string>(type: "text", nullable: true),
-                    ForgotPasswordToken = table.Column<string>(type: "text", nullable: true)
+                    RandomCode = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
