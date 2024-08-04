@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.WebUtilities;
 using StepBook.API.Repositories.Interfaces;
 
 namespace StepBook.API.Controllers;
@@ -235,10 +234,29 @@ public class AccountController(
         using var hmac = new HMACSHA512();
         user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.NewPassword));
         user.PasswordSalt = hmac.Key;
-        user.RandomCode = null; // Clear the reset code after successful reset
+        user.RandomCode = null;
 
         await context.SaveChangesAsync();
         return Ok("Password reset successfully");
+    }
+
+    /// <summary>
+    /// Delete the account of a user
+    /// </summary>
+    /// <returns></returns>
+    [HttpDelete("delete-account")]
+    public async Task<ActionResult> DeleteAccountAsync()
+    {
+        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        context.Users.Remove(user);
+        await context.SaveChangesAsync();
+
+        return Ok("Account deleted successfully");
     }
 
     private string GenerateRandomCode(int length = 6)
