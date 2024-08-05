@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using StepBook.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,18 @@ builder.Services.AddControllers()
     });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    }).AddCookie()
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Google:client_id"]!;
+        options.ClientSecret = builder.Configuration["Google:client_secret"]!;
+    });
 
 
 var logger = new LoggerConfiguration()
@@ -40,10 +54,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.UseCors(x => x
-   .AllowAnyMethod()
-   .AllowAnyHeader()
-   .SetIsOriginAllowed(_ => true)
-   .AllowCredentials());
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(_ => true)
+    .AllowCredentials());
 
 app.UseMiddleware<ExceptionMiddleware>();
 

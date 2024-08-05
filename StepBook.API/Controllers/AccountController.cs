@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using StepBook.API.Repositories.Interfaces;
 
 namespace StepBook.API.Controllers;
@@ -90,6 +93,52 @@ public class AccountController(
             KnownAs = user.KnownAs!,
             RefreshToken = user.RefreshToken
         };
+    }
+
+
+    /// <summary>
+    /// Signin a user with Google
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("signin-google")]
+    public async Task<IActionResult> GoogleSignIn()
+    {
+        var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        if (response.Principal == null) return BadRequest();
+
+        var email = response.Principal.FindFirstValue(ClaimTypes.Email);
+
+        var user = await context.Users.Include(u => u.Photos)
+            .FirstOrDefaultAsync(x => x.Email == email);
+
+        if (user == null) return BadRequest();
+
+        user.RefreshToken = jwtRepository.GenerateRefreshToken();
+
+        return Ok(new UserDto
+        {
+            Username = user.UserName,
+            Token = jwtRepository.GenerateSecurityToken(user),
+            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+            KnownAs = user.KnownAs!,
+            RefreshToken = user.RefreshToken
+        });
+    }
+
+    /// <summary>
+    /// Login with Google
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("login-google")]
+    public IActionResult GoogleLogin()
+    {
+        var properties = new AuthenticationProperties
+        {
+            RedirectUri = Url.Action("GoogleSignIn"),
+            Items = { { "scheme", GoogleDefaults.AuthenticationScheme } }
+        };
+
+        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
     }
 
     /// <summary>

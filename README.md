@@ -35,6 +35,8 @@ StepBook - это социальная сеть, которая объединя
 - PUT /api/account/change-password - изменение пароля
 - POST /api/account/forgot-password - восстановление пароля
 - POST /api/account/reset-password - сброс пароля
+- GET /api/account/sign-google - авторизация через Google
+- GET /api/account/login-google - вход через Google
 
 ### Likes
 
