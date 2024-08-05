@@ -35,13 +35,8 @@ StepBook - это социальная сеть, которая объединя
 - PUT /api/account/change-password - изменение пароля
 - POST /api/account/forgot-password - восстановление пароля
 - POST /api/account/reset-password - сброс пароля
-
-### Buggy
-
-- GET /auth - тестовый метод для проверки авторизации
-- GET /api/buggy/bad-request - тестовый метод для проверки обработки ошибок
-- GET /api/buggy/server-error - тестовый метод для проверки обработки ошибок
-- GET /api/buggy/not-found - тестовый метод для проверки обработки ошибок
+- GET /api/account/sign-google - авторизация через Google
+- GET /api/account/login-google - вход через Google
 
 ### Likes
 
