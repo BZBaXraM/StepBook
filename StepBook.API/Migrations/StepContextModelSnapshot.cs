@@ -163,6 +163,9 @@ namespace StepBook.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("GoogleAuthToken")
+                        .HasColumnType("text");
+
                     b.Property<string>("Interests")
                         .HasColumnType("text");
 

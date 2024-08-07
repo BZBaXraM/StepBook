@@ -99,7 +99,7 @@ public class MessageHub(
 
     private async Task<Group> RemoveFromGroupAsync()
     {
-        var group = await messageRepository.GetGroupForConnectionAsynv(Context.ConnectionId);
+        var group = await messageRepository.GetGroupForConnectionAsync(Context.ConnectionId);
         var connection = group.Connections.FirstOrDefault(x => x.ConnectionId == Context.ConnectionId);
 
         messageRepository.RemoveConnection(connection!);

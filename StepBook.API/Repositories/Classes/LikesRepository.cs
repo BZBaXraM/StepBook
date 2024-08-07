@@ -25,6 +25,7 @@ public class LikesRepository(StepContext context) : ILikesRepository
     /// <returns></returns>
     public async Task<User> GetUserWithLikesAsync(int userId)
         => (await context.Users
+            .AsNoTracking()
             .Include(x => x.LikedUsers)
             .FirstOrDefaultAsync(x => x.Id == userId))!;
 
@@ -36,8 +37,8 @@ public class LikesRepository(StepContext context) : ILikesRepository
     /// <exception cref="ArgumentException"></exception>
     public async Task<PageList<LikeDto>> GetUserLikesAsync(LikeParams likeParams)
     {
-        var users = context.Users.OrderBy(x => x.UserName).AsQueryable();
-        var likes = context.Likes.AsQueryable();
+        IQueryable<User> users;
+        var likes = context.Likes.AsNoTracking().AsQueryable();
 
         switch (likeParams.Predicate)
         {

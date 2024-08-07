@@ -27,7 +27,7 @@ public class AccountController(
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> RegisterAsync([FromBody] RegisterDto dto)
     {
-        if (await context.Users.AnyAsync(x => x.UserName == dto.Username || x.Email == dto.Email))
+        if (await context.Users.AsNoTracking().AnyAsync(x => x.UserName == dto.Username || x.Email == dto.Email))
         {
             return BadRequest("Username or Email is already taken");
         }
@@ -62,6 +62,7 @@ public class AccountController(
     public async Task<ActionResult<UserDto>> LoginAsync([FromBody] LoginDto dto)
     {
         var user = await context.Users
+            .AsNoTracking()
             .Include(u => u.Photos)
             .SingleOrDefaultAsync(x => x.UserName == dto.UsernameOrEmail || x.Email == dto.UsernameOrEmail);
 
@@ -95,52 +96,6 @@ public class AccountController(
         };
     }
 
-
-    /// <summary>
-    /// Signin a user with Google
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("signin-google")]
-    public async Task<IActionResult> GoogleSignIn()
-    {
-        var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        if (response.Principal == null) return BadRequest();
-
-        var email = response.Principal.FindFirstValue(ClaimTypes.Email);
-
-        var user = await context.Users.Include(u => u.Photos)
-            .FirstOrDefaultAsync(x => x.Email == email);
-
-        if (user == null) return BadRequest();
-
-        user.RefreshToken = jwtRepository.GenerateRefreshToken();
-
-        return Ok(new UserDto
-        {
-            Username = user.UserName,
-            Token = jwtRepository.GenerateSecurityToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs!,
-            RefreshToken = user.RefreshToken
-        });
-    }
-
-    /// <summary>
-    /// Login with Google
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("login-google")]
-    public IActionResult GoogleLogin()
-    {
-        var properties = new AuthenticationProperties
-        {
-            RedirectUri = Url.Action("GoogleSignIn"),
-            Items = { { "scheme", GoogleDefaults.AuthenticationScheme } }
-        };
-
-        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
-    }
-
     /// <summary>
     /// Refresh the token of a user
     /// </summary>
@@ -149,7 +104,8 @@ public class AccountController(
     [HttpPost("refresh-token")]
     public async Task<ActionResult<UserDto>> RefreshTokenAsync([FromBody] RefreshTokenDto dto)
     {
-        var user = await context.Users.Include(user => user.Photos)
+        var user = await context.Users.AsNoTracking()
+            .Include(user => user.Photos)
             .SingleOrDefaultAsync(x => x.RefreshToken == dto.RefreshToken);
 
         if (user == null)
@@ -178,7 +134,8 @@ public class AccountController(
     [HttpGet("confirm-email")]
     public async Task<ActionResult> ConfirmEmailAsync([FromQuery] string token, string email)
     {
-        var user = await context.Users.SingleOrDefaultAsync(x => x.Email == email);
+        var user = await context.Users.AsNoTracking()
+            .SingleOrDefaultAsync(x => x.Email == email);
 
         if (user == null)
         {
@@ -205,7 +162,8 @@ public class AccountController(
     [HttpPut("change-password")]
     public async Task<ActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequestDto dto)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
+        var user = await context.Users.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
 
         if (user == null)
         {
@@ -244,7 +202,9 @@ public class AccountController(
     {
         if (!ModelState.IsValid) return BadRequest();
 
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Email == dto.Email);
+        var user = await context.Users.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Email == dto.Email);
+
         if (user == null)
         {
             return NotFound("User not found");
@@ -269,7 +229,9 @@ public class AccountController(
     [HttpPost("reset-password")]
     public async Task<ActionResult> ResetPasswordAsync([FromBody] ResetPasswordDto dto)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Email == dto.Email);
+        var user = await context.Users.AsQueryable()
+            .FirstOrDefaultAsync(x => x.Email == dto.Email);
+
         if (user == null)
         {
             return NotFound("User not found");
@@ -296,7 +258,9 @@ public class AccountController(
     [HttpDelete("delete-account")]
     public async Task<ActionResult> DeleteAccountAsync()
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
+        var user = await context.Users.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
+
         if (user == null)
         {
             return NotFound("User not found");
@@ -308,7 +272,53 @@ public class AccountController(
         return Ok("Account deleted successfully");
     }
 
-    private string GenerateRandomCode(int length = 6)
+    /// <summary>
+    /// Login with Google
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("signin-google")]
+    public async Task LoginGoogleAsync()
+    {
+        await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, new AuthenticationProperties
+        {
+            RedirectUri = Url.Action("GoogleResponse")
+        });
+    }
+
+    /// <summary>
+    /// Google response
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("signin")]
+    public async Task<IActionResult> GoogleResponse()
+    {
+        var authenticateResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        if (!authenticateResult.Succeeded)
+        {
+            return BadRequest();
+        }
+
+        var claims = authenticateResult.Principal.Claims.ToList();
+        var name = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, authenticateResult.Principal);
+
+        // Create a response with user info
+        // return Ok(new
+        // {
+        //     Name = name,
+        //     Email = email
+        // });
+
+        // return RedirectToAction("GetUsers", "Users");
+
+        // Перенаправление на страницу с пользователями на клиенте
+        return Redirect("http://localhost:4200/members");
+    }
+
+
+    private static string GenerateRandomCode(int length = 6)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new();

@@ -12,8 +12,8 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240731182409_AddedRandomCodeForResetPassword")]
-    partial class AddedRandomCodeForResetPassword
+    [Migration("20240807182134_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -164,6 +164,9 @@ namespace StepBook.API.Migrations
 
                     b.Property<string>("Gender")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("GoogleAuthToken")
                         .HasColumnType("text");
 
                     b.Property<string>("Interests")

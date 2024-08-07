@@ -29,13 +29,19 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
     /// </summary>
     /// <param name="messageId"></param>
     /// <returns></returns>
-    public async Task<Message> GetMessageAsync(int messageId)
-        => (await context.Messages.FirstOrDefaultAsync(m => m.Id == messageId))!;
+    public async Task<Message> GetMessageAsync(int messageId, CancellationToken cancellationToken = default)
+        => (await context.Messages.FirstOrDefaultAsync(m => m.Id == messageId, cancellationToken: cancellationToken))!;
 
+    /// <summary>
+    ///  Get messages for user
+    /// </summary>
+    /// <param name="messageParams"></param>
+    /// <returns></returns>
     public async Task<PageList<MessageDto>> GetMessageForUserAsync(MessageParams messageParams)
     {
         var query = context.Messages
             .OrderByDescending(m => m.MessageSent)
+            .AsNoTracking()
             .AsQueryable();
 
         query = messageParams.Container switch
@@ -50,7 +56,14 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
             PaginationParams.PageNumber, messageParams.PageSize);
     }
 
-    public async Task<IEnumerable<MessageDto>> GetMessageThreadAsync(string currentUsername, string recipientUsername)
+    /// <summary>
+    /// Get message thread
+    /// </summary>
+    /// <param name="currentUsername"></param>
+    /// <param name="recipientUsername"></param>
+    /// <returns></returns>
+    public async Task<IEnumerable<MessageDto>> GetMessageThreadAsync(string currentUsername, string recipientUsername,
+        CancellationToken cancellationToken = default)
     {
         var messages = await context.Messages
             .Include(x => x.Sender).ThenInclude(x => x.Photos)
@@ -61,7 +74,8 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
                                                                      && m.SenderDeleted == false)
             .OrderBy(m => m.MessageSent)
             .ProjectTo<MessageDto>(mapper.ConfigurationProvider)
-            .ToListAsync();
+            .AsNoTracking()
+            .ToListAsync(cancellationToken: cancellationToken);
 
         var unreadMessages = messages.Where(m =>
                 m.DateRead is null
@@ -78,38 +92,68 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
             item.DateRead = DateTime.UtcNow;
         }
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
         return mapper.Map<IEnumerable<MessageDto>>(messages);
     }
 
-    public async Task<bool> SaveAllAsync()
-        => await context.SaveChangesAsync() > 0;
+    /// <summary>
+    /// Save all changes
+    /// </summary>
+    /// <returns></returns>
+    public async Task<bool> SaveAllAsync(CancellationToken cancellationToken = default)
+        => await context.SaveChangesAsync(cancellationToken) > 0;
 
+    /// <summary>
+    /// Set message as read
+    /// </summary>
+    /// <param name="group"></param>
     public void AddGroup(Group group)
     {
         context.Groups.Add(group);
     }
 
+    /// <summary>
+    /// Remove group
+    /// </summary>
+    /// <param name="connection"></param>
     public void RemoveConnection(Connection connection)
     {
         context.Connections.Remove(connection);
     }
 
-    public async Task<Connection> GetConnectionAsync(string connectionId)
-        => (await context.Connections.FindAsync(connectionId))!;
+    /// <summary>
+    /// Get connection by id
+    /// </summary>
+    /// <param name="connectionId"></param>
+    /// <returns></returns>
+    public async Task<Connection> GetConnectionAsync(string connectionId, CancellationToken cancellationToken = default)
+        => (await context.Connections.FindAsync([connectionId], cancellationToken: cancellationToken))!;
 
-    public async Task<Group> GetMessageGroupAsync(string groupName)
+    /// <summary>
+    /// Get connections for user
+    /// </summary>
+    /// <param name="groupName"></param>
+    /// <returns></returns>
+    public async Task<Group> GetMessageGroupAsync(string groupName, CancellationToken cancellationToken = default)
     {
         return (await context.Groups
             .Include(x => x.Connections)
-            .FirstOrDefaultAsync(x => x.Name == groupName))!;
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Name == groupName, cancellationToken: cancellationToken))!;
     }
 
-    public async Task<Group> GetGroupForConnectionAsynv(string connectionId)
+    /// <summary>
+    /// Get group for connection
+    /// </summary>
+    /// <param name="connectionId"></param>
+    /// <returns></returns>
+    public async Task<Group> GetGroupForConnectionAsync(string connectionId,
+        CancellationToken cancellationToken = default)
     {
         return (await context.Groups
             .Include(x => x.Connections)
+            .AsNoTracking()
             .Where(x => x.Connections.Any(c => c.ConnectionId == connectionId))
-            .FirstOrDefaultAsync())!;
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken))!;
     }
 }

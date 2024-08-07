@@ -16,18 +16,18 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     }).AddCookie()
     .AddGoogle(options =>
     {
         options.ClientId = builder.Configuration["Google:client_id"]!;
         options.ClientSecret = builder.Configuration["Google:client_secret"]!;
+        options.CallbackPath = "/signin-google";
     });
-
 
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -35,14 +35,21 @@ var logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .CreateLogger();
 
-
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 builder.Services.AddSwagger(builder.Configuration);
 
-builder.Services.AddCors();
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        corsPolicyBuilder => corsPolicyBuilder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
 
 var app = builder.Build();
 
@@ -53,11 +60,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
-app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(_ => true)
-    .AllowCredentials());
+
+// Use the CORS policy
+app.UseCors("AllowAllOrigins");
 
 app.UseMiddleware<ExceptionMiddleware>();
 
