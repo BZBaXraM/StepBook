@@ -1,11 +1,11 @@
 using MimeKit;
 
-namespace StepBook.API.Repositories.Interfaces;
+namespace StepBook.API.Services;
 
 /// <summary>
 /// Email service
 /// </summary>
-public interface IEmailRepository
+public interface IEmailService
 {
     /// <summary>
     /// Send email

@@ -7,24 +7,13 @@ namespace StepBook.API.Extensions;
 /// </summary>
 public static class HttpExtensions
 {
-    /// <summary>
-    /// Add pagination to the response
-    /// </summary>
-    /// <param name="response"></param>
-    /// <param name="currentPage"></param>
-    /// <param name="itemsPerPage"></param>
-    /// <param name="totalItems"></param>
-    /// <param name="totalPages"></param>
-    public static void AddPagination(this HttpResponse response, int currentPage, int itemsPerPage, int totalItems,
-        int totalPages)
+    public static void AddPaginationHeader<T>(this HttpResponse response, PageList<T> data)
     {
-        var paginationHeader = new PaginationHeader(currentPage, itemsPerPage, totalItems, totalPages);
+        var paginationHeader = new PaginationHeader(data.CurrentPage, data.PageSize,
+            data.TotalCount, data.TotalPages);
 
-        var options = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-        response.Headers.Append("Pagination", JsonSerializer.Serialize(paginationHeader, options));
+        var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        response.Headers.Append("Pagination", JsonSerializer.Serialize(paginationHeader, jsonOptions));
         response.Headers.Append("Access-Control-Expose-Headers", "Pagination");
     }
 }

@@ -5,13 +5,13 @@ using MimeKit;
 using StepBook.API.Data.Configs;
 using StepBook.API.Repositories.Interfaces;
 
-namespace StepBook.API.Repositories.Classes;
+namespace StepBook.API.Services;
 
-public class EmailRepository : IEmailRepository
+public class EmailService : IEmailService
 {
     private readonly EmailConfig _config;
 
-    public EmailRepository(IOptions<EmailConfig> options)
+    public EmailService(IOptions<EmailConfig> options)
     {
         _config = options.Value;
     }

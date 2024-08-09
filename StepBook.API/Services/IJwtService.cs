@@ -1,9 +1,9 @@
-namespace StepBook.API.Repositories.Interfaces;
+namespace StepBook.API.Services;
 
 /// <summary>
 /// The JWT service
 /// </summary>
-public interface IJwtRepository
+public interface IJwtService
 {
     /// <summary>
     /// Generate a security token

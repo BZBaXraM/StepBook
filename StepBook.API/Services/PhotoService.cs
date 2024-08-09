@@ -1,12 +1,11 @@
 using Microsoft.Extensions.Options;
-using StepBook.API.Repositories.Interfaces;
 
-namespace StepBook.API.Repositories.Classes;
+namespace StepBook.API.Services;
 
 /// <summary>
 /// Photo repository.
 /// </summary>
-public class PhotoRepository : IPhotoRepository
+public class PhotoService : IPhotoService
 {
     private readonly Cloudinary _cloudinary;
 
@@ -14,7 +13,7 @@ public class PhotoRepository : IPhotoRepository
     /// Constructor.
     /// </summary>
     /// <param name="helper"></param>
-    public PhotoRepository(IOptions<CloudinaryHelper> helper)
+    public PhotoService(IOptions<CloudinaryHelper> helper)
     {
         var account = new Account
         {

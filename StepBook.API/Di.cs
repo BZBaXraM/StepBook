@@ -1,6 +1,9 @@
+using StepBook.API.Contracts.Classes;
+using StepBook.API.Contracts.Interfaces;
 using StepBook.API.Data.Configs;
 using StepBook.API.Repositories.Classes;
 using StepBook.API.Repositories.Interfaces;
+using StepBook.API.Services;
 
 namespace StepBook.API;
 
@@ -76,11 +79,11 @@ public static class Di
         services.AddScoped<PresenceTracker>();
         services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
-        services.AddScoped<IEmailRepository, EmailRepository>();
+        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IJwtRepository, JwtRepository>();
-        services.AddScoped<IPhotoRepository, PhotoRepository>();
-
+        services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IPhotoService, PhotoService>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ILikesRepository, LikesRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<LogUserActivity>();

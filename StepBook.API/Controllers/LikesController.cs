@@ -1,17 +1,17 @@
-using StepBook.API.Repositories.Interfaces;
+using StepBook.API.Contracts.Interfaces;
 
 namespace StepBook.API.Controllers;
 
+
 /// <summary>
-/// Controller for likes
+/// Likes controller
 /// </summary>
-/// <param name="userRepository"></param>
-/// <param name="likesRepository"></param>
+/// <param name="unitOfWork"></param>
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class LikesController(IUserRepository userRepository, ILikesRepository likesRepository) : ControllerBase
+public class LikesController(IUnitOfWork unitOfWork) : ControllerBase
 {
     /// <summary>
     /// Add a like
@@ -22,8 +22,8 @@ public class LikesController(IUserRepository userRepository, ILikesRepository li
     public async Task<ActionResult> AddLikeAsync(string username)
     {
         var sourceUserId = User.GetUserId();
-        var likedUser = await userRepository.GetUserByUserNameAsync(username);
-        var sourceUser = await likesRepository.GetUserWithLikesAsync(sourceUserId);
+        var likedUser = await unitOfWork.UserRepository.GetUserByUserNameAsync(username);
+        var sourceUser = await unitOfWork.LikeRepository.GetUserWithLikesAsync(sourceUserId);
 
         if (likedUser is null) return NotFound();
 
@@ -31,7 +31,7 @@ public class LikesController(IUserRepository userRepository, ILikesRepository li
             return BadRequest("You cannot like yourself");
 
 
-        var userLike = await likesRepository.GetUserLikeAsync(sourceUserId, likedUser.Id);
+        var userLike = await unitOfWork.LikeRepository.GetUserLikeAsync(sourceUserId, likedUser.Id);
 
         if (userLike != null)
             return BadRequest("You already like this user");
@@ -45,7 +45,7 @@ public class LikesController(IUserRepository userRepository, ILikesRepository li
 
         sourceUser.LikedUsers.Add(userLike);
 
-        if (await userRepository.SaveAllAsync()) return Ok();
+        if (await unitOfWork.UserRepository.SaveAllAsync()) return Ok();
 
         return BadRequest("Failed to like user");
     }
@@ -60,12 +60,9 @@ public class LikesController(IUserRepository userRepository, ILikesRepository li
     {
         likeParams.UserId = User.GetUserId();
 
-        var users = await likesRepository.GetUserLikesAsync(likeParams);
+        var users = await unitOfWork.LikeRepository.GetUserLikesAsync(likeParams);
 
-        Response.AddPagination(users.CurrentPage,
-            users.PageSize,
-            users.TotalCount,
-            users.TotalPages);
+        Response.AddPaginationHeader(users);
 
         return Ok(users);
     }

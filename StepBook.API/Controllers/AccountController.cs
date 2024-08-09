@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using StepBook.API.Repositories.Interfaces;
+using StepBook.API.Services;
 
 namespace StepBook.API.Controllers;
 
@@ -9,14 +10,14 @@ namespace StepBook.API.Controllers;
 /// Account controller
 /// </summary>
 /// <param name="context"></param>
-/// <param name="jwtRepository"></param>
+/// <param name="jwtService"></param>
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
 [ApiController]
 public class AccountController(
     StepContext context,
-    IJwtRepository jwtRepository,
-    IEmailRepository emailRepository,
+    IJwtService jwtService,
+    IEmailService emailService,
     IMapper mapper) : ControllerBase
 {
     /// <summary>
@@ -39,14 +40,14 @@ public class AccountController(
         user.UserName = dto.Username;
         user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password));
         user.PasswordSalt = hmac.Key;
-        user.EmailConfirmationToken = jwtRepository.GenerateEmailConfirmationToken(user);
+        user.EmailConfirmationToken = jwtService.GenerateEmailConfirmationToken(user);
 
         context.Users.Add(user);
         await context.SaveChangesAsync();
 
         var confirmLink = Url.Action("ConfirmEmail", "Account",
             new { token = user.EmailConfirmationToken, email = user.Email }, Request.Scheme);
-        await emailRepository.SendEmailAsync(user.Email, "Confirm your email",
+        await emailService.SendEmailAsync(user.Email, "Confirm your email",
             $"Please confirm your email by clicking <a href='{confirmLink}'>here</a>.");
 
         return Ok("Registration successful. Please check your email for confirmation link.");
@@ -83,14 +84,15 @@ public class AccountController(
             return Unauthorized("Invalid password");
         }
 
-        user.RefreshToken = jwtRepository.GenerateRefreshToken();
+        user.RefreshToken = jwtService.GenerateRefreshToken();
 
         return new UserDto
         {
             Username = user.UserName,
-            Token = jwtRepository.GenerateSecurityToken(user),
+            Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs!,
+            Gender = user.Gender,
             RefreshToken = user.RefreshToken
         };
     }
@@ -113,14 +115,15 @@ public class AccountController(
 
         if (user == null) return BadRequest();
 
-        user.RefreshToken = jwtRepository.GenerateRefreshToken();
+        user.RefreshToken = jwtService.GenerateRefreshToken();
 
         return Ok(new UserDto
         {
             Username = user.UserName,
-            Token = jwtRepository.GenerateSecurityToken(user),
+            Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs!,
+            Gender = user.Gender,
             RefreshToken = user.RefreshToken
         });
     }
@@ -157,14 +160,15 @@ public class AccountController(
             return Unauthorized("Invalid refresh token");
         }
 
-        user.RefreshToken = jwtRepository.GenerateRefreshToken();
+        user.RefreshToken = jwtService.GenerateRefreshToken();
 
         return new UserDto
         {
             Username = user.UserName,
-            Token = jwtRepository.GenerateSecurityToken(user),
+            Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs!,
+            Gender = user.Gender,
             RefreshToken = user.RefreshToken
         };
     }
@@ -185,7 +189,7 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        var isValid = jwtRepository.ValidateEmailConfirmationToken(user, token);
+        var isValid = jwtService.ValidateEmailConfirmationToken(user, token);
         if (!isValid)
         {
             return BadRequest("Invalid token");
@@ -255,7 +259,7 @@ public class AccountController(
         await context.SaveChangesAsync();
 
         const string resetLink = "http://localhost:4200/reset-password";
-        await emailRepository.SendEmailAsync(user.Email, "Reset your password",
+        await emailService.SendEmailAsync(user.Email, "Reset your password",
             $"Your password reset code is: {resetCode}. You can also reset your password by clicking <a href='{resetLink}'>here</a>.");
 
         return Ok("Password reset code sent to your email");

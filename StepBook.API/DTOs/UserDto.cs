@@ -8,25 +8,30 @@ public class UserDto
     /// <summary>
     /// The username
     /// </summary>
-    public string Username { get; set; } = null!;
+    public required string Username { get; set; } = null!;
 
     /// <summary>
     /// The token
     /// </summary>
-    public string Token { get; set; } = null!;
+    public required string Token { get; set; } = null!;
 
     /// <summary>
     /// The photo URL
     /// </summary>
-    public string? PhotoUrl { get; set; }
+    public required string? PhotoUrl { get; set; }
 
     /// <summary>
     /// The known as
     /// </summary>
-    public string KnownAs { get; set; } = null!;
+    public required string KnownAs { get; set; } = null!;
+
+    /// <summary>
+    /// The gender
+    /// </summary>
+    public required string Gender { get; set; } = null!;
 
     /// <summary>
     /// The refresh token
     /// </summary>
-    public string? RefreshToken { get; set; }
+    public required string? RefreshToken { get; set; }
 }
