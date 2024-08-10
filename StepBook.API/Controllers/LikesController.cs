@@ -14,53 +14,59 @@ namespace StepBook.API.Controllers;
 public class LikesController(IUnitOfWork unitOfWork) : ControllerBase
 {
     /// <summary>
-    /// Add a like
+    /// Toggle like - like or unlike a user
     /// </summary>
-    /// <param name="username"></param>
+    /// <param name="targetUserId"></param>
     /// <returns></returns>
-    [HttpPost("{username}")]
-    public async Task<ActionResult> AddLikeAsync(string username)
+    [HttpPost("{targetUserId:int}")]
+    public async Task<ActionResult> ToggleLike(int targetUserId)
     {
         var sourceUserId = User.GetUserId();
-        var likedUser = await unitOfWork.UserRepository.GetUserByUserNameAsync(username);
-        var sourceUser = await unitOfWork.LikeRepository.GetUserWithLikesAsync(sourceUserId);
 
-        if (likedUser is null) return NotFound();
+        if (sourceUserId == targetUserId) return BadRequest("You cannot like yourself");
 
-        if (sourceUser.UserName == username)
-            return BadRequest("You cannot like yourself");
+        var existingLike = await unitOfWork.LikeRepository.GetUserLike(sourceUserId, targetUserId);
 
-
-        var userLike = await unitOfWork.LikeRepository.GetUserLikeAsync(sourceUserId, likedUser.Id);
-
-        if (userLike != null)
-            return BadRequest("You already like this user");
-
-
-        userLike = new UserLike
+        if (existingLike == null)
         {
-            SourceUserId = sourceUserId,
-            LikedUserId = likedUser.Id
-        };
+            var like = new UserLike
+            {
+                SourceUserId = sourceUserId,
+                TargetUserId = targetUserId
+            };
 
-        sourceUser.LikedUsers.Add(userLike);
+            unitOfWork.LikeRepository.AddLike(like);
+        }
+        else 
+        {
+            unitOfWork.LikeRepository.DeleteLike(existingLike);
+        }
 
-        if (await unitOfWork.UserRepository.SaveAllAsync()) return Ok();
+        if (await unitOfWork.Complete()) return Ok();
 
-        return BadRequest("Failed to like user");
+        return BadRequest("Failed to update like");
     }
 
     /// <summary>
-    /// Get a user's likes
+    /// Get the current user's like ids
     /// </summary>
-    /// <param name="likeParams"></param>
+    /// <returns></returns>
+    [HttpGet("list")]
+    public async Task<ActionResult<IEnumerable<int>>> GetCurrentUserLikeIds()
+    {
+        return Ok(await unitOfWork.LikeRepository.GetCurrentUserLikeIds(User.GetUserId()));
+    }
+
+    /// <summary>
+    /// Get the users that the current user likes
+    /// </summary>
+    /// <param name="likesParams"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<LikeDto>>> GetUserLikesAsync([FromQuery] LikeParams likeParams)
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUserLikes([FromQuery]LikesParams likesParams)
     {
-        likeParams.UserId = User.GetUserId();
-
-        var users = await unitOfWork.LikeRepository.GetUserLikesAsync(likeParams);
+        likesParams.UserId = User.GetUserId();
+        var users = await unitOfWork.LikeRepository.GetUserLikes(likesParams);
 
         Response.AddPaginationHeader(users);
 

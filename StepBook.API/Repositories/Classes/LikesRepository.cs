@@ -6,66 +6,60 @@ namespace StepBook.API.Repositories.Classes;
 /// Represents a service for likes.
 /// </summary>
 /// <param name="context"></param>
-public class LikesRepository(StepContext context) : ILikesRepository
+public class LikesRepository(StepContext context, IMapper mapper) : ILikesRepository
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LikesRepository"/> class.
-    /// </summary>
-    /// <param name="sourceUserId"></param>
-    /// <param name="likedUserId"></param>
-    /// <returns></returns>
-    public async Task<UserLike> GetUserLikeAsync(int sourceUserId, int likedUserId)
-        => (await context.Likes.FindAsync(sourceUserId, likedUserId))!;
-
-
-    /// <summary>
-    ///  Gets a user with their likes.
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <returns></returns>
-    public async Task<User> GetUserWithLikesAsync(int userId)
-        => (await context.Users
-            .Include(x => x.LikedUsers)
-            .FirstOrDefaultAsync(x => x.Id == userId))!;
-
-    /// <summary>
-    ///    Gets a user's likes.
-    /// </summary>
-    /// <param name="likeParams"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
-    public async Task<PageList<LikeDto>> GetUserLikesAsync(LikeParams likeParams)
+    public void AddLike(UserLike like)
     {
-        var users = context.Users.OrderBy(x => x.UserName).AsQueryable();
-        var likes = context.Likes.AsQueryable();
+        context.Likes.Add(like);
+    }
 
-        switch (likeParams.Predicate)
+    public void DeleteLike(UserLike like)
+    {
+        context.Likes.Remove(like);
+    }
+
+    public async Task<IEnumerable<int>> GetCurrentUserLikeIds(int currentUserId)
+    {
+        return await context.Likes
+            .Where(x => x.SourceUserId == currentUserId)
+            .Select(x => x.TargetUserId)
+            .ToListAsync();
+    }
+
+    public async Task<UserLike?> GetUserLike(int sourceUserId, int targetUserId)
+    {
+        return await context.Likes.FindAsync(sourceUserId, targetUserId);
+    }
+
+    public async Task<PageList<MemberDto>> GetUserLikes(LikesParams likesParams)
+    {
+        var likes = context.Likes.AsQueryable();
+        IQueryable<MemberDto> query;
+
+        switch (likesParams.Predicate)
         {
             case "liked":
-                likes = likes.Where(x => x.SourceUserId == likeParams.UserId);
-                users = likes.Select(x => x.LikedUser);
+                query = likes
+                    .Where(x => x.SourceUserId == likesParams.UserId)
+                    .Select(x => x.TargetUser)
+                    .ProjectTo<MemberDto>(mapper.ConfigurationProvider);
                 break;
             case "likedBy":
-                likes = likes.Where(x => x.LikedUserId == likeParams.UserId);
-                users = likes.Select(x => x.SourceUser);
+                query = likes
+                    .Where(x => x.TargetUserId == likesParams.UserId)
+                    .Select(x => x.SourceUser)
+                    .ProjectTo<MemberDto>(mapper.ConfigurationProvider);
                 break;
             default:
-                throw new ArgumentException("Invalid predicate");
+                var likeIds = await GetCurrentUserLikeIds(likesParams.UserId);
+
+                query = likes
+                    .Where(x => x.TargetUserId == likesParams.UserId && likeIds.Contains(x.SourceUserId))
+                    .Select(x => x.SourceUser)
+                    .ProjectTo<MemberDto>(mapper.ConfigurationProvider);
+                break;
         }
 
-        var likedUsers = users.Select(user => new LikeDto
-        {
-            Username = user.UserName,
-            Age = user.DateOfBirth.CalculateAge(),
-            KnownAs = user.KnownAs!,
-            PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain)!.Url,
-            City = user.City!,
-            Id = user.Id
-        });
-
-        return await PageList<LikeDto>
-            .CreateAsync(likedUsers,
-                PaginationParams.PageNumber,
-                likeParams.PageSize);
+        return await PageList<MemberDto>.CreateAsync(query, likesParams.PageSize, likesParams.PageSize);
     }
 }

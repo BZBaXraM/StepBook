@@ -47,19 +47,20 @@ public class StepContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<UserLike>()
-            .HasKey(x => new { x.SourceUserId, x.LikedUserId });
+            .HasKey(k => new { k.SourceUserId, k.TargetUserId });
 
         modelBuilder.Entity<UserLike>()
-            .HasOne(x => x.SourceUser)
-            .WithMany(x => x.LikedUsers)
-            .HasForeignKey(x => x.SourceUserId)
+            .HasOne(s => s.SourceUser)
+            .WithMany(l => l.LikedUsers)
+            .HasForeignKey(s => s.SourceUserId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<UserLike>()
-            .HasOne(x => x.LikedUser)
-            .WithMany(x => x.LikedByUsers)
-            .HasForeignKey(x => x.LikedUserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasOne(s => s.TargetUser)
+            .WithMany(l => l.LikedByUsers)
+            .HasForeignKey(s => s.TargetUserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
 
         modelBuilder.Entity<Message>()
             .HasOne(x => x.Sender)
