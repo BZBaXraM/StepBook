@@ -55,37 +55,45 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     /// <returns></returns>
     public async Task<PageList<MemberDto>> GetMembersAsync(PageParams pageParams)
     {
-        var query = context.Users
-            .AsQueryable();
+        var query = context.Users.AsQueryable();
 
-        query = query.Where(x => x.UserName != pageParams.CurrentUsername);
-        query = query.Where(x => x.Gender == pageParams.Gender);
+        query = query.Where(x => x.UserName != userParams.CurrentUsername);
 
-        var minDob = DateTime.Today.AddYears(-pageParams.MaxAge - 1);
-        var maxDob = DateTime.Today.AddYears(-pageParams.MinAge);
+        if (userParams.Gender != null)
+        {
+            query = query.Where(x => x.Gender == userParams.Gender);
+        }
+
+        var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
+        var maxDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));
 
         query = query.Where(x => x.DateOfBirth >= minDob && x.DateOfBirth <= maxDob);
 
-        query = pageParams.OrderBy switch
+        query = userParams.OrderBy switch
         {
             "created" => query.OrderByDescending(x => x.Created),
             _ => query.OrderByDescending(x => x.LastActive)
         };
 
-        return await PageList<MemberDto>.CreateAsync(
-            query.ProjectTo<MemberDto>(mapper.ConfigurationProvider).AsNoTracking(),
-            PaginationParams.PageNumber,
-            pageParams.PageSize);
+        return await PagedList<MemberDto>.CreateAsync(query.ProjectTo<MemberDto>(mapper.ConfigurationProvider),
+            userParams.PageNumber, userParams.PageSize);
     }
 
     /// <summary>
     /// Get a member by their username
     /// </summary>
     /// <param name="username"></param>
+    /// <param name="isCurrentUser"></param>
     /// <returns></returns>
-    public async Task<MemberDto> GetMemberAsync(string username)
-        => (await context.Users
-            .Where(x => x.UserName == username)
-            .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
-            .SingleOrDefaultAsync())!;
+    public async Task<MemberDto?> GetMemberAsync(string username, bool isCurrentUser)
+        {
+            var query = context.Users
+                .Where(x => x.UserName == username)
+                .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
+                .AsQueryable();
+    
+            if (isCurrentUser) query = query.IgnoreQueryFilters();
+    
+            return await query.FirstOrDefaultAsync();
+        }
 }
