@@ -26,14 +26,14 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
         if (username == messageCreateDto.RecipientUsername)
             return BadRequest("You cannot send messages to yourself");
 
-        var sender = await unitOfWork.UserRepository.GetUserByUserNameAsync(username);
-        var recipient = await unitOfWork.UserRepository.GetUserByUserNameAsync(messageCreateDto.RecipientUsername);
+        var sender = await unitOfWork.UserRepository.GetUserByUsernameAsync(username!);
+        var recipient = await unitOfWork.UserRepository.GetUserByUsernameAsync(messageCreateDto.RecipientUsername);
 
         if (recipient is null) return NotFound();
 
         var message = new Message
         {
-            SenderId = sender.Id,
+            SenderId = sender!.Id,
             RecipientId = recipient.Id,
             SenderUsername = sender.UserName,
             RecipientUsername = recipient.UserName,
@@ -42,7 +42,7 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
 
         unitOfWork.MessageRepository.AddMessage(message);
 
-        if (await unitOfWork.MessageRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
             return Ok(mapper.Map<MessageDto>(message));
 
         return BadRequest("Failed to send message");
@@ -59,7 +59,7 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
     {
         messageParams.Username = User.GetUsername()!;
 
-        var messages = await unitOfWork.MessageRepository.GetMessageForUserAsync(messageParams);
+        var messages = await unitOfWork.MessageRepository.GetMessagesForUserAsync(messageParams);
 
         Response.AddPaginationHeader(messages);
 
@@ -88,7 +88,7 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
     {
         var message = await unitOfWork.MessageRepository.GetMessageAsync(id);
 
-        if (message.Sender.UserName != User.GetUsername() && message.Recipient.UserName != User.GetUsername())
+        if (message!.Sender.UserName != User.GetUsername() && message.Recipient.UserName != User.GetUsername())
             return Unauthorized();
 
         if (message.Sender.UserName == User.GetUsername())
@@ -100,7 +100,7 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
         if (message is { SenderDeleted: true, RecipientDeleted: true })
             unitOfWork.MessageRepository.DeleteMessage(message);
 
-        if (await unitOfWork.MessageRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
             return Ok();
 
         return BadRequest("Problem deleting the message");

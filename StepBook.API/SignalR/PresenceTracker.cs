@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace StepBook.API.Hubs;
+namespace StepBook.API.SignalR;
 
 public class PresenceTracker
 {
@@ -43,11 +43,10 @@ public class PresenceTracker
 
     public Task<string[]> GetOnlineUsers()
     {
-        var onlineUsers = OnlineUsers.Keys.OrderBy(k => k).ToArray();
-        return Task.FromResult(onlineUsers);
+        return Task.FromResult(OnlineUsers.Keys.OrderBy(k => k).ToArray());
     }
 
-    public Task<List<string>> GetConnectionsForUser(string username)
+    public static Task<List<string>> GetConnectionsForUser(string username)
     {
         OnlineUsers.TryGetValue(username, out var connections);
         return Task.FromResult(connections ?? []);

@@ -1,7 +1,16 @@
 namespace StepBook.API.DTOs;
 
+/// <summary>
+/// Create message request data transfer object.
+/// </summary>
 public class CreateMessageRequestDto
 {
-    public string RecipientUsername { get; set; } = null!;
-    public string Content { get; set; } = null!;
+    /// <summary>
+    /// Recipient username.
+    /// </summary>
+    public required string RecipientUsername { get; set; } = null!;
+    /// <summary>
+    /// Message content.
+    /// </summary>
+    public required string Content { get; set; } = null!;
 }

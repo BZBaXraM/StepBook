@@ -10,16 +10,16 @@ public class PaginationParams
     /// <summary>
     /// The page number
     /// </summary>
-    public static int PageNumber => 1;
+    public int PageNumber { get; set; } = 1;
 
     private int _pageSize = 10;
 
     /// <summary>
-    /// The page size
+    /// The page sizez
     /// </summary>
     public int PageSize
     {
         get => _pageSize;
-        set => _pageSize = value > MaxPageSize ? MaxPageSize : value;
+        set => _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using StepBook.API.Middleware;
+using StepBook.API.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,10 +68,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/message");
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 await app.RunAsync();

@@ -8,92 +8,109 @@ namespace StepBook.API.Repositories.Classes;
 public class UserRepository(StepContext context, IMapper mapper) : IUserRepository
 {
     /// <summary>
-    /// Get all users
-    /// </summary>
-    /// <returns></returns>
-    public async Task<IEnumerable<User>> GetUsersAsync()
-        => await context.Users.Include(x => x.Photos).ToListAsync();
-
-    /// <summary>
-    /// Update a user
+    /// Update the user
     /// </summary>
     /// <param name="user"></param>
-    public void UpdateUser(User user)
+    public void Update(User user)
     {
         context.Entry(user).State = EntityState.Modified;
     }
 
     /// <summary>
-    /// Get a user by their username
-    /// </summary>
-    /// <param name="username"></param>
-    /// <returns></returns>
-    public async Task<User> GetUserByUserNameAsync(string? username)
-        => (await context.Users
-            .Include(x => x.Photos)
-            .FirstOrDefaultAsync(x => x.UserName == username))!;
-
-    /// <summary>
-    /// Save all changes
+    /// Get all users
     /// </summary>
     /// <returns></returns>
-    public async Task<bool> SaveAllAsync()
-        => await context.SaveChangesAsync() > 0;
-
+    public async Task<IEnumerable<User>> GetUsersAsync()
+    {
+        return await context.Users
+            .Include(p => p.Photos)
+            .AsNoTracking().ToListAsync();
+    }
 
     /// <summary>
-    /// Get a user by their id
+    /// Get the user by the id
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public async Task<User> GetUserByIdAsync(int id)
-        => (await context.Users.FirstOrDefaultAsync(x => x.Id == id))!;
+    public async Task<User?> GetUserByIdAsync(int id)
+    {
+        return await context.Users
+            .Include(p => p.Photos)
+            .AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+    }
 
     /// <summary>
-    /// Get all members
+    /// Get the user by the username
     /// </summary>
+    /// <param name="username"></param>
+    /// <returns></returns>
+    public async Task<User?> GetUserByUsernameAsync(string username)
+    {
+        return await context.Users
+            .Include(p => p.Photos)
+            .AsNoTracking().FirstOrDefaultAsync(u => u.UserName == username);
+    }
+
+    /// <summary>
+    /// Get the members
+    /// </summary>
+    /// <param name="pageParams"></param>
     /// <returns></returns>
     public async Task<PageList<MemberDto>> GetMembersAsync(PageParams pageParams)
     {
-        var query = context.Users.AsQueryable();
+        var query = context.Users.AsQueryable().AsNoTracking();
 
-        query = query.Where(x => x.UserName != userParams.CurrentUsername);
+        query = query.Where(u => u.UserName != pageParams.CurrentUsername);
 
-        if (userParams.Gender != null)
+        if (pageParams.Gender is null)
         {
-            query = query.Where(x => x.Gender == userParams.Gender);
+            query = query.Where(x => x.Gender == pageParams.Gender);
         }
 
-        var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
-        var maxDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));
+        var minDob = DateTime.Today.AddYears(-pageParams.MaxAge - 1);
+        var maxDob = DateTime.Today.AddYears(-pageParams.MinAge);
 
-        query = query.Where(x => x.DateOfBirth >= minDob && x.DateOfBirth <= maxDob);
+        query = query.Where(x => x.DateOfBirth >= minDob && x.DateOfBirth <= maxDob).AsQueryable();
 
-        query = userParams.OrderBy switch
+        query = pageParams.OrderBy switch
         {
             "created" => query.OrderByDescending(x => x.Created),
             _ => query.OrderByDescending(x => x.LastActive)
         };
 
-        return await PagedList<MemberDto>.CreateAsync(query.ProjectTo<MemberDto>(mapper.ConfigurationProvider),
-            userParams.PageNumber, userParams.PageSize);
+        return await PageList<MemberDto>.CreateAsync(query.ProjectTo<MemberDto>(mapper.ConfigurationProvider),
+            pageParams.PageNumber, pageParams.PageSize);
     }
 
     /// <summary>
-    /// Get a member by their username
+    /// Get the member by the username and if it is the current user
     /// </summary>
     /// <param name="username"></param>
     /// <param name="isCurrentUser"></param>
     /// <returns></returns>
     public async Task<MemberDto?> GetMemberAsync(string username, bool isCurrentUser)
+    {
+        var query = context.Users.AsNoTracking().AsQueryable();
+
+        query = query.Where(u => u.UserName == username);
+
+        if (isCurrentUser)
         {
-            var query = context.Users
-                .Where(x => x.UserName == username)
-                .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
-                .AsQueryable();
-    
-            if (isCurrentUser) query = query.IgnoreQueryFilters();
-    
-            return await query.FirstOrDefaultAsync();
+            query = query.IgnoreQueryFilters();
         }
+
+        return await query.ProjectTo<MemberDto>(mapper.ConfigurationProvider).SingleOrDefaultAsync();
+    }
+
+    /// <summary>
+    /// Get the user by the photo id
+    /// </summary>
+    /// <param name="photoId"></param>
+    /// <returns></returns>
+    public async Task<User?> GetUserByPhotoId(int photoId)
+    {
+        return await context.Users
+            .Include(p => p.Photos)
+            .AsNoTracking().FirstOrDefaultAsync(u => u.Photos.Any(p => p.Id == photoId));
+    }
 }

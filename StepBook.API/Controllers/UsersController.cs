@@ -21,11 +21,11 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsersAsync([FromQuery] PageParams pageParams)
     {
         pageParams.CurrentUsername = User.GetUsername()!;
-        
+
         var users = await unitOfWork.UserRepository.GetMembersAsync(pageParams);
-        
+
         Response.AddPaginationHeader(users);
-        
+
         return Ok(users);
     }
 
@@ -45,7 +45,15 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     /// <returns></returns>
     [HttpGet("{username}", Name = "GetUserByUserName")]
     public async Task<ActionResult<MemberDto>> GetUserByUserName(string username)
-        => Ok(mapper.Map<MemberDto>(await unitOfWork.UserRepository.GetMemberAsync(username)));
+    {
+        var currentUsername = User.GetUsername();
+        var user = await unitOfWork.UserRepository.GetMemberAsync(username,
+            isCurrentUser: currentUsername == username);
+
+        if (user == null) return NotFound();
+
+        return user;
+    }
 
 
     /// <summary>
@@ -61,16 +69,16 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
             return BadRequest("Username claim not found");
         }
 
-        var user = await unitOfWork.UserRepository.GetUserByUserNameAsync(User.GetUsername());
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername()!);
         if (user is null)
         {
             return NotFound("User not found");
         }
 
         mapper.Map(dto, user);
-        unitOfWork.UserRepository.UpdateUser(user);
+        unitOfWork.UserRepository.Update(user);
 
-        if (await unitOfWork.UserRepository.SaveAllAsync()) return NoContent();
+        if (await unitOfWork.Complete()) return NoContent();
         return BadRequest("Failed to update user");
     }
 
@@ -88,7 +96,7 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
             return BadRequest("Username claim not found");
         }
 
-        var user = await unitOfWork.UserRepository.GetUserByUserNameAsync(username);
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
         if (user is null)
         {
             return NotFound("User not found");
@@ -113,7 +121,7 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
 
         user.Photos!.Add(photo);
 
-        if (await unitOfWork.UserRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
         {
             return CreatedAtRoute("GetUserByUserName", new { username = user.UserName }, mapper.Map<PhotoDto>(photo));
         }
@@ -135,7 +143,7 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
             return BadRequest("Username claim not found");
         }
 
-        var user = await unitOfWork.UserRepository.GetUserByUserNameAsync(User.GetUsername());
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername()!);
         if (user is null)
         {
             return NotFound("User not found");
@@ -160,7 +168,7 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
 
         photo.IsMain = true;
 
-        if (await unitOfWork.UserRepository.SaveAllAsync()) return NoContent();
+        if (await unitOfWork.Complete()) return NoContent();
 
         return BadRequest("Failed to set main photo");
     }
@@ -178,7 +186,7 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
             return BadRequest("Username claim not found");
         }
 
-        var user = await unitOfWork.UserRepository.GetUserByUserNameAsync(User.GetUsername());
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername()!);
         if (user is null)
         {
             return NotFound("User not found");
@@ -206,7 +214,7 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
 
         user.Photos.Remove(photo);
 
-        if (await unitOfWork.UserRepository.SaveAllAsync()) return NoContent();
+        if (await unitOfWork.Complete()) return NoContent();
 
         return BadRequest("Failed to delete photo");
     }

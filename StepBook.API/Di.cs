@@ -76,7 +76,7 @@ public static class Di
         IConfiguration configuration)
     {
         services.Configure<EmailConfig>(configuration.GetSection("EmailConfig"));
-        services.AddScoped<PresenceTracker>();
+        // services.AddScoped<PresenceTracker>();
         services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
         services.AddScoped<IEmailService, EmailService>();
