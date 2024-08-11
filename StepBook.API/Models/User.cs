@@ -11,10 +11,13 @@ public class User
     public int Id { get; init; }
 
     /// <summary>
-    /// The username of the user.
+    /// The email of the user.
     /// </summary>
     public string Email { get; set; } = null!;
 
+    /// <summary>
+    /// The login username of the user.
+    /// </summary>
     public string UserName { get; set; } = null!;
 
     /// <summary>
@@ -33,9 +36,14 @@ public class User
     public DateTime DateOfBirth { get; set; }
 
     /// <summary>
-    /// The email of the user.
+    /// The first name of the user.
     /// </summary>
-    public string? KnownAs { get; set; }
+    public string FirstName { get; set; } = null!;
+
+    /// <summary>
+    /// The last name of the user.
+    /// </summary>
+    public string LastName { get; set; } = null!;
 
     /// <summary>
     /// Created date of the user.

@@ -2,14 +2,19 @@ using System.ComponentModel.DataAnnotations;
 
 namespace StepBook.API.Models;
 
+/// <summary>
+/// Represents a group.
+/// </summary>
 public class Group
 {
-    public Group()
-    {
-    }
+    /// <summary>
+    /// Gets or sets the name.
+    /// </summary>
+    [Key]
+    public required string Name { get; set; } = default!;
 
-    public Group(string name) => Name = name;
-    
-    [Key] public string Name { get; set; } = string.Empty;
-    public ICollection<Connection> Connections { get; set; } = new List<Connection>();
+    /// <summary>
+    /// Gets or sets the connections.
+    /// </summary>
+    public ICollection<Connection> Connections { get; set; } = [];
 }

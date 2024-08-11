@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace StepBook.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class NewInitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,8 @@ namespace StepBook.API.Migrations
                     PasswordHash = table.Column<byte[]>(type: "bytea", nullable: false),
                     PasswordSalt = table.Column<byte[]>(type: "bytea", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    KnownAs = table.Column<string>(type: "text", nullable: true),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastActive = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Gender = table.Column<string>(type: "text", nullable: false),
@@ -46,7 +47,8 @@ namespace StepBook.API.Migrations
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     IsEmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     EmailConfirmationToken = table.Column<string>(type: "text", nullable: true),
-                    ForgotPasswordToken = table.Column<string>(type: "text", nullable: true)
+                    ForgotPasswordToken = table.Column<string>(type: "text", nullable: true),
+                    RandomCode = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -76,23 +78,22 @@ namespace StepBook.API.Migrations
                 columns: table => new
                 {
                     SourceUserId = table.Column<int>(type: "integer", nullable: false),
-                    LikedUserId = table.Column<int>(type: "integer", nullable: false)
+                    TargetUserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => new { x.SourceUserId, x.LikedUserId });
-                    table.ForeignKey(
-                        name: "FK_Likes_Users_LikedUserId",
-                        column: x => x.LikedUserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_Likes", x => new { x.SourceUserId, x.TargetUserId });
                     table.ForeignKey(
                         name: "FK_Likes_Users_SourceUserId",
                         column: x => x.SourceUserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Likes_Users_TargetUserId",
+                        column: x => x.TargetUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -157,9 +158,9 @@ namespace StepBook.API.Migrations
                 column: "GroupName");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_LikedUserId",
+                name: "IX_Likes_TargetUserId",
                 table: "Likes",
-                column: "LikedUserId");
+                column: "TargetUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_RecipientId",

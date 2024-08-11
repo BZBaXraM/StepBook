@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using StepBook.API.Repositories.Interfaces;
 using StepBook.API.Services;
 
 namespace StepBook.API.Controllers;
@@ -91,7 +90,7 @@ public class AccountController(
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs!,
+            FirstName = user.FirstName,
             Gender = user.Gender,
             RefreshToken = user.RefreshToken
         };
@@ -122,7 +121,7 @@ public class AccountController(
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs!,
+            FirstName = user.FirstName,
             Gender = user.Gender,
             RefreshToken = user.RefreshToken
         });
@@ -167,7 +166,7 @@ public class AccountController(
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs!,
+            FirstName = user.FirstName,
             Gender = user.Gender,
             RefreshToken = user.RefreshToken
         };

@@ -21,9 +21,9 @@ public class UserDto
     public required string? PhotoUrl { get; set; }
 
     /// <summary>
-    /// The known as
+    /// The first name
     /// </summary>
-    public required string KnownAs { get; set; } = null!;
+    public required string FirstName { get; set; } = null!;
 
     /// <summary>
     /// The gender

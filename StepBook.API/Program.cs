@@ -71,6 +71,20 @@ app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/message");
 
+var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+try
+{
+    var context = services.GetRequiredService<StepContext>();
+    await context.Database.MigrateAsync();
+    await context.Database.ExecuteSqlRawAsync("DELETE FROM  \"Connections\"");
+}
+catch (Exception e)
+{
+    var log = services.GetRequiredService<ILogger<Program>>();
+    log.LogError(e, "An error occurred during migration");
+}
+
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 await app.RunAsync();

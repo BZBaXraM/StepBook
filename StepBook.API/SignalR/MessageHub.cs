@@ -3,8 +3,10 @@ using StepBook.API.Contracts.Interfaces;
 
 namespace StepBook.API.SignalR;
 
+/// <inheritdoc />
 public class MessageHub(IUnitOfWork unitOfWork, IMapper mapper, IHubContext<PresenceHub> presenceHub) : Hub
 {
+    /// <inheritdoc />
     public override async Task OnConnectedAsync()
     {
         var httpContext = Context.GetHttpContext();
@@ -17,12 +19,16 @@ public class MessageHub(IUnitOfWork unitOfWork, IMapper mapper, IHubContext<Pres
         await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         await AddGroup(groupName);
 
+        await Clients.Group(groupName).SendAsync("UpdatedGroup", AddGroup(groupName));
+
+
         var messages = await unitOfWork.MessageRepository.GetMessageThreadAsync(Context.User!.GetUsername()!,
             httpContext.Request.Query["username"]!);
 
         await Clients.Group(groupName).SendAsync("ReceiveMessageThread", messages);
     }
 
+    /// <inheritdoc />
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var group = await RemoveFromMessageGroup();
@@ -30,6 +36,7 @@ public class MessageHub(IUnitOfWork unitOfWork, IMapper mapper, IHubContext<Pres
         await base.OnDisconnectedAsync(exception);
     }
 
+    /// <inheritdoc cref="createMessageDto" />
     public async Task SendMessage(CreateMessageRequestDto createMessageDto)
     {
         var username = Context.User?.GetUsername() ?? throw new Exception("could not get user");
@@ -62,10 +69,10 @@ public class MessageHub(IUnitOfWork unitOfWork, IMapper mapper, IHubContext<Pres
         else
         {
             var connections = await PresenceTracker.GetConnectionsForUser(recipient.UserName);
-            if (connections?.Count != null)
+            if (connections != null && connections.Count != 0)
             {
                 await presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived",
-                    new { username = sender.UserName, knownAs = sender.KnownAs });
+                    new { username = sender.UserName, firstName = sender.FirstName });
             }
         }
 
