@@ -7,6 +7,7 @@ public abstract class RegisterRequestValidator : AbstractValidator<RegisterDto>
     protected RegisterRequestValidator()
     {
         RuleFor(x => x.Username).Username();
-        RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
+        RuleFor(x => x.Email).EmailAddress();
+        RuleFor(x => x.Password).NotEmpty().MinimumLength(8).MaximumLength(30);
     }
 }

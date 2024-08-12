@@ -72,7 +72,7 @@ public class MessageHub(IUnitOfWork unitOfWork, IMapper mapper, IHubContext<Pres
             if (connections != null && connections.Count != 0)
             {
                 await presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived",
-                    new { username = sender.UserName, firstName = sender.FirstName });
+                    new { username = sender.UserName, knownAs = sender.KnownAs });
             }
         }
 

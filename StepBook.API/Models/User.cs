@@ -36,14 +36,9 @@ public class User
     public DateTime DateOfBirth { get; set; }
 
     /// <summary>
-    /// The first name of the user.
+    /// The user's known as name.
     /// </summary>
-    public string FirstName { get; set; } = null!;
-
-    /// <summary>
-    /// The last name of the user.
-    /// </summary>
-    public string LastName { get; set; } = null!;
+    public string KnownAs { get; set; } = null!;
 
     /// <summary>
     /// Created date of the user.

@@ -61,14 +61,9 @@ public class AccountController(
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> LoginAsync([FromBody] LoginDto dto)
     {
-        if (string.IsNullOrEmpty(dto.Email) && string.IsNullOrEmpty(dto.Username))
-        {
-            return BadRequest("Email or Username must be provided");
-        }
-
         var user = await context.Users
             .Include(u => u.Photos)
-            .SingleOrDefaultAsync(x => x.UserName == dto.Username || x.Email == dto.Email);
+            .SingleOrDefaultAsync(x => x.UserName == dto.UsernameOrEmail || x.Email == dto.UsernameOrEmail);
 
         if (user == null)
         {
@@ -95,7 +90,7 @@ public class AccountController(
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            FirstName = user.FirstName,
+            KnownAs = user.KnownAs!,
             Gender = user.Gender,
             RefreshToken = user.RefreshToken
         };
@@ -126,7 +121,7 @@ public class AccountController(
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            FirstName = user.FirstName,
+            KnownAs = user.KnownAs,
             Gender = user.Gender,
             RefreshToken = user.RefreshToken
         });
@@ -171,7 +166,7 @@ public class AccountController(
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            FirstName = user.FirstName,
+            KnownAs = user.KnownAs,
             Gender = user.Gender,
             RefreshToken = user.RefreshToken
         };
