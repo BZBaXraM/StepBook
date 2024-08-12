@@ -58,17 +58,17 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     /// <returns></returns>
     public async Task<PageList<MemberDto>> GetMembersAsync(PageParams pageParams)
     {
-        var query = context.Users.AsQueryable().AsNoTracking();
+        var query = context.Users.AsQueryable();
 
         query = query.Where(u => u.UserName != pageParams.CurrentUsername);
 
-        if (pageParams.Gender is null)
+        if (pageParams.Gender != null)
         {
             query = query.Where(x => x.Gender == pageParams.Gender);
         }
 
-        var minDob = DateTime.Today.AddYears(-pageParams.MaxAge - 1);
-        var maxDob = DateTime.Today.AddYears(-pageParams.MinAge);
+        var minDob = DateTime.SpecifyKind(DateTime.Today.AddYears(-pageParams.MaxAge - 1), DateTimeKind.Utc);
+        var maxDob = DateTime.SpecifyKind(DateTime.Today.AddYears(-pageParams.MinAge), DateTimeKind.Utc);
 
         query = query.Where(x => x.DateOfBirth >= minDob && x.DateOfBirth <= maxDob).AsQueryable();
 

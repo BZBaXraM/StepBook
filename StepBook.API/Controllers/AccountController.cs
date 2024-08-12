@@ -63,7 +63,7 @@ public class AccountController(
     {
         var user = await context.Users
             .Include(u => u.Photos)
-            .SingleOrDefaultAsync(x => x.UserName == dto.UsernameOrEmail || x.Email == dto.UsernameOrEmail);
+            .SingleOrDefaultAsync(x => x.UserName == dto.Username || x.Email == dto.Email);
 
         if (user == null)
         {

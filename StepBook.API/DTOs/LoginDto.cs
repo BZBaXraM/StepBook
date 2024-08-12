@@ -6,9 +6,14 @@ namespace StepBook.API.DTOs;
 public class LoginDto
 {
     /// <summary>
-    /// The username or email
+    /// The email
     /// </summary>
-    public required string UsernameOrEmail { get; init; } = null!;
+    public required string Email { get; init; } = null!;
+
+    /// <summary>
+    /// The username
+    /// </summary>
+    public required string Username { get; init; } = null!;
 
     /// <summary>
     /// The password

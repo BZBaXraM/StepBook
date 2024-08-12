@@ -12,8 +12,8 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240811223126_NewInitial")]
-    partial class NewInitial
+    [Migration("20240812115326_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
