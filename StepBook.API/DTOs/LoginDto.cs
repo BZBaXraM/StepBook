@@ -8,12 +8,12 @@ public class LoginDto
     /// <summary>
     /// The email
     /// </summary>
-    public required string Email { get; init; } = null!;
+    public string? Email { get; init; }
 
     /// <summary>
     /// The username
     /// </summary>
-    public required string Username { get; init; } = null!;
+    public string? Username { get; init; }
 
     /// <summary>
     /// The password

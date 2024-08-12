@@ -61,6 +61,11 @@ public class AccountController(
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> LoginAsync([FromBody] LoginDto dto)
     {
+        if (string.IsNullOrEmpty(dto.Email) && string.IsNullOrEmpty(dto.Username))
+        {
+            return BadRequest("Email or Username must be provided");
+        }
+
         var user = await context.Users
             .Include(u => u.Photos)
             .SingleOrDefaultAsync(x => x.UserName == dto.Username || x.Email == dto.Email);
