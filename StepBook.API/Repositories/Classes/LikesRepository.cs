@@ -60,6 +60,6 @@ public class LikesRepository(StepContext context, IMapper mapper) : ILikesReposi
                 break;
         }
 
-        return await PageList<MemberDto>.CreateAsync(query, likesParams.PageSize, likesParams.PageSize);
+        return await PageList<MemberDto>.CreateAsync(query, likesParams.PageNumber, likesParams.PageSize);
     }
 }

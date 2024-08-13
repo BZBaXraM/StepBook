@@ -1,6 +1,4 @@
 using System.Text.Json;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace StepBook.API.Auth;
 

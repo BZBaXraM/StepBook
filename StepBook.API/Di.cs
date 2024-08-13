@@ -4,6 +4,7 @@ using StepBook.API.Data.Configs;
 using StepBook.API.Repositories.Classes;
 using StepBook.API.Repositories.Interfaces;
 using StepBook.API.Services;
+using StepBook.API.SignalR;
 
 namespace StepBook.API;
 
@@ -76,7 +77,6 @@ public static class Di
         IConfiguration configuration)
     {
         services.Configure<EmailConfig>(configuration.GetSection("EmailConfig"));
-        // services.AddScoped<PresenceTracker>();
         services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
         services.AddScoped<IEmailService, EmailService>();
@@ -93,6 +93,7 @@ public static class Di
         services.AddSingleton(jwtConfig);
 
         services.AddSignalR();
+        services.AddSingleton<PresenceTracker>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

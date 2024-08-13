@@ -17,7 +17,7 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     /// Get all users
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
+    [HttpGet] 
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsersAsync([FromQuery] PageParams pageParams)
     {
         pageParams.CurrentUsername = User.GetUsername()!;
