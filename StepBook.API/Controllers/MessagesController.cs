@@ -84,24 +84,26 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult> DeleteMessage(int id)
+    public async Task<ActionResult> DeleteMessageAsync(int id)
     {
+        var username = User.GetUsername();
+
         var message = await unitOfWork.MessageRepository.GetMessageAsync(id);
 
-        if (message!.Sender.UserName != User.GetUsername() && message.Recipient.UserName != User.GetUsername())
-            return Unauthorized();
+        if (message == null) return BadRequest("Cannot delete this message");
 
-        if (message.Sender.UserName == User.GetUsername())
-            message.SenderDeleted = true;
+        if (message.SenderUsername != username && message.RecipientUsername != username)
+            return Forbid();
 
-        if (message.Recipient.UserName == User.GetUsername())
-            message.RecipientDeleted = true;
+        if (message.SenderUsername == username) message.SenderDeleted = true;
+        if (message.RecipientUsername == username) message.RecipientDeleted = true;
 
         if (message is { SenderDeleted: true, RecipientDeleted: true })
+        {
             unitOfWork.MessageRepository.DeleteMessage(message);
+        }
 
-        if (await unitOfWork.Complete())
-            return Ok();
+        if (await unitOfWork.Complete()) return Ok();
 
         return BadRequest("Problem deleting the message");
     }

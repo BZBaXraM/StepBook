@@ -132,12 +132,10 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
                 && x.RecipientUsername == recipientUsername
             )
             .OrderBy(x => x.MessageSent)
-            .ProjectTo<MessageDto>(mapper.ConfigurationProvider)
-            .AsNoTracking()
             .AsQueryable();
 
-        var unreadMessages = query.Where(x => x.DateRead == null
-                                              && x.SenderUsername == currentUsername).ToList();
+        var unreadMessages = query.Where(x => x.DateRead == null &&
+                                              x.RecipientUsername == currentUsername).ToList();
 
         if (unreadMessages.Count != 0)
         {

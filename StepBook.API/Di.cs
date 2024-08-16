@@ -1,10 +1,10 @@
 using StepBook.API.Contracts.Classes;
 using StepBook.API.Contracts.Interfaces;
 using StepBook.API.Data.Configs;
+using StepBook.API.Hubs;
 using StepBook.API.Repositories.Classes;
 using StepBook.API.Repositories.Interfaces;
 using StepBook.API.Services;
-using StepBook.API.SignalR;
 
 namespace StepBook.API;
 

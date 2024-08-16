@@ -90,7 +90,7 @@ public class AccountController(
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs!,
+            KnownAs = user.KnownAs,
             Gender = user.Gender,
             RefreshToken = user.RefreshToken
         };

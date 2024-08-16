@@ -6,62 +6,62 @@ namespace StepBook.API.Models;
 public class Message
 {
     /// <summary>
-    /// The unique identifier for the message.
+    /// Id
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// The unique identifier of the sender.
+    /// Sender username
     /// </summary>
-    public int SenderId { get; set; }
+    public required string SenderUsername { get; set; }
 
     /// <summary>
-    /// The username of the sender.
+    /// Recipient username
     /// </summary>
-    public string SenderUsername { get; set; } = default!;
+    public required string RecipientUsername { get; set; }
 
     /// <summary>
-    /// The sender of the message.
+    /// Content
     /// </summary>
-    public User Sender { get; set; } = default!;
+    public required string Content { get; set; }
 
     /// <summary>
-    /// The unique identifier of the recipient.
-    /// </summary>
-    public int RecipientId { get; set; }
-
-    /// <summary>
-    /// The username of the recipient.
-    /// </summary>
-    public string RecipientUsername { get; set; } = default!;
-
-    /// <summary>
-    /// The recipient of the message.
-    /// </summary>
-    public User Recipient { get; set; }
-
-    /// <summary>
-    /// The content of the message.
-    /// </summary>
-    public string Content { get; set; } = default!;
-
-    /// <summary>
-    /// The date the message was read.
+    /// Date read
     /// </summary>
     public DateTime? DateRead { get; set; }
 
     /// <summary>
-    /// The date the message was sent.
+    /// Message sent
     /// </summary>
     public DateTime MessageSent { get; set; } = DateTime.UtcNow;
 
     /// <summary>
-    /// The sender deleted the message.
+    /// Sender deleted
     /// </summary>
     public bool SenderDeleted { get; set; }
 
     /// <summary>
-    /// The recipient deleted the message.
+    /// Recipient deleted
     /// </summary>
     public bool RecipientDeleted { get; set; }
+
+    /// <summary>
+    /// Sender id
+    /// </summary>
+    public int SenderId { get; set; }
+
+    /// <summary>
+    /// Sender
+    /// </summary>
+    public User Sender { get; set; } = null!;
+
+    /// <summary>
+    /// Recipient id
+    /// </summary>
+    public int RecipientId { get; set; }
+
+    /// <summary>
+    /// Recipient
+    /// </summary>
+    public User Recipient { get; set; } = null!;
 }

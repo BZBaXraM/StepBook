@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace StepBook.API.SignalR;
+namespace StepBook.API.Hubs;
 
 public class PresenceTracker
 {

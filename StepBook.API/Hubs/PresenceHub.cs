@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 
-namespace StepBook.API.SignalR;
+namespace StepBook.API.Hubs;
 
 /// <summary>
 /// SignalR hub for presence tracker.

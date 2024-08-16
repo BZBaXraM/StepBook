@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using StepBook.API.Hubs;
 using StepBook.API.Middleware;
-using StepBook.API.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 

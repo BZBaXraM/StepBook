@@ -18,7 +18,12 @@ public class MessageDto
     /// <summary>
     /// Sender username
     /// </summary>
-    public string SenderUsername { get; set; } = default!;
+    public required string SenderUsername { get; set; }
+
+    /// <summary>
+    /// Sender photo url
+    /// </summary>
+    public required string SenderPhotoUrl { get; set; }
 
     /// <summary>
     /// Recipient id
@@ -33,12 +38,12 @@ public class MessageDto
     /// <summary>
     /// Recipient photo url
     /// </summary>
-    public required string? RecipientPhotoUrl { get; set; }
+    public required string RecipientPhotoUrl { get; set; }
 
     /// <summary>
     /// Content
     /// </summary>
-    public required string Content { get; set; } = default!;
+    public required string Content { get; set; }
 
     /// <summary>
     /// Date read

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
 using StepBook.API.Contracts.Interfaces;
 
-namespace StepBook.API.SignalR;
+namespace StepBook.API.Hubs;
 
 /// <inheritdoc />
 public class MessageHub(IUnitOfWork unitOfWork, IMapper mapper, IHubContext<PresenceHub> presenceHub) : Hub
