@@ -3,22 +3,21 @@ namespace StepBook.API.Models;
 /// <summary>
 /// Represents a user in the application.
 /// </summary>
-public class User
+public class User 
 {
     /// <summary>
-    /// The unique identifier for the user.
+    /// The id of the user.
     /// </summary>
-    public int Id { get; init; }
-
+    public int Id { get; set; }
     /// <summary>
     /// The email of the user.
     /// </summary>
-    public string Email { get; set; } = null!;
+    public required string Email { get; set; }
 
     /// <summary>
     /// The login username of the user.
     /// </summary>
-    public string UserName { get; set; } = null!;
+    public required string UserName { get; set; }
 
     /// <summary>
     /// The password hash of the user.
@@ -38,7 +37,7 @@ public class User
     /// <summary>
     /// The user's known as name.
     /// </summary>
-    public string KnownAs { get; set; } = null!;
+    public required string KnownAs { get; set; }
 
     /// <summary>
     /// Created date of the user.
@@ -53,7 +52,7 @@ public class User
     /// <summary>
     /// Gender of the user.
     /// </summary>
-    public string Gender { get; set; } = null!;
+    public required string Gender { get; set; }
 
     /// <summary>
     /// The user's self-introduction.
@@ -73,12 +72,12 @@ public class User
     /// <summary>
     /// City of the user.
     /// </summary>
-    public string? City { get; set; }
+    public required string City { get; set; }
 
     /// <summary>
     /// Country of the user.
     /// </summary>
-    public string? Country { get; set; }
+    public required string Country { get; set; }
 
     /// <summary>
     /// The user's photo URL.
@@ -129,4 +128,5 @@ public class User
     /// The random code of the user.
     /// </summary>
     public string? RandomCode { get; set; }
+
 }

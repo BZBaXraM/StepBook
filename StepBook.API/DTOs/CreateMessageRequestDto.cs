@@ -8,9 +8,9 @@ public class CreateMessageRequestDto
     /// <summary>
     /// Recipient username.
     /// </summary>
-    public required string RecipientUsername { get; set; } = null!;
+    public required string RecipientUsername { get; set; }
     /// <summary>
     /// Message content.
     /// </summary>
-    public required string Content { get; set; } = null!;
+    public required string Content { get; set; }
 }

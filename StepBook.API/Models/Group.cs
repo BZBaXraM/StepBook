@@ -11,7 +11,7 @@ public class Group
     /// Gets or sets the name.
     /// </summary>
     [Key]
-    public required string Name { get; set; } = default!;
+    public required string Name { get; set; }
 
     /// <summary>
     /// Gets or sets the connections.

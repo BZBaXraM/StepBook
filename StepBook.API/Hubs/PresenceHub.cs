@@ -19,7 +19,7 @@ public class PresenceHub(PresenceTracker tracker) : Hub
         if (isOnline)
             await Clients.Others.SendAsync("UserIsOnline", Context.User.GetUsername());
 
-        await Clients.Caller.SendAsync("UserIsOnline", await tracker.GetOnlineUsers());
+        await Clients.Caller.SendAsync("GetOnlineUsers", await tracker.GetOnlineUsers());
     }
 
     /// <inheritdoc />

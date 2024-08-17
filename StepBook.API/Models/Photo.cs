@@ -14,7 +14,7 @@ public class Photo
     /// <summary>
     /// The url of the photo.
     /// </summary>
-    public required string Url { get; set; } = null!;
+    public required string Url { get; set; }
 
     /// <summary>
     /// Main photo or not.

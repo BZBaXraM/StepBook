@@ -41,8 +41,8 @@ namespace StepBook.API.Migrations
                     Introduction = table.Column<string>(type: "text", nullable: true),
                     Interests = table.Column<string>(type: "text", nullable: true),
                     LookingFor = table.Column<string>(type: "text", nullable: true),
-                    City = table.Column<string>(type: "text", nullable: true),
-                    Country = table.Column<string>(type: "text", nullable: true),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    Country = table.Column<string>(type: "text", nullable: false),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     IsEmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     EmailConfirmationToken = table.Column<string>(type: "text", nullable: true),
@@ -101,15 +101,15 @@ namespace StepBook.API.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SenderId = table.Column<int>(type: "integer", nullable: false),
                     SenderUsername = table.Column<string>(type: "text", nullable: false),
-                    RecipientId = table.Column<int>(type: "integer", nullable: false),
                     RecipientUsername = table.Column<string>(type: "text", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
                     DateRead = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     MessageSent = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     SenderDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    RecipientDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    RecipientDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    SenderId = table.Column<int>(type: "integer", nullable: false),
+                    RecipientId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

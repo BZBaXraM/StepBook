@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Identity;
 using StepBook.API.Services;
 
 namespace StepBook.API.Controllers;
@@ -27,10 +28,10 @@ public class AccountController(
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> RegisterAsync([FromBody] RegisterDto dto)
     {
-        if (await context.Users.AnyAsync(x => x.UserName == dto.Username || x.Email == dto.Email))
-        {
-            return BadRequest("Username or Email is already taken");
-        }
+        // if (await context.Users.AnyAsync(x => x.UserName == dto.Username || x.Email == dto.Email))
+        // {
+        //     return BadRequest("Username or Email is already taken");
+        // }
 
         var user = mapper.Map<User>(dto);
 
@@ -43,6 +44,7 @@ public class AccountController(
 
         context.Users.Add(user);
         await context.SaveChangesAsync();
+        
 
         var confirmLink = Url.Action("ConfirmEmail", "Account",
             new { token = user.EmailConfirmationToken, email = user.Email }, Request.Scheme);
@@ -63,7 +65,7 @@ public class AccountController(
     {
         var user = await context.Users
             .Include(u => u.Photos)
-            .SingleOrDefaultAsync(x => x.UserName == dto.UsernameOrEmail || x.Email == dto.UsernameOrEmail);
+            .FirstOrDefaultAsync(x => x.UserName == dto.UsernameOrEmail || x.Email == dto.UsernameOrEmail);
 
         if (user == null)
         {

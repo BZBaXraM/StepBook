@@ -73,6 +73,7 @@ public class JwtService(JwtConfig config) : IJwtService
         return tokenHandler.WriteToken(token);
     }
 
+    /// <inheritdoc />
     public bool ValidateEmailConfirmationToken(User user, string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -100,6 +101,7 @@ public class JwtService(JwtConfig config) : IJwtService
         }
     }
 
+    /// <inheritdoc />
     public string GenerateForgetPasswordToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -122,6 +124,7 @@ public class JwtService(JwtConfig config) : IJwtService
         return tokenHandler.WriteToken(token);
     }
 
+    /// <inheritdoc />
     public bool ValidateForgetPasswordToken(User user, string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();

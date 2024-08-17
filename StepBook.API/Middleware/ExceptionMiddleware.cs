@@ -4,9 +4,21 @@ using StepBook.API.Exceptions;
 
 namespace StepBook.API.Middleware;
 
-public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, 
+/// <summary>
+///  Middleware for handling exceptions.
+/// </summary>
+/// <param name="next"></param>
+/// <param name="logger"></param>
+/// <param name="env"></param>
+public class ExceptionMiddleware(
+    RequestDelegate next,
+    ILogger<ExceptionMiddleware> logger,
     IHostEnvironment env)
 {
+    /// <summary>
+    /// Invoke the middleware.
+    /// </summary>
+    /// <param name="context"></param>
     public async Task InvokeAsync(HttpContext context)
     {
         try

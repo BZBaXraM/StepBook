@@ -16,36 +16,39 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
     /// <summary>
     /// Create message
     /// </summary>
-    /// <param name="messageCreateDto"></param>
+    /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<ActionResult<MessageDto>> CreateMessageAsync(CreateMessageRequestDto messageCreateDto)
+    public async Task<ActionResult<MessageDto>> CreateMessageAsync(CreateMessageRequestDto dto)
     {
         var username = User.GetUsername();
 
-        if (username == messageCreateDto.RecipientUsername)
-            return BadRequest("You cannot send messages to yourself");
+        if (username == dto.RecipientUsername.ToLower())
+            return BadRequest("You cannot message yourself");
 
         var sender = await unitOfWork.UserRepository.GetUserByUsernameAsync(username!);
-        var recipient = await unitOfWork.UserRepository.GetUserByUsernameAsync(messageCreateDto.RecipientUsername);
+        var recipient = await unitOfWork.UserRepository.GetUserByUsernameAsync(dto.RecipientUsername);
 
-        if (recipient is null) return NotFound();
+        if (recipient == null || sender == null || sender.UserName == null || recipient.UserName == null)
+            return BadRequest("Cannot send message at this time");
 
         var message = new Message
         {
-            SenderId = sender!.Id,
-            RecipientId = recipient.Id,
+            Sender = sender,
+            Recipient = recipient,
             SenderUsername = sender.UserName,
             RecipientUsername = recipient.UserName,
-            Content = messageCreateDto.Content
+            Content = dto.Content
         };
 
-        unitOfWork.MessageRepository.AddMessage(message);
+        await unitOfWork.MessageRepository.AddMessageAsync(message);
 
         if (await unitOfWork.Complete())
+        {
             return Ok(mapper.Map<MessageDto>(message));
+        }
 
-        return BadRequest("Failed to send message");
+        return BadRequest("Failed to save message");
     }
 
     /// <summary>

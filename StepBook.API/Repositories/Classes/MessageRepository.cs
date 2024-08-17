@@ -22,9 +22,9 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
     /// Add message to the context.
     /// </summary>
     /// <param name="message"></param>
-    public void AddMessage(Message message)
+    public async Task AddMessageAsync(Message message)
     {
-        context.Messages.Add(message);
+        await context.Messages.AddAsync(message);
     }
 
     /// <summary>

@@ -1,17 +1,16 @@
 namespace StepBook.API.Models;
 
+/// <summary>
+/// Represents a connection in the application.
+/// </summary>
 public class Connection
 {
-    public Connection(string connectionId, string username)
-    {
-        ConnectionId = connectionId;
-        Username = username;
-    }
-
-    public Connection()
-    {
-    }
-
-    public string ConnectionId { get; set; }
-    public string Username { get; set; }
+    /// <summary>
+    /// Connection id
+    /// </summary>
+    public required string ConnectionId { get; set; }
+    /// <summary>
+    /// Username
+    /// </summary>
+    public required string Username { get; set; }
 }

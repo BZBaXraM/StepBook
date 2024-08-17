@@ -24,7 +24,7 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     {
         return await context.Users
             .Include(p => p.Photos)
-            .AsNoTracking().ToListAsync();
+            .ToListAsync();
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     {
         return await context.Users
             .Include(p => p.Photos)
-            .AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     {
         return await context.Users
             .Include(p => p.Photos)
-            .AsNoTracking().FirstOrDefaultAsync(u => u.UserName == username);
+            .SingleOrDefaultAsync(u => u.UserName == username);
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     /// <returns></returns>
     public async Task<MemberDto?> GetMemberAsync(string username, bool isCurrentUser)
     {
-        var query = context.Users.AsNoTracking().AsQueryable();
+        var query = context.Users.AsQueryable();
 
         query = query.Where(u => u.UserName == username);
 
@@ -99,7 +99,7 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
             query = query.IgnoreQueryFilters();
         }
 
-        return await query.ProjectTo<MemberDto>(mapper.ConfigurationProvider).SingleOrDefaultAsync();
+        return await query.ProjectTo<MemberDto>(mapper.ConfigurationProvider).FirstOrDefaultAsync();
     }
 
     /// <summary>
@@ -111,6 +111,6 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     {
         return await context.Users
             .Include(p => p.Photos)
-            .AsNoTracking().FirstOrDefaultAsync(u => u.Photos.Any(p => p.Id == photoId));
+            .FirstOrDefaultAsync(u => u.Photos.Any(p => p.Id == photoId));
     }
 }

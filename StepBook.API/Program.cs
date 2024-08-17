@@ -1,11 +1,10 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 using StepBook.API.Hubs;
 using StepBook.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllers();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -18,17 +17,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-    }).AddCookie()
-    .AddGoogle(options =>
-    {
-        options.ClientId = builder.Configuration["Google:client_id"]!;
-        options.ClientSecret = builder.Configuration["Google:client_secret"]!;
-    });
-
+// builder.Services.AddAuthentication(options =>
+//     {
+//         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//         options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+//     }).AddCookie()
+//     .AddGoogle(options =>
+//     {
+//         options.ClientId = builder.Configuration["Google:client_id"]!;
+//         options.ClientSecret = builder.Configuration["Google:client_secret"]!;
+//     });
+//
 
 var logger = new LoggerConfiguration()
     .WriteTo.Console()

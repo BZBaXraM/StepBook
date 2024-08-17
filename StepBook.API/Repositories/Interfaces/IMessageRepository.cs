@@ -9,7 +9,7 @@ public interface IMessageRepository
     /// Add message to database.
     /// </summary>
     /// <param name="message"></param>
-    void AddMessage(Message message);
+    Task AddMessageAsync(Message message);
 
     /// <summary>
     /// Delete message from database.

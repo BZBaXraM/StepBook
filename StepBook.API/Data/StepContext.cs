@@ -46,6 +46,12 @@ public class StepContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+        });
+
         modelBuilder.Entity<UserLike>()
             .HasKey(k => new { k.SourceUserId, k.TargetUserId });
 
