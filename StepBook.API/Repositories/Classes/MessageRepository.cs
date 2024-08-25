@@ -144,6 +144,12 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
 
         return await query.ProjectTo<MessageDto>(mapper.ConfigurationProvider).ToListAsync();
     }
+    
+    public async Task<int> CountOfNewMessagesAsync(string username)
+    {
+        return await context.Messages
+            .CountAsync(x => x.Recipient.UserName == username && x.DateRead == null);
+    }
 
     /// <summary>
     /// Remove connection from the context.

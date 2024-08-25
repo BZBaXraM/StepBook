@@ -71,4 +71,10 @@ public interface IMessageRepository
     /// <param name="connectionId"></param>
     /// <returns></returns>
     Task<Group?> GetGroupForConnectionAsync(string connectionId);
+    /// <summary>
+    /// Get message by id.
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns></returns>
+    Task<int> CountOfNewMessagesAsync(string username);
 }
