@@ -3,11 +3,13 @@ using StepBook.API.Contracts.Interfaces;
 
 namespace StepBook.API.Hubs;
 
+/// <inheritdoc />
 public class MessageHub(
     IUnitOfWork unitOfWork,
     IMapper mapper,
     IHubContext<PresenceHub> presenceHub) : Hub
 {
+    /// <inheritdoc />
     public override async Task OnConnectedAsync()
     {
         var httpContext = Context.GetHttpContext();
@@ -30,6 +32,7 @@ public class MessageHub(
         await Clients.Caller.SendAsync("ReceiveMessageThread", messages);
     }
 
+    /// <inheritdoc />
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var group = await RemoveFromMessageGroup();
@@ -37,6 +40,12 @@ public class MessageHub(
         await base.OnDisconnectedAsync(exception);
     }
 
+    /// <summary>
+    /// Send message to user.
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <exception cref="Exception"></exception>
+    /// <exception cref="HubException"></exception>
     public async Task SendMessage(CreateMessageRequestDto dto)
     {
         var username = Context.User?.GetUsername() ?? throw new Exception("could not get user");
@@ -69,7 +78,7 @@ public class MessageHub(
         else
         {
             var connections = await PresenceTracker.GetConnectionsForUser(recipient.UserName);
-            if (connections != null && connections?.Count != null)
+            if (connections?.Count != null)
             {
                 await presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived",
                     new { username = sender.UserName, knownAs = sender.KnownAs });
@@ -78,17 +87,9 @@ public class MessageHub(
 
         await unitOfWork.MessageRepository.AddMessageAsync(message);
 
-        try
+        if (await unitOfWork.Complete())
         {
-            if (await unitOfWork.Complete())
-            {
-                await Clients.Group(groupName).SendAsync("NewMessage", mapper.Map<MessageDto>(message));
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            throw new HubException("An error occurred while sending the message", ex);
+            await Clients.Group(groupName).SendAsync("NewMessage", mapper.Map<MessageDto>(message));
         }
     }
 
@@ -124,7 +125,7 @@ public class MessageHub(
         throw new Exception("Failed to remove from group");
     }
 
-    private string GetGroupName(string caller, string? other)
+    private static string GetGroupName(string caller, string? other)
     {
         var stringCompare = string.CompareOrdinal(caller, other) < 0;
         return stringCompare ? $"{caller}-{other}" : $"{other}-{caller}";

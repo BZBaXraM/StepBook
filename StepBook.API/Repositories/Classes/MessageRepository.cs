@@ -144,7 +144,12 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
 
         return await query.ProjectTo<MessageDto>(mapper.ConfigurationProvider).ToListAsync();
     }
-    
+
+    /// <summary>
+    /// Count of new messages.
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns></returns>
     public async Task<int> CountOfNewMessagesAsync(string username)
     {
         return await context.Messages
