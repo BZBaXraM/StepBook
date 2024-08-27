@@ -77,10 +77,4 @@ public interface IMessageRepository
     /// <param name="username"></param>
     /// <returns></returns>
     Task<int> CountOfNewMessagesAsync(string username);
-    /// <summary>
-    /// New message notification.
-    /// </summary>
-    /// <param name="username"></param>
-    /// <returns></returns>
-    Task NewMessageNotificationAsync(string username);
 }

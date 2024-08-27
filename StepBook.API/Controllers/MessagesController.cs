@@ -122,16 +122,4 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
         var count = await unitOfWork.MessageRepository.CountOfNewMessagesAsync(username!);
         return Ok(count);
     }
-
-    /// <summary>
-    /// New messages notification
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("new-messages-notification")]
-    public async Task<ActionResult> NewMessageNotificationAsync()
-    {
-        var username = User.GetUsername();
-        var count = await unitOfWork.MessageRepository.CountOfNewMessagesAsync(username!);
-        return Ok(count);
-    }
 }
