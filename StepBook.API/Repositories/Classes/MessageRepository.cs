@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.SignalR;
+using StepBook.API.Hubs;
 using StepBook.API.Repositories.Interfaces;
 
 namespace StepBook.API.Repositories.Classes;
@@ -7,7 +9,7 @@ namespace StepBook.API.Repositories.Classes;
 /// </summary>
 /// <param name="context"></param>
 /// <param name="mapper"></param>
-public class MessageRepository(StepContext context, IMapper mapper) : IMessageRepository
+public class MessageRepository(StepContext context, IMapper mapper, PresenceHub presenceHub) : IMessageRepository
 {
     /// <summary>
     /// Add group to the context.
@@ -154,6 +156,20 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
     {
         return await context.Messages
             .CountAsync(x => x.Recipient.UserName == username && x.DateRead == null);
+    }
+
+    /// <summary>
+    /// New message notification.
+    /// </summary>
+    /// <param name="username"></param>
+    public async Task NewMessageNotificationAsync(string username)
+    {
+        var connections = await PresenceTracker.GetConnectionsForUser(username);
+        if (connections?.Count != null)
+        {
+            await presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived",
+                new { username });
+        }
     }
 
     /// <summary>

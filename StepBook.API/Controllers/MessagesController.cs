@@ -110,9 +110,25 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
 
         return BadRequest("Problem deleting the message");
     }
-    
+
+    /// <summary>
+    /// Count of new messages
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("new-messages-count")]
     public async Task<ActionResult<int>> CountOfNewMessagesAsync()
+    {
+        var username = User.GetUsername();
+        var count = await unitOfWork.MessageRepository.CountOfNewMessagesAsync(username!);
+        return Ok(count);
+    }
+
+    /// <summary>
+    /// New messages notification
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("new-messages-notification")]
+    public async Task<ActionResult> NewMessageNotificationAsync()
     {
         var username = User.GetUsername();
         var count = await unitOfWork.MessageRepository.CountOfNewMessagesAsync(username!);
