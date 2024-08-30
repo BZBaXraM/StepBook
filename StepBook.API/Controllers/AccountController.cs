@@ -1,9 +1,3 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Identity;
-using StepBook.API.Services;
-
 namespace StepBook.API.Controllers;
 
 /// <summary>
@@ -28,11 +22,6 @@ public class AccountController(
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> RegisterAsync([FromBody] RegisterDto dto)
     {
-        // if (await context.Users.AnyAsync(x => x.UserName == dto.Username || x.Email == dto.Email))
-        // {
-        //     return BadRequest("Username or Email is already taken");
-        // }
-
         var user = mapper.Map<User>(dto);
 
         using var hmac = new HMACSHA512();
@@ -44,7 +33,7 @@ public class AccountController(
 
         context.Users.Add(user);
         await context.SaveChangesAsync();
-        
+
 
         var confirmLink = Url.Action("ConfirmEmail", "Account",
             new { token = user.EmailConfirmationToken, email = user.Email }, Request.Scheme);

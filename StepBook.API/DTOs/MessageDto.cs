@@ -46,6 +46,11 @@ public class MessageDto
     public required string Content { get; set; }
 
     /// <summary>
+    /// File
+    /// </summary>
+    public byte[]? File { get; set; }
+
+    /// <summary>
     /// Date read
     /// </summary>
     public DateTime? DateRead { get; set; }

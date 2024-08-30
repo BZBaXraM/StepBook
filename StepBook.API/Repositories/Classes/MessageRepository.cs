@@ -13,9 +13,9 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
     /// Add group to the context.
     /// </summary>
     /// <param name="group"></param>
-    public void AddGroup(Group group)
+    public async Task AddGroup(Group group)
     {
-        context.Groups.Add(group);
+        await context.Groups.AddAsync(group);
     }
 
     /// <summary>

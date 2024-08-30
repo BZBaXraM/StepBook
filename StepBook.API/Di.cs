@@ -1,11 +1,3 @@
-using StepBook.API.Contracts.Classes;
-using StepBook.API.Contracts.Interfaces;
-using StepBook.API.Data.Configs;
-using StepBook.API.Hubs;
-using StepBook.API.Repositories.Classes;
-using StepBook.API.Repositories.Interfaces;
-using StepBook.API.Services;
-
 namespace StepBook.API;
 
 /// <summary>
@@ -79,7 +71,7 @@ public static class Di
         services.Configure<EmailConfig>(configuration.GetSection("EmailConfig"));
         services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
-        services.AddScoped<IEmailService, EmailService>();
+        services.AddSingleton<IEmailService, EmailService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IPhotoService, PhotoService>();
@@ -87,6 +79,15 @@ public static class Di
         services.AddScoped<ILikesRepository, LikesRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<LogUserActivity>();
+
+        var awsSetting = configuration.GetSection("AWS");
+        var credentials = new BasicAWSCredentials(awsSetting["AccessKey"], awsSetting["Secret"]);
+        var awsOptions = configuration.GetAWSOptions();
+        awsOptions.Credentials = credentials;
+        awsOptions.Region = RegionEndpoint.EUNorth1;
+        services.AddDefaultAWSOptions(awsOptions);
+        services.AddAWSService<IAmazonS3>();
+        services.AddScoped<IBucketService, BucketService>();
 
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);

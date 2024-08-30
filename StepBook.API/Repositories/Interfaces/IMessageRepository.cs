@@ -43,7 +43,7 @@ public interface IMessageRepository
     /// 
     /// </summary>
     /// <param name="group"></param>
-    void AddGroup(Group group);
+    Task AddGroup(Group group);
 
     /// <summary>
     /// Remove connection.

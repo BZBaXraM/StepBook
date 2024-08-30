@@ -1,6 +1,3 @@
-using StepBook.API.Hubs;
-using StepBook.API.Middleware;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -41,6 +38,7 @@ builder.Logging.AddSerilog(logger);
 
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 builder.Services.AddSwagger(builder.Configuration);
+
 
 builder.Services.AddCors();
 

@@ -64,4 +64,8 @@ public class Message
     /// Recipient
     /// </summary>
     public User Recipient { get; set; } = null!;
+    /// <summary>
+    /// File
+    /// </summary>
+    public byte[]? File { get; set; }
 }

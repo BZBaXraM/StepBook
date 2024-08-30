@@ -1,3 +1,4 @@
+
 namespace StepBook.API.Mappings;
 
 /// <inheritdoc />

@@ -38,7 +38,8 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
             Recipient = recipient,
             SenderUsername = sender.UserName,
             RecipientUsername = recipient.UserName,
-            Content = dto.Content
+            Content = dto.Content,
+            File = dto.File
         };
 
         await unitOfWork.MessageRepository.AddMessageAsync(message);
