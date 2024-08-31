@@ -3,12 +3,13 @@ namespace StepBook.API.Models;
 /// <summary>
 /// Represents a user in the application.
 /// </summary>
-public class User 
+public class User
 {
     /// <summary>
     /// The id of the user.
     /// </summary>
     public int Id { get; set; }
+
     /// <summary>
     /// The email of the user.
     /// </summary>
@@ -105,6 +106,11 @@ public class User
     public ICollection<Message> MessagesReceived { get; set; } = [];
 
     /// <summary>
+    /// Refresh token expiry time of the user.
+    /// </summary>
+    public DateTime RefreshTokenExpiryTime { get; set; }
+
+    /// <summary>
     /// Refresh token of the user.
     /// </summary>
     public string? RefreshToken { get; set; }
@@ -128,5 +134,4 @@ public class User
     /// The random code of the user.
     /// </summary>
     public string? RandomCode { get; set; }
-
 }

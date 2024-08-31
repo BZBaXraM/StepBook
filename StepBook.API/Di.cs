@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace StepBook.API;
 
 /// <summary>
@@ -88,6 +90,8 @@ public static class Di
         services.AddDefaultAWSOptions(awsOptions);
         services.AddAWSService<IAmazonS3>();
         services.AddScoped<IBucketService, BucketService>();
+        services.AddSingleton<IBlackListService, BlackListService>();
+        services.AddSingleton<BlackListMiddleware>();
 
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);
@@ -112,6 +116,7 @@ public static class Di
                     OnMessageReceived = context =>
                     {
                         var accessToken = context.Request.Query["access_token"];
+
                         var path = context.HttpContext.Request.Path;
                         context.Token = string.IsNullOrEmpty(accessToken) switch
                         {

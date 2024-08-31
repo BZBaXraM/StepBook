@@ -1,3 +1,6 @@
+using StepBook.API.Enums;
+using StepBook.API.Exceptions;
+
 namespace StepBook.API.Controllers;
 
 /// <summary>
@@ -12,6 +15,7 @@ public class AccountController(
     StepContext context,
     IJwtService jwtService,
     IEmailService emailService,
+    IBlackListService blackListService,
     IMapper mapper) : ControllerBase
 {
     /// <summary>
@@ -80,13 +84,38 @@ public class AccountController(
         {
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)
+                ?.Url,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
-            RefreshToken = user.RefreshToken
+            RefreshToken = user.RefreshToken,
+            RefreshTokenExpiryTime = DateTime.Now.AddDays(1)
         };
     }
 
+    /// <summary>
+    /// Logout a user
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost("logout")]
+    [Authorize]
+    public async Task<IActionResult> LogoutAsync(RefreshTokenDto dto)
+    {
+        if (dto is null) throw new AuthException(AuthErrorTypes.InvalidRequest, "Invalid client request");
+
+        var principal = jwtService.GetPrincipalFromToken(dto.Token);
+        var username = principal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.UniqueName)?.Value;
+
+        var user = await context.Users.FirstOrDefaultAsync(u => u.UserName == username);
+
+        user!.RefreshToken = null;
+        user.RefreshTokenExpiryTime = DateTime.Now;
+
+        blackListService.AddTokenToBlackList(dto.Token);
+        await context.SaveChangesAsync();
+
+        return Ok("Logged out successfully");
+    }
 
     /// <summary>
     /// Signin a user with Google
@@ -111,10 +140,12 @@ public class AccountController(
         {
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)
+                ?.Url,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
-            RefreshToken = user.RefreshToken
+            RefreshToken = user.RefreshToken,
+            RefreshTokenExpiryTime = DateTime.Now.AddDays(1)
         });
     }
 
@@ -142,12 +173,14 @@ public class AccountController(
     [HttpPost("refresh-token")]
     public async Task<ActionResult<UserDto>> RefreshTokenAsync([FromBody] RefreshTokenDto dto)
     {
-        var user = await context.Users.Include(user => user.Photos)
-            .SingleOrDefaultAsync(x => x.RefreshToken == dto.RefreshToken);
+        var principal = jwtService.GetPrincipalFromToken(dto.Token);
+        var username = principal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.UniqueName)?.Value;
 
-        if (user == null)
+        var user = await context.Users.Include(user => user.Photos).FirstOrDefaultAsync(x => x.UserName == username);
+
+        if (user == null || user.RefreshToken != dto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
         {
-            return Unauthorized("Invalid refresh token");
+            return BadRequest("Invalid token");
         }
 
         user.RefreshToken = jwtService.GenerateRefreshToken();
@@ -156,10 +189,12 @@ public class AccountController(
         {
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)
+                ?.Url,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
-            RefreshToken = user.RefreshToken
+            RefreshToken = user.RefreshToken,
+            RefreshTokenExpiryTime = DateTime.Now.AddDays(1),
         };
     }
 

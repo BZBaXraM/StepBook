@@ -1,30 +1,15 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = null;
         options.JsonSerializerOptions.DictionaryKeyPolicy = null;
-        options.JsonSerializerOptions.DefaultIgnoreCondition =
-            JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
-// builder.Services.AddAuthentication(options =>
-//     {
-//         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//         options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-//     }).AddCookie()
-//     .AddGoogle(options =>
-//     {
-//         options.ClientId = builder.Configuration["Google:client_id"]!;
-//         options.ClientSecret = builder.Configuration["Google:client_secret"]!;
-//     });
-//
 
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -32,13 +17,11 @@ var logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .CreateLogger();
 
-
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 builder.Services.AddSwagger(builder.Configuration);
-
 
 builder.Services.AddCors();
 
@@ -62,6 +45,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseMiddleware<BlackListMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -151,4 +151,30 @@ public class JwtService(JwtConfig config) : IJwtService
             return false;
         }
     }
+
+    public ClaimsPrincipal GetPrincipalFromToken(string token, bool validateLifetime = false)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(config.Secret);
+
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero,
+            ValidateLifetime = validateLifetime
+        };
+
+        try
+        {
+            var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+            return principal;
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }

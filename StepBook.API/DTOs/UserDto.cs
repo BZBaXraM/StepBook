@@ -34,4 +34,9 @@ public class UserDto
     /// The refresh token
     /// </summary>
     public required string? RefreshToken { get; set; }
+
+    /// <summary>
+    /// The refresh token expiry time
+    /// </summary>
+    public required DateTime RefreshTokenExpiryTime { get; set; }
 }

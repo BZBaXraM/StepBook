@@ -35,4 +35,6 @@ public interface IJwtService
 
     string GenerateForgetPasswordToken(User user);
     bool ValidateForgetPasswordToken(User user, string token);
+    
+    public ClaimsPrincipal GetPrincipalFromToken(string token, bool validateLifetime = false);
 }
