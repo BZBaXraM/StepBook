@@ -18,7 +18,7 @@ public class LikesRepository(StepContext context, IMapper mapper) : ILikesReposi
         context.Likes.Remove(like);
     }
 
-    public async Task<IEnumerable<int>> GetCurrentUserLikeIds(int currentUserId)
+    public async Task<IEnumerable<Guid>> GetCurrentUserLikeIds(Guid currentUserId)
     {
         return await context.Likes
             .Where(x => x.SourceUserId == currentUserId)
@@ -26,7 +26,7 @@ public class LikesRepository(StepContext context, IMapper mapper) : ILikesReposi
             .ToListAsync();
     }
 
-    public async Task<UserLike?> GetUserLike(int sourceUserId, int targetUserId)
+    public async Task<UserLike?> GetUserLike(Guid sourceUserId, Guid targetUserId)
     {
         return await context.Likes.FindAsync(sourceUserId, targetUserId);
     }

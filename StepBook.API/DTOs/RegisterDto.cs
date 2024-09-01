@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace StepBook.API.DTOs;
 
 /// <summary>
@@ -8,7 +10,8 @@ public class RegisterDto
     /// <summary>
     /// The user's email
     /// </summary>
-    public required string Email { get; init; } = null!;
+    [DataType(DataType.EmailAddress)]
+    public required string Email { get; init; }
 
     /// <summary>
     /// The username
@@ -43,5 +46,6 @@ public class RegisterDto
     /// <summary>
     /// The password
     /// </summary>
+    [DataType(DataType.Password)]
     public required string Password { get; set; } = null!;
 }

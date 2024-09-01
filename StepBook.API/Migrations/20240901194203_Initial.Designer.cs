@@ -12,8 +12,8 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240828195007_FileTableAdded")]
-    partial class FileTableAdded
+    [Migration("20240901194203_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,11 +56,9 @@ namespace StepBook.API.Migrations
 
             modelBuilder.Entity("StepBook.API.Models.Message", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -69,8 +67,8 @@ namespace StepBook.API.Migrations
                     b.Property<DateTime?>("DateRead")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("File")
-                        .HasColumnType("bytea");
+                    b.Property<string>("FileUrl")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("MessageSent")
                         .HasColumnType("timestamp with time zone");
@@ -78,8 +76,8 @@ namespace StepBook.API.Migrations
                     b.Property<bool>("RecipientDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("RecipientId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("RecipientId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("RecipientUsername")
                         .IsRequired()
@@ -88,8 +86,8 @@ namespace StepBook.API.Migrations
                     b.Property<bool>("SenderDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("SenderId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("SenderUsername")
                         .IsRequired()
@@ -106,11 +104,9 @@ namespace StepBook.API.Migrations
 
             modelBuilder.Entity("StepBook.API.Models.Photo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsApproved")
                         .HasColumnType("boolean");
@@ -128,23 +124,30 @@ namespace StepBook.API.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("UserId1")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("StepBook.API.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
 
                     b.Property<string>("City")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("text");
 
                     b.Property<string>("Country")
@@ -163,6 +166,9 @@ namespace StepBook.API.Migrations
 
                     b.Property<string>("EmailConfirmationToken")
                         .HasColumnType("text");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("ForgotPasswordToken")
                         .HasColumnType("text");
@@ -187,7 +193,19 @@ namespace StepBook.API.Migrations
                     b.Property<DateTime>("LastActive")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("LookingFor")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedUserName")
                         .HasColumnType("text");
 
                     b.Property<byte[]>("PasswordHash")
@@ -198,11 +216,26 @@ namespace StepBook.API.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("RandomCode")
                         .HasColumnType("text");
 
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -210,16 +243,19 @@ namespace StepBook.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("StepBook.API.Models.UserLike", b =>
                 {
-                    b.Property<int>("SourceUserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("SourceUserId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("TargetUserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("TargetUserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("SourceUserId", "TargetUserId");
 
@@ -258,7 +294,7 @@ namespace StepBook.API.Migrations
                 {
                     b.HasOne("StepBook.API.Models.User", "User")
                         .WithMany("Photos")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

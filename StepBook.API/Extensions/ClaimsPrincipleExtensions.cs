@@ -18,6 +18,6 @@ public static class ClaimsPrincipleExtensions
     /// </summary>
     /// <param name="user"></param>
     /// <returns></returns>
-    public static int GetUserId(this ClaimsPrincipal user)
-        => int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+    public static Guid GetUserId(this ClaimsPrincipal user)
+        => Guid.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
 }

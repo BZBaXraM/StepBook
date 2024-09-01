@@ -1,14 +1,16 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace StepBook.API.Models;
 
 /// <summary>
 /// Represents a user in the application.
 /// </summary>
-public class User
+public class User : IdentityUser
 {
     /// <summary>
     /// The id of the user.
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// The email of the user.
@@ -106,14 +108,15 @@ public class User
     public ICollection<Message> MessagesReceived { get; set; } = [];
 
     /// <summary>
+    /// Refresh token of the user.
+    /// </summary>
+    public string? RefreshToken { get; set; } 
+
+    /// <summary>
     /// Refresh token expiry time of the user.
     /// </summary>
     public DateTime RefreshTokenExpiryTime { get; set; }
 
-    /// <summary>
-    /// Refresh token of the user.
-    /// </summary>
-    public string? RefreshToken { get; set; }
 
     /// <summary>
     /// Is the email of the user confirmed?

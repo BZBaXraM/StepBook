@@ -1,5 +1,3 @@
-using StepBook.API.Contracts.Interfaces;
-
 namespace StepBook.API.Controllers;
 
 /// <summary>
@@ -39,7 +37,7 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
             SenderUsername = sender.UserName,
             RecipientUsername = recipient.UserName,
             Content = dto.Content,
-            File = dto.File
+            FileUrl = dto.FileUrl
         };
 
         await unitOfWork.MessageRepository.AddMessageAsync(message);

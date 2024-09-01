@@ -8,12 +8,12 @@ public class MessageDto
     /// <summary>
     /// Id
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// Sender id
     /// </summary>
-    public int SenderId { get; set; }
+    public Guid SenderId { get; set; }
 
     /// <summary>
     /// Sender username
@@ -28,7 +28,7 @@ public class MessageDto
     /// <summary>
     /// Recipient id
     /// </summary>
-    public int RecipientId { get; set; }
+    public Guid RecipientId { get; set; }
 
     /// <summary>
     /// Recipient username
@@ -46,9 +46,9 @@ public class MessageDto
     public required string Content { get; set; }
 
     /// <summary>
-    /// File
+    /// File url
     /// </summary>
-    public byte[]? File { get; set; }
+    public string? FileUrl { get; set; }
 
     /// <summary>
     /// Date read

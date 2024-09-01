@@ -22,7 +22,7 @@ public interface IUserRepository
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<User?> GetUserByIdAsync(int id);
+    Task<User?> GetUserByIdAsync(Guid id);
 
     /// <summary>
     /// Get the user by the username
@@ -51,5 +51,5 @@ public interface IUserRepository
     /// </summary>
     /// <param name="photoId"></param>
     /// <returns></returns>
-    Task<User?> GetUserByPhotoId(int photoId);
+    Task<User?> GetUserByPhotoId(Guid photoId);
 }

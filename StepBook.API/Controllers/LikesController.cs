@@ -2,7 +2,6 @@ using StepBook.API.Contracts.Interfaces;
 
 namespace StepBook.API.Controllers;
 
-
 /// <summary>
 /// Likes controller
 /// </summary>
@@ -18,8 +17,8 @@ public class LikesController(IUnitOfWork unitOfWork) : ControllerBase
     /// </summary>
     /// <param name="targetUserId"></param>
     /// <returns></returns>
-    [HttpPost("{targetUserId:int}")]
-    public async Task<ActionResult> ToggleLike(int targetUserId)
+    [HttpPost("{targetUserId:guid}")]
+    public async Task<ActionResult> ToggleLike(Guid targetUserId)
     {
         var sourceUserId = User.GetUserId();
 
@@ -37,7 +36,7 @@ public class LikesController(IUnitOfWork unitOfWork) : ControllerBase
 
             unitOfWork.LikeRepository.AddLike(like);
         }
-        else 
+        else
         {
             unitOfWork.LikeRepository.DeleteLike(existingLike);
         }
@@ -63,9 +62,10 @@ public class LikesController(IUnitOfWork unitOfWork) : ControllerBase
     /// <param name="likesParams"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUserLikes([FromQuery]LikesParams likesParams)
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUserLikes([FromQuery] LikesParams likesParams)
     {
         likesParams.UserId = User.GetUserId();
+
         var users = await unitOfWork.LikeRepository.GetUserLikes(likesParams);
 
         Response.AddPaginationHeader(users);

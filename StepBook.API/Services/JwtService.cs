@@ -6,33 +6,33 @@ namespace StepBook.API.Services;
 /// The JWT service
 /// </summary>
 /// <param name="config"></param>
-public class JwtService(JwtConfig config) : IJwtService
+public class JwtService(JwtConfig config, IConfiguration configuration) : IJwtService
 {
     /// <summary>
     /// The JWT service configuration
     /// </summary>
     /// <param name="user"></param>
     /// <returns></returns>
-    public string GenerateSecurityToken(User user)
+    public string GenerateSecurityToken(string id, string email, IEnumerable<string> roles,
+        IEnumerable<Claim> userClaims)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(config.Secret);
-
-        var tokenDescriptor = new SecurityTokenDescriptor
+        var claims = new[]
         {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
-            }),
-            Expires = DateTime.UtcNow.AddHours(config.Expiration),
-            SigningCredentials =
-                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
-        };
+            new Claim(ClaimsIdentity.DefaultNameClaimType, email),
+            new Claim(ClaimsIdentity.DefaultRoleClaimType, string.Join(",", roles)),
+            new Claim("userId", id)
+        }.Concat(userClaims);
 
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(config.Secret));
+        var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var token = new JwtSecurityToken(issuer: config.Issuer,
+            audience: config.Audience, expires: DateTime.UtcNow.AddMinutes(config.Expiration), claims: claims,
+            signingCredentials: signingCredentials);
+        var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return accessToken;
     }
+
 
     /// <summary>
     /// Generate a refresh token
@@ -40,9 +40,12 @@ public class JwtService(JwtConfig config) : IJwtService
     /// <returns></returns>
     public string GenerateRefreshToken()
     {
-        var randomNumber = new byte[32];
+        var randomNumber = new byte[64];
+
         using var rng = RandomNumberGenerator.Create();
+
         rng.GetBytes(randomNumber);
+
         return Convert.ToBase64String(randomNumber);
     }
 
@@ -152,25 +155,33 @@ public class JwtService(JwtConfig config) : IJwtService
         }
     }
 
-    public ClaimsPrincipal GetPrincipalFromToken(string token, bool validateLifetime = false)
+    public ClaimsPrincipal? GetPrincipalFromToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(config.Secret);
-
+        var key = Encoding.ASCII.GetBytes(configuration["JWT:Secret"]!);
         var validationParameters = new TokenValidationParameters
         {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ClockSkew = TimeSpan.Zero,
-            ValidateLifetime = validateLifetime
+            ValidIssuer = configuration["JWT:Issuer"],
+            ValidAudience = configuration["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(key)
         };
 
         try
         {
             var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
-            return principal;
+            var jwtToken = (JwtSecurityToken)validatedToken;
+
+            Console.WriteLine("Validated JWT Token Claims:");
+            foreach (var claim in jwtToken.Claims)
+            {
+                Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}");
+            }
+
+            return jwtToken.Claims.Any() ? principal : null;
         }
         catch
         {

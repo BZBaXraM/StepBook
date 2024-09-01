@@ -5,9 +5,9 @@ namespace StepBook.API.Repositories.Interfaces;
 /// </summary>
 public interface ILikesRepository
 {
-    Task<UserLike?> GetUserLike(int sourceUserId, int targetUserId);
+    Task<UserLike?> GetUserLike(Guid sourceUserId, Guid targetUserId);
     Task<PageList<MemberDto>> GetUserLikes(LikesParams likesParams);
-    Task<IEnumerable<int>> GetCurrentUserLikeIds(int currentUserId);
+    Task<IEnumerable<Guid>> GetCurrentUserLikeIds(Guid currentUserId);
     void DeleteLike(UserLike like);
     void AddLike(UserLike like);
 }

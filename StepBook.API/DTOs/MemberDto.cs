@@ -8,7 +8,7 @@ public class MemberDto
     /// <summary>
     /// The id
     /// </summary>
-    public int Id { get; init; }
+    public Guid Id { get; init; }
 
     /// <summary>
     /// The username

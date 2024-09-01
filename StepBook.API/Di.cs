@@ -82,6 +82,10 @@ public static class Di
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<LogUserActivity>();
 
+        services.AddIdentity<User, IdentityRole>(options => { options.User.RequireUniqueEmail = false; })
+            .AddEntityFrameworkStores<StepContext>()
+            .AddDefaultTokenProviders();
+
         var awsSetting = configuration.GetSection("AWS");
         var credentials = new BasicAWSCredentials(awsSetting["AccessKey"], awsSetting["Secret"]);
         var awsOptions = configuration.GetAWSOptions();
@@ -100,8 +104,12 @@ public static class Di
         services.AddSignalR();
         services.AddSingleton<PresenceTracker>();
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer("Bearer", options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

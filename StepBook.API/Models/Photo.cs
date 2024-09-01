@@ -9,7 +9,7 @@ public class Photo
     /// <summary>
     /// The unique identifier for the photo.
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// The url of the photo.

@@ -13,7 +13,7 @@ public class UserDto
     /// <summary>
     /// The token
     /// </summary>
-    public required string Token { get; set; } = null!;
+    public required string Token { get; set; }
 
     /// <summary>
     /// The photo URL
@@ -33,10 +33,10 @@ public class UserDto
     /// <summary>
     /// The refresh token
     /// </summary>
-    public required string? RefreshToken { get; set; }
+    public string? RefreshToken { get; set; }
 
     /// <summary>
     /// The refresh token expiry time
     /// </summary>
-    public required DateTime RefreshTokenExpiryTime { get; set; }
+    public DateTime RefreshTokenExpiryTime { get; set; }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using StepBook.API.Enums;
 using StepBook.API.Exceptions;
 
@@ -16,6 +17,7 @@ public class AccountController(
     IJwtService jwtService,
     IEmailService emailService,
     IBlackListService blackListService,
+    UserManager<User> userManager,
     IMapper mapper) : ControllerBase
 {
     /// <summary>
@@ -33,6 +35,7 @@ public class AccountController(
         user.UserName = dto.Username;
         user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password));
         user.PasswordSalt = hmac.Key;
+        user.RefreshToken = Guid.NewGuid().ToString();
         user.EmailConfirmationToken = jwtService.GenerateEmailConfirmationToken(user);
 
         context.Users.Add(user);
@@ -78,18 +81,16 @@ public class AccountController(
             return Unauthorized("Invalid password");
         }
 
-        user.RefreshToken = jwtService.GenerateRefreshToken();
-
         return new UserDto
         {
             Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
+            Token =  jwtService.GenerateRefreshToken(),
+            RefreshToken = Guid.NewGuid().ToString(),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)
                 ?.Url,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
-            RefreshToken = user.RefreshToken,
-            RefreshTokenExpiryTime = DateTime.Now.AddDays(1)
+            RefreshTokenExpiryTime = user.RefreshTokenExpiryTime
         };
     }
 
@@ -99,19 +100,19 @@ public class AccountController(
     /// <returns></returns>
     [HttpPost("logout")]
     [Authorize]
-    public async Task<IActionResult> LogoutAsync(RefreshTokenDto dto)
+    public async Task<IActionResult> LogoutAsync(TokenDto dto)
     {
         if (dto is null) throw new AuthException(AuthErrorTypes.InvalidRequest, "Invalid client request");
 
-        var principal = jwtService.GetPrincipalFromToken(dto.Token);
-        var username = principal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.UniqueName)?.Value;
+        var principal = jwtService.GetPrincipalFromToken(dto.AccessToken);
+        var username = principal!.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.UniqueName)?.Value;
 
         var user = await context.Users.FirstOrDefaultAsync(u => u.UserName == username);
 
         user!.RefreshToken = null;
         user.RefreshTokenExpiryTime = DateTime.Now;
 
-        blackListService.AddTokenToBlackList(dto.Token);
+        blackListService.AddTokenToBlackList(dto.AccessToken);
         await context.SaveChangesAsync();
 
         return Ok("Logged out successfully");
@@ -134,17 +135,23 @@ public class AccountController(
 
         if (user == null) return BadRequest();
 
-        user.RefreshToken = jwtService.GenerateRefreshToken();
+        // user.RefreshToken = jwtService.GenerateRefreshToken();
 
         return Ok(new UserDto
         {
             Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
+            Token = jwtService.GenerateSecurityToken(user.Id.ToString(), user.Email, new List<string>(),
+                new List<Claim>
+                {
+                    new(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                    new(JwtRegisteredClaimNames.Email, user.Email)
+                }),
+            
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)
                 ?.Url,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
-            RefreshToken = user.RefreshToken,
+            RefreshToken = jwtService.GenerateRefreshToken(),
             RefreshTokenExpiryTime = DateTime.Now.AddDays(1)
         });
     }
@@ -168,35 +175,24 @@ public class AccountController(
     /// <summary>
     /// Refresh the token of a user
     /// </summary>
-    /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost("refresh-token")]
-    public async Task<ActionResult<UserDto>> RefreshTokenAsync([FromBody] RefreshTokenDto dto)
+    public async Task<ActionResult<TokenDto>> RefreshTokenAsync([FromBody] RefreshTokenRequest request)
     {
-        var principal = jwtService.GetPrincipalFromToken(dto.Token);
-        var username = principal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.UniqueName)?.Value;
-
-        var user = await context.Users.Include(user => user.Photos).FirstOrDefaultAsync(x => x.UserName == username);
-
-        if (user == null || user.RefreshToken != dto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+        var user = await context.Users.FirstOrDefaultAsync(x => x.RefreshToken == request.RefreshToken);
+        if (user == null)
         {
-            return BadRequest("Invalid token");
+            return BadRequest("Invalid refresh token");
         }
-
-        user.RefreshToken = jwtService.GenerateRefreshToken();
-
-        return new UserDto
+        
+        if (user.RefreshTokenExpiryTime < DateTime.Now)
         {
-            Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)
-                ?.Url,
-            KnownAs = user.KnownAs,
-            Gender = user.Gender,
-            RefreshToken = user.RefreshToken,
-            RefreshTokenExpiryTime = DateTime.Now.AddDays(1),
-        };
+            return BadRequest("Refresh token expired");
+        }
+        
+        return await GenerateTokenAsync(user);
     }
+
 
     /// <summary>
     /// Confirm the email of a user
@@ -205,25 +201,44 @@ public class AccountController(
     /// <param name="email"></param>
     /// <returns></returns>
     [HttpGet("confirm-email")]
-    public async Task<ActionResult> ConfirmEmailAsync([FromQuery] string token, string email)
+    public async Task<IActionResult> ConfirmEmailAsync(string email, string token)
     {
-        var user = await context.Users.SingleOrDefaultAsync(x => x.Email == email);
+        // Retrieve all users with the specified email
+        var users = await context.Users.Where(x => x.Email == email).ToListAsync();
 
+        // Check if multiple users with the same email exist
+        if (users.Count > 1)
+        {
+            // Return an error response if there are multiple users
+            return BadRequest("Multiple users found with the same email.");
+        }
+
+        // If no users found, return a not found response
+        if (users.Count == 0)
+        {
+            return NotFound("User not found.");
+        }
+
+        // Get the single user from the list
+        var user = users.FirstOrDefault();
+
+        // If the user is null, return a not found response
         if (user == null)
         {
-            return NotFound("User not found");
+            return NotFound("User not found.");
         }
 
-        var isValid = jwtService.ValidateEmailConfirmationToken(user, token);
-        if (!isValid)
+        // Verify the token (this is a placeholder; actual implementation may vary)
+        var result = await userManager.ConfirmEmailAsync(user, token);
+
+        // If the token is invalid or confirmation fails, return a bad request response
+        if (!result.Succeeded)
         {
-            return BadRequest("Invalid token");
+            return BadRequest("Error confirming email.");
         }
 
-        user.IsEmailConfirmed = true;
-        await context.SaveChangesAsync();
-
-        return Ok("Email confirmed successfully. You can now log in.");
+        // If the email confirmation is successful, return an OK response
+        return Ok("Email confirmed successfully.");
     }
 
     /// <summary>
@@ -344,5 +359,23 @@ public class AccountController(
 
         return new string(Enumerable.Repeat(chars, length)
             .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+
+    private async Task<TokenDto> GenerateTokenAsync(User user)
+    {
+        var token = jwtService.GenerateSecurityToken(user.Id.ToString(), user.Email, new List<string>(),
+            new List<Claim>());
+        var refreshToken = jwtService.GenerateRefreshToken();
+
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
+
+        await context.SaveChangesAsync();
+
+        return new TokenDto
+        {
+            AccessToken = token,
+            RefreshToken = refreshToken
+        };
     }
 }

@@ -34,8 +34,8 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<User>> GetUserByIdAsync(int id)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<User>> GetUserByIdAsync(Guid id)
         => Ok(await unitOfWork.UserRepository.GetUserByIdAsync(id));
 
     /// <summary>
@@ -136,7 +136,7 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     /// <param name="photoId"></param>
     /// <returns></returns>
     [HttpPut("set-main-photo/{photoId}")]
-    public async Task<ActionResult> SetMainPhotoAsync(int photoId)
+    public async Task<ActionResult> SetMainPhotoAsync(Guid photoId)
     {
         if (string.IsNullOrEmpty(User.GetUsername()))
         {
@@ -178,8 +178,8 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     /// </summary>
     /// <param name="photoId"></param>
     /// <returns></returns>
-    [HttpDelete("delete-photo/{photoId:int}")]
-    public async Task<ActionResult> DeletePhotoAsync(int photoId)
+    [HttpDelete("delete-photo/{photoId:guid}")]
+    public async Task<ActionResult> DeletePhotoAsync(Guid photoId)
     {
         if (string.IsNullOrEmpty(User.GetUsername()))
         {

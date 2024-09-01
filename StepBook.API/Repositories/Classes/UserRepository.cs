@@ -1,5 +1,3 @@
-using StepBook.API.Repositories.Interfaces;
-
 namespace StepBook.API.Repositories.Classes;
 
 /// <summary>
@@ -32,7 +30,7 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public async Task<User?> GetUserByIdAsync(int id)
+    public async Task<User?> GetUserByIdAsync(Guid id)
     {
         return await context.Users
             .Include(p => p.Photos)
@@ -107,7 +105,7 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     /// </summary>
     /// <param name="photoId"></param>
     /// <returns></returns>
-    public async Task<User?> GetUserByPhotoId(int photoId)
+    public async Task<User?> GetUserByPhotoId(Guid photoId)
     {
         return await context.Users
             .Include(p => p.Photos)

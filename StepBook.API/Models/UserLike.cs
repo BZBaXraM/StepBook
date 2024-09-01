@@ -13,7 +13,7 @@ public class UserLike
     /// <summary>
     /// Source user id
     /// </summary>
-    public int SourceUserId { get; set; }
+    public Guid SourceUserId { get; set; }
 
     /// <summary>
     /// Target user
@@ -23,5 +23,5 @@ public class UserLike
     /// <summary>
     /// Target user id
     /// </summary>
-    public int TargetUserId { get; set; }
+    public Guid TargetUserId { get; set; }
 }

@@ -8,9 +8,9 @@ public interface IJwtService
     /// <summary>
     /// Generate a security token
     /// </summary>
-    /// <param name="user"></param>
     /// <returns></returns>
-    string GenerateSecurityToken(User user);
+    string GenerateSecurityToken(string id, string email, IEnumerable<string> roles,
+        IEnumerable<Claim> userClaims);
 
     /// <summary>
     /// Generate a refresh token
@@ -36,5 +36,5 @@ public interface IJwtService
     string GenerateForgetPasswordToken(User user);
     bool ValidateForgetPasswordToken(User user, string token);
     
-    public ClaimsPrincipal GetPrincipalFromToken(string token, bool validateLifetime = false);
+    public ClaimsPrincipal? GetPrincipalFromToken(string token);
 }
