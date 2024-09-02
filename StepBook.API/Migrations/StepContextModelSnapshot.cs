@@ -66,8 +66,8 @@ namespace StepBook.API.Migrations
                     b.Property<DateTime?>("DateRead")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("File")
-                        .HasColumnType("bytea");
+                    b.Property<string>("FileUrl")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("MessageSent")
                         .HasColumnType("timestamp with time zone");

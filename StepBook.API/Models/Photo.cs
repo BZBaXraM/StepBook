@@ -39,5 +39,5 @@ public class Photo
     /// <summary>
     /// User id of the photo.
     /// </summary>
-    public int UserId { get; set; }
+    public int UserId { get; set; } 
 }

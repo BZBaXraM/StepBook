@@ -26,4 +26,11 @@ public abstract class EmailHelper
         Subject = subject;
         Content = content;
     }
+
+    public EmailHelper()
+    {
+        To = new List<MailboxAddress>();
+        
+            
+    }
 }

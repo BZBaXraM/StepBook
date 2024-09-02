@@ -10,14 +10,19 @@ public static class ClaimsPrincipleExtensions
     /// </summary>
     /// <param name="user"></param>
     /// <returns></returns>
-    public static string? GetUsername(this ClaimsPrincipal user)
-        => user.FindFirst(ClaimTypes.Name)?.Value ?? user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    public static string GetUsername(this ClaimsPrincipal user)
+    {
+        var username = user.FindFirstValue(ClaimTypes.Name)
+                       ?? throw new Exception("Cannot get username from token");
 
-    /// <summary>
-    /// Get the user id from the claims principle 
-    /// </summary>
-    /// <param name="user"></param>
-    /// <returns></returns>
+        return username;
+    }
+
     public static int GetUserId(this ClaimsPrincipal user)
-        => int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+    {
+        var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)
+                               ?? throw new Exception("Cannot get username from token"));
+
+        return userId;
+    }
 }

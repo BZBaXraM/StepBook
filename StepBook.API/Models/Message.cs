@@ -8,7 +8,7 @@ public class Message
     /// <summary>
     /// Id
     /// </summary>
-    public int Id { get; set; }
+    public int Id { get; set; } 
 
     /// <summary>
     /// Sender username
@@ -58,14 +58,14 @@ public class Message
     /// <summary>
     /// Recipient id
     /// </summary>
-    public int RecipientId { get; set; }
+    public int RecipientId { get; set; } 
 
     /// <summary>
     /// Recipient
     /// </summary>
     public User Recipient { get; set; } = null!;
     /// <summary>
-    /// File
+    /// File URL
     /// </summary>
-    public byte[]? File { get; set; }
+    public string? FileUrl { get; set; }
 }

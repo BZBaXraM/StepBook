@@ -13,5 +13,8 @@ public class CreateMessageRequestDto
     /// Message content.
     /// </summary>
     public required string Content { get; set; }
-    public byte[]? File { get; set; }
+    /// <summary>
+    /// File url.
+    /// </summary>
+    public string? FileUrl { get; set; }
 }

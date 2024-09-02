@@ -1,5 +1,3 @@
-using StepBook.API.Contracts.Interfaces;
-
 namespace StepBook.API.Controllers;
 
 /// <summary>
@@ -39,7 +37,7 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
             SenderUsername = sender.UserName,
             RecipientUsername = recipient.UserName,
             Content = dto.Content,
-            File = dto.File
+            FileUrl = dto.FileUrl
         };
 
         await unitOfWork.MessageRepository.AddMessageAsync(message);
@@ -119,8 +117,6 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
     [HttpGet("new-messages-count")]
     public async Task<ActionResult<int>> CountOfNewMessagesAsync()
     {
-        var username = User.GetUsername();
-        var count = await unitOfWork.MessageRepository.CountOfNewMessagesAsync(username!);
-        return Ok(count);
+        return Ok(await unitOfWork.MessageRepository.CountOfNewMessagesAsync(User.GetUsername()!));
     }
 }

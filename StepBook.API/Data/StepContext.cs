@@ -39,6 +39,11 @@ public class StepContext : DbContext
     public DbSet<Connection> Connections => Set<Connection>();
 
     /// <summary>
+    /// Photos table.
+    /// </summary>
+    public DbSet<Photo> Photos => Set<Photo>();
+
+    /// <summary>
     /// Configure the database context.
     /// </summary>
     /// <param name="modelBuilder"></param>
@@ -49,7 +54,7 @@ public class StepContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.Id);
         });
 
         modelBuilder.Entity<UserLike>()
@@ -72,5 +77,8 @@ public class StepContext : DbContext
             .HasOne(x => x.Sender)
             .WithMany(x => x.MessagesSent)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Photo>()
+            .HasQueryFilter(p => p.IsApproved);
     }
 }

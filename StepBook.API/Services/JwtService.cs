@@ -6,44 +6,37 @@ namespace StepBook.API.Services;
 /// The JWT service
 /// </summary>
 /// <param name="config"></param>
-public class JwtService(JwtConfig config) : IJwtService
+public class JwtService(IConfiguration config) : IJwtService
 {
     /// <summary>
     /// The JWT service configuration
     /// </summary>
     /// <param name="user"></param>
     /// <returns></returns>
-    public string GenerateSecurityToken(User user)
+    public async Task<string> GenerateSecurityTokenAsync(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(config.Secret);
+        var key = Encoding.ASCII.GetBytes(config.GetSection("JWT:Key").Value!);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
+            Subject = new ClaimsIdentity([
                 new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
-            }),
-            Expires = DateTime.UtcNow.AddHours(config.Expiration),
-            SigningCredentials =
+            ]),
+            Expires = DateTime.UtcNow.AddHours(Convert.ToDouble(config.GetSection("JWT:Expires").Value)),
+            Issuer = config.GetSection("JWT:Issuer").Value, // Ensure this is set
+            Audience = config.GetSection("JWT:Audience").Value, SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        return await Task.FromResult(tokenHandler.WriteToken(token));
     }
 
-    /// <summary>
-    /// Generate a refresh token
-    /// </summary>
-    /// <returns></returns>
-    public string GenerateRefreshToken()
+    public async Task<string> GenerateRefreshTokenAsync()
     {
-        var randomNumber = new byte[32];
-        using var rng = RandomNumberGenerator.Create();
-        rng.GetBytes(randomNumber);
-        return Convert.ToBase64String(randomNumber);
+        return await Task.FromResult(Guid.NewGuid().ToString());
     }
 
     /// <summary>
@@ -51,33 +44,32 @@ public class JwtService(JwtConfig config) : IJwtService
     /// </summary>
     /// <param name="user"></param>
     /// <returns></returns>
-    public string GenerateEmailConfirmationToken(User user)
+    public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(config.Secret);
+        var key = Encoding.ASCII.GetBytes(config.GetSection("JWT:Key").Value!);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
+            Subject = new ClaimsIdentity([
                 new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email)
-            }),
-            Expires = DateTime.UtcNow.AddHours(config.Expiration),
+            ]),
+            Expires = DateTime.UtcNow.AddHours(Convert.ToDouble(config.GetSection("JWT:Expires").Value)),
             SigningCredentials =
-                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        return await Task.FromResult(tokenHandler.WriteToken(token));
     }
 
     /// <inheritdoc />
     public bool ValidateEmailConfirmationToken(User user, string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(config.Secret);
+        var key = Encoding.ASCII.GetBytes(config.GetSection("JWT:Key").Value!);
 
         var validationParameters = new TokenValidationParameters
         {
@@ -102,10 +94,10 @@ public class JwtService(JwtConfig config) : IJwtService
     }
 
     /// <inheritdoc />
-    public string GenerateForgetPasswordToken(User user)
+    public async Task<string> GenerateForgetPasswordTokenAsync(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(config.Secret);
+        var key = Encoding.ASCII.GetBytes(config.GetSection("JWT:Key").Value!);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -115,20 +107,21 @@ public class JwtService(JwtConfig config) : IJwtService
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email)
             }),
-            Expires = DateTime.UtcNow.AddHours(config.Expiration),
+            Expires =
+                DateTime.UtcNow.AddHours(Convert.ToDouble(config.GetSection("JWT:ForgetPasswordExpires").Value)),
             SigningCredentials =
-                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        return await Task.FromResult(tokenHandler.WriteToken(token));
     }
 
     /// <inheritdoc />
     public bool ValidateForgetPasswordToken(User user, string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(config.Secret);
+        var key = Encoding.ASCII.GetBytes(config.GetSection("JWT:Key").Value!);
 
         var validationParameters = new TokenValidationParameters
         {
@@ -152,29 +145,25 @@ public class JwtService(JwtConfig config) : IJwtService
         }
     }
 
-    public ClaimsPrincipal GetPrincipalFromToken(string token, bool validateLifetime = false)
+    public ClaimsPrincipal GetPrincipalFromToken(string token)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(config.Secret);
-
-        var validationParameters = new TokenValidationParameters
+        var tokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
             ValidateAudience = false,
-            ClockSkew = TimeSpan.Zero,
-            ValidateLifetime = validateLifetime
+            ValidateIssuer = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("Jwt:Key").Value)),
+            ValidateLifetime = false
         };
 
-        try
-        {
-            var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
-            return principal;
-        }
-        catch
-        {
-            return null;
-        }
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
+        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512,
+                StringComparison.InvariantCultureIgnoreCase))
+            throw new SecurityTokenException("Invalid token");
+        return principal;
     }
 }

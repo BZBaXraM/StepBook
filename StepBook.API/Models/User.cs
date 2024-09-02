@@ -8,7 +8,7 @@ public class User
     /// <summary>
     /// The id of the user.
     /// </summary>
-    public int Id { get; set; }
+    public int Id { get; set; } 
 
     /// <summary>
     /// The email of the user.
@@ -83,7 +83,7 @@ public class User
     /// <summary>
     /// The user's photo URL.
     /// </summary>
-    public ICollection<Photo> Photos { get; set; } = [];
+    public virtual List<Photo> Photos { get; set; } = [];
 
     /// <summary>
     /// List of users liked by the current user.
@@ -113,7 +113,7 @@ public class User
     /// <summary>
     /// Refresh token of the user.
     /// </summary>
-    public string? RefreshToken { get; set; }
+    public string? RefreshToken { get; set; } 
 
     /// <summary>
     /// Is the email of the user confirmed?

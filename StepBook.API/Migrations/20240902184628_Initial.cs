@@ -43,6 +43,7 @@ namespace StepBook.API.Migrations
                     LookingFor = table.Column<string>(type: "text", nullable: true),
                     City = table.Column<string>(type: "text", nullable: false),
                     Country = table.Column<string>(type: "text", nullable: false),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     IsEmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     EmailConfirmationToken = table.Column<string>(type: "text", nullable: true),
@@ -109,7 +110,8 @@ namespace StepBook.API.Migrations
                     SenderDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     RecipientDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     SenderId = table.Column<int>(type: "integer", nullable: false),
-                    RecipientId = table.Column<int>(type: "integer", nullable: false)
+                    RecipientId = table.Column<int>(type: "integer", nullable: false),
+                    FileUrl = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

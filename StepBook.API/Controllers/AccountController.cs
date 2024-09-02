@@ -33,7 +33,7 @@ public class AccountController(
         user.UserName = dto.Username;
         user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password));
         user.PasswordSalt = hmac.Key;
-        user.EmailConfirmationToken = jwtService.GenerateEmailConfirmationToken(user);
+        user.EmailConfirmationToken = await jwtService.GenerateEmailConfirmationTokenAsync(user);
 
         context.Users.Add(user);
         await context.SaveChangesAsync();
@@ -78,12 +78,12 @@ public class AccountController(
             return Unauthorized("Invalid password");
         }
 
-        user.RefreshToken = jwtService.GenerateRefreshToken();
+        user.RefreshToken = await jwtService.GenerateRefreshTokenAsync();
 
         return new UserDto
         {
             Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
+            Token = await jwtService.GenerateSecurityTokenAsync(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)
                 ?.Url,
             KnownAs = user.KnownAs,
@@ -134,12 +134,12 @@ public class AccountController(
 
         if (user == null) return BadRequest();
 
-        user.RefreshToken = jwtService.GenerateRefreshToken();
+        user.RefreshToken = await jwtService.GenerateRefreshTokenAsync();
 
         return Ok(new UserDto
         {
             Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
+            Token = await jwtService.GenerateSecurityTokenAsync(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)
                 ?.Url,
             KnownAs = user.KnownAs,
@@ -171,31 +171,16 @@ public class AccountController(
     /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost("refresh-token")]
-    public async Task<ActionResult<UserDto>> RefreshTokenAsync([FromBody] RefreshTokenDto dto)
+    public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenDto dto)
     {
-        var principal = jwtService.GetPrincipalFromToken(dto.Token);
-        var username = principal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.UniqueName)?.Value;
-
-        var user = await context.Users.Include(user => user.Photos).FirstOrDefaultAsync(x => x.UserName == username);
-
-        if (user == null || user.RefreshToken != dto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+        try
         {
-            return BadRequest("Invalid token");
+            return Ok(await GenerateRefreshTokenAsync(dto));
         }
-
-        user.RefreshToken = jwtService.GenerateRefreshToken();
-
-        return new UserDto
+        catch (AuthException ex)
         {
-            Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)
-                ?.Url,
-            KnownAs = user.KnownAs,
-            Gender = user.Gender,
-            RefreshToken = user.RefreshToken,
-            RefreshTokenExpiryTime = DateTime.Now.AddDays(1),
-        };
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -344,5 +329,62 @@ public class AccountController(
 
         return new string(Enumerable.Repeat(chars, length)
             .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+
+    private async Task<TokenDto> GenerateRefreshTokenAsync(RefreshTokenDto tokenDto)
+    {
+        if (tokenDto is null)
+            throw new AuthException(AuthErrorTypes.InvalidRequest, "Invalid client request");
+
+        if (string.IsNullOrEmpty(tokenDto.Token) || string.IsNullOrEmpty(tokenDto.RefreshToken))
+        {
+            throw new AuthException(AuthErrorTypes.InvalidRequest, "Invalid client request");
+        }
+
+        var principal = jwtService.GetPrincipalFromToken(tokenDto.Token);
+
+        if (principal == null)
+            throw new AuthException(AuthErrorTypes.InvalidRequest, "Invalid client request");
+
+        var username = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(username))
+        {
+            throw new AuthException(AuthErrorTypes.InvalidRequest, "Invalid client request");
+        }
+
+        var user = context.Users.FirstOrDefault(u => u.UserName == username);
+
+        if (user == null)
+        {
+            throw new AuthException(AuthErrorTypes.InvalidRequest, "User not found");
+        }
+
+        if (string.IsNullOrEmpty(tokenDto.RefreshToken))
+        {
+            throw new AuthException(AuthErrorTypes.InvalidRequest, "Refresh token is missing");
+        }
+
+        if (user.RefreshToken != tokenDto.RefreshToken)
+        {
+            throw new AuthException(AuthErrorTypes.InvalidRequest, "Invalid refresh token");
+        }
+
+        if (user.RefreshTokenExpiryTime <= DateTime.Now)
+        {
+            throw new AuthException(AuthErrorTypes.InvalidRequest, "Refresh token has expired");
+        }
+
+        user.RefreshToken = await jwtService.GenerateRefreshTokenAsync();
+        user.RefreshTokenExpiryTime = DateTime.Now.AddHours(5);
+
+        await context.SaveChangesAsync();
+
+        return new TokenDto
+        {
+            AccessToken = await jwtService.GenerateSecurityTokenAsync(user),
+            RefreshToken = await jwtService.GenerateRefreshTokenAsync(),
+            RefreshTokenExpireTime = user.RefreshTokenExpiryTime
+        };
     }
 }

@@ -1,5 +1,3 @@
-using StepBook.API.Contracts.Interfaces;
-
 namespace StepBook.API.Filters;
 
 /// <summary>

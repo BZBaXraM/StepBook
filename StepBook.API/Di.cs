@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-
 namespace StepBook.API;
 
 /// <summary>
@@ -93,9 +91,11 @@ public static class Di
         services.AddSingleton<IBlackListService, BlackListService>();
         services.AddSingleton<BlackListMiddleware>();
 
-        JwtConfig jwtConfig = new();
-        configuration.GetSection("JWT").Bind(jwtConfig);
-        services.AddSingleton(jwtConfig);
+        // JwtConfig jwtConfig = new();
+        // configuration.GetSection("JWT").Bind(jwtConfig);
+        // services.AddSingleton(jwtConfig);
+        services.Configure<JwtConfig>(configuration.GetSection("JWT"));
+
 
         services.AddSignalR();
         services.AddSingleton<PresenceTracker>();
@@ -105,10 +105,17 @@ public static class Di
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ValidateActor = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    RequireExpirationTime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtConfig.Secret)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    ValidIssuer = configuration.GetSection("JWT:Issuer").Value,
+                    ValidAudience = configuration.GetSection("JWT:Audience").Value,
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("JWT:Key").Value!))
                 };
 
                 options.Events = new JwtBearerEvents

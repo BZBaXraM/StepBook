@@ -14,7 +14,7 @@ public class BlackListMiddleware : IMiddleware
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        string? token = context.Request.Headers["Authorization"];
+        string? token = context.Request.Headers.Authorization;
 
         token = token?.Replace("Bearer ", "");
 

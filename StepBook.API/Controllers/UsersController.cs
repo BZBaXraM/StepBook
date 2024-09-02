@@ -135,7 +135,7 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     /// </summary>
     /// <param name="photoId"></param>
     /// <returns></returns>
-    [HttpPut("set-main-photo/{photoId}")]
+    [HttpPut("set-main-photo/{photoId:int}")]
     public async Task<ActionResult> SetMainPhotoAsync(int photoId)
     {
         if (string.IsNullOrEmpty(User.GetUsername()))
