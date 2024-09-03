@@ -12,8 +12,8 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240828195007_FileTableAdded")]
-    partial class FileTableAdded
+    [Migration("20240903205043_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -203,6 +203,9 @@ namespace StepBook.API.Migrations
 
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("RefreshTokenExpireTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserName")
                         .IsRequired()

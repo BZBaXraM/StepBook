@@ -201,6 +201,9 @@ namespace StepBook.API.Migrations
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("RefreshTokenExpireTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("text");

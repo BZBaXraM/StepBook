@@ -13,12 +13,6 @@ public interface IJwtService
     string GenerateSecurityToken(User user);
 
     /// <summary>
-    /// Generate a refresh token
-    /// </summary>
-    /// <returns></returns>
-    string GenerateRefreshToken();
-
-    /// <summary>
     /// Generate an email confirmation token
     /// </summary>
     /// <param name="user"></param>
@@ -35,4 +29,8 @@ public interface IJwtService
 
     string GenerateForgetPasswordToken(User user);
     bool ValidateForgetPasswordToken(User user, string token);
+    
+    ClaimsPrincipal GetPrincipalFromToken(string token);
+    
+    string GenerateRefreshToken();
 }

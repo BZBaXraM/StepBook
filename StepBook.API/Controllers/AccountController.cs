@@ -12,6 +12,7 @@ public class AccountController(
     StepContext context,
     IJwtService jwtService,
     IEmailService emailService,
+    ILogger<AccountController> logger,
     IMapper mapper) : ControllerBase
 {
     /// <summary>
@@ -30,8 +31,9 @@ public class AccountController(
         user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password));
         user.PasswordSalt = hmac.Key;
         user.EmailConfirmationToken = jwtService.GenerateEmailConfirmationToken(user);
+        user.RefreshToken = jwtService.GenerateRefreshToken();
 
-        context.Users.Add(user);
+        await context.Users.AddAsync(user);
         await context.SaveChangesAsync();
 
 
@@ -74,19 +76,40 @@ public class AccountController(
             return Unauthorized("Invalid password");
         }
 
-        user.RefreshToken = jwtService.GenerateRefreshToken();
-
         return new UserDto
         {
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
+            RefreshToken = jwtService.GenerateRefreshToken(),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
-            RefreshToken = user.RefreshToken
         };
     }
 
+    /// <summary>
+    /// Refresh the token of a user
+    /// </summary>
+    /// <param name="tokenDto"></param>
+    /// <returns></returns>
+    [HttpPost("refresh-token")]
+    public async Task<ActionResult<TokenDto>> RefreshTokenAsync([FromBody] RefreshTokenDto tokenDto)
+    {
+        var user = await context.Users.FirstOrDefaultAsync(x => x.RefreshToken == tokenDto.RefreshToken);
+        if (user == null)
+        {
+            return BadRequest("Invalid token");
+        }
+
+        var token = jwtService.GenerateSecurityToken(user);
+
+        return new TokenDto
+        {
+            Token = token,
+            RefreshToken = jwtService.GenerateRefreshToken(),
+            RefreshTokenExpireTime = user.RefreshTokenExpireTime
+        };
+    }
 
     /// <summary>
     /// Signin a user with Google
@@ -105,7 +128,6 @@ public class AccountController(
 
         if (user == null) return BadRequest();
 
-        user.RefreshToken = jwtService.GenerateRefreshToken();
 
         return Ok(new UserDto
         {
@@ -114,7 +136,6 @@ public class AccountController(
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
-            RefreshToken = user.RefreshToken
         });
     }
 
@@ -132,35 +153,6 @@ public class AccountController(
         };
 
         return Challenge(properties, GoogleDefaults.AuthenticationScheme);
-    }
-
-    /// <summary>
-    /// Refresh the token of a user
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <returns></returns>
-    [HttpPost("refresh-token")]
-    public async Task<ActionResult<UserDto>> RefreshTokenAsync([FromBody] RefreshTokenDto dto)
-    {
-        var user = await context.Users.Include(user => user.Photos)
-            .SingleOrDefaultAsync(x => x.RefreshToken == dto.RefreshToken);
-
-        if (user == null)
-        {
-            return Unauthorized("Invalid refresh token");
-        }
-
-        user.RefreshToken = jwtService.GenerateRefreshToken();
-
-        return new UserDto
-        {
-            Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs,
-            Gender = user.Gender,
-            RefreshToken = user.RefreshToken
-        };
     }
 
     /// <summary>
@@ -310,4 +302,38 @@ public class AccountController(
         return new string(Enumerable.Repeat(chars, length)
             .Select(s => s[random.Next(s.Length)]).ToArray());
     }
+
+    // private async Task<TokenDto> GenerateRefreshTokenAsync(RefreshTokenDto tokenDto)
+    // {
+    //     ArgumentNullException.ThrowIfNull(tokenDto);
+    //
+    //     if (string.IsNullOrEmpty(tokenDto.Token) || string.IsNullOrEmpty(tokenDto.RefreshToken))
+    //         throw new ArgumentNullException(nameof(tokenDto));
+    //
+    //     var principal = jwtService.GetPrincipalFromToken(tokenDto.Token);
+    //     if (principal == null)
+    //         logger.LogError("Invalid token");
+    //
+    //     var email = principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+    //     if (string.IsNullOrEmpty(email))
+    //         logger.LogError("Invalid token");
+    //
+    //     var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+    //     if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpireTime <= DateTime.Now)
+    //         logger.LogError("Invalid token");
+    //
+    //     var newAccessToken = jwtService.GenerateSecurityToken(user!);
+    //     var newRefreshToken = jwtService.GenerateRefreshToken();
+    //
+    //     user.RefreshToken = newRefreshToken;
+    //     user.RefreshTokenExpireTime = DateTime.Now.AddMinutes(35);
+    //     await context.SaveChangesAsync();
+    //
+    //     return new TokenDto
+    //     {
+    //         Token = newAccessToken,
+    //         RefreshToken = newRefreshToken,
+    //         RefreshTokenExpireTime = user.RefreshTokenExpireTime
+    //     };
+    // }
 }

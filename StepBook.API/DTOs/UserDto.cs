@@ -15,6 +15,8 @@ public class UserDto
     /// </summary>
     public required string Token { get; set; } = null!;
 
+    public string? RefreshToken { get; set; }
+
     /// <summary>
     /// The photo URL
     /// </summary>
@@ -29,9 +31,4 @@ public class UserDto
     /// The gender
     /// </summary>
     public required string Gender { get; set; } = null!;
-
-    /// <summary>
-    /// The refresh token
-    /// </summary>
-    public required string? RefreshToken { get; set; }
 }
