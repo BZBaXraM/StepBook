@@ -48,7 +48,7 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     {
         return await context.Users
             .Include(p => p.Photos)
-            .SingleOrDefaultAsync(u => u.UserName == username);
+            .FirstOrDefaultAsync(u => u.UserName == username);
     }
 
     /// <summary>

@@ -22,7 +22,8 @@ public class JwtService(IConfiguration config) : IJwtService
         {
             Subject = new ClaimsIdentity([
                 new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
             ]),
             Expires = DateTime.UtcNow.AddHours(Convert.ToDouble(config.GetSection("JWT:Expires").Value)),
             Issuer = config.GetSection("JWT:Issuer").Value, // Ensure this is set
@@ -34,9 +35,10 @@ public class JwtService(IConfiguration config) : IJwtService
         return await Task.FromResult(tokenHandler.WriteToken(token));
     }
 
+    /// <inheritdoc />
     public async Task<string> GenerateRefreshTokenAsync()
     {
-        return await Task.FromResult(Guid.NewGuid().ToString());
+        return await Task.FromResult(Guid.NewGuid().ToString("N").ToLower());
     }
 
     /// <summary>
@@ -101,12 +103,11 @@ public class JwtService(IConfiguration config) : IJwtService
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
+            Subject = new ClaimsIdentity([
                 new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email)
-            }),
+            ]),
             Expires =
                 DateTime.UtcNow.AddHours(Convert.ToDouble(config.GetSection("JWT:ForgetPasswordExpires").Value)),
             SigningCredentials =
@@ -145,6 +146,7 @@ public class JwtService(IConfiguration config) : IJwtService
         }
     }
 
+    /// <inheritdoc />
     public ClaimsPrincipal GetPrincipalFromToken(string token)
     {
         var tokenValidationParameters = new TokenValidationParameters
@@ -152,7 +154,7 @@ public class JwtService(IConfiguration config) : IJwtService
             ValidateAudience = false,
             ValidateIssuer = false,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("Jwt:Key").Value)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("Jwt:Key").Value!)),
             ValidateLifetime = false
         };
 
@@ -160,10 +162,10 @@ public class JwtService(IConfiguration config) : IJwtService
 
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
 
-        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
-            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512,
-                StringComparison.InvariantCultureIgnoreCase))
-            throw new SecurityTokenException("Invalid token");
-        return principal;
+        return securityToken is not JwtSecurityToken jwtSecurityToken ||
+               !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512,
+                   StringComparison.InvariantCultureIgnoreCase)
+            ? throw new SecurityTokenException("Invalid token")
+            : principal;
     }
 }

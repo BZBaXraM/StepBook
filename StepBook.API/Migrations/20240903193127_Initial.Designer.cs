@@ -12,7 +12,7 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240902184628_Initial")]
+    [Migration("20240903193127_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

@@ -16,7 +16,8 @@ public class AccountController(
     IJwtService jwtService,
     IEmailService emailService,
     IBlackListService blackListService,
-    IMapper mapper) : ControllerBase
+    IMapper mapper,
+    ILogger<AccountController> logger) : ControllerBase
 {
     /// <summary>
     /// Register a new user
@@ -35,7 +36,7 @@ public class AccountController(
         user.PasswordSalt = hmac.Key;
         user.EmailConfirmationToken = await jwtService.GenerateEmailConfirmationTokenAsync(user);
 
-        context.Users.Add(user);
+        await context.Users.AddAsync(user);
         await context.SaveChangesAsync();
 
 
@@ -322,7 +323,7 @@ public class AccountController(
         return Ok("Account deleted successfully");
     }
 
-    private string GenerateRandomCode(int length = 6)
+    private static string GenerateRandomCode(int length = 6)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new();
@@ -353,16 +354,14 @@ public class AccountController(
             throw new AuthException(AuthErrorTypes.InvalidRequest, "Invalid client request");
         }
 
-        var user = context.Users.FirstOrDefault(u => u.UserName == username);
+        logger.LogInformation("Attempting to find user with email: {Email}", username);
+
+        var user = await context.Users.FirstOrDefaultAsync(u => u.UserName == username);
 
         if (user == null)
         {
-            throw new AuthException(AuthErrorTypes.InvalidRequest, "User not found");
-        }
-
-        if (string.IsNullOrEmpty(tokenDto.RefreshToken))
-        {
-            throw new AuthException(AuthErrorTypes.InvalidRequest, "Refresh token is missing");
+            logger.LogWarning("User with usernmae: {Username} not found in the database.", username);
+            throw new AuthException(AuthErrorTypes.InvalidRequest, "Username not found");
         }
 
         if (user.RefreshToken != tokenDto.RefreshToken)
@@ -376,14 +375,14 @@ public class AccountController(
         }
 
         user.RefreshToken = await jwtService.GenerateRefreshTokenAsync();
-        user.RefreshTokenExpiryTime = DateTime.Now.AddHours(5);
+        user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(35);
 
         await context.SaveChangesAsync();
 
         return new TokenDto
         {
             AccessToken = await jwtService.GenerateSecurityTokenAsync(user),
-            RefreshToken = await jwtService.GenerateRefreshTokenAsync(),
+            RefreshToken = user.RefreshToken,
             RefreshTokenExpireTime = user.RefreshTokenExpiryTime
         };
     }
