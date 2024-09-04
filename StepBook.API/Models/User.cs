@@ -125,7 +125,14 @@ public class User
     /// The random code of the user.
     /// </summary>
     public string? RandomCode { get; set; }
-    
+
+    /// <summary>
+    /// Refresh token of the user.
+    /// </summary>
     public string? RefreshToken { get; set; }
+
+    /// <summary>
+    /// Refresh token expire time.
+    /// </summary>
     public DateTime RefreshTokenExpireTime { get; set; }
 }

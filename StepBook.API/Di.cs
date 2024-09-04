@@ -89,6 +89,9 @@ public static class Di
         services.AddAWSService<IAmazonS3>();
         services.AddScoped<IBucketService, BucketService>();
 
+        services.AddSingleton<IBlackListService, BlackListService>();
+        services.AddSingleton<BlackListMiddleware>();
+
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);
         services.AddSingleton(jwtConfig);

@@ -33,4 +33,5 @@ public interface IJwtService
     ClaimsPrincipal GetPrincipalFromToken(string token);
     
     string GenerateRefreshToken();
+    string GenerateRefreshTokenForEmail(User user);
 }

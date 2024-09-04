@@ -12,7 +12,7 @@ public class AccountController(
     StepContext context,
     IJwtService jwtService,
     IEmailService emailService,
-    ILogger<AccountController> logger,
+    IBlackListService blackListService,
     IMapper mapper) : ControllerBase
 {
     /// <summary>
@@ -76,11 +76,14 @@ public class AccountController(
             return Unauthorized("Invalid password");
         }
 
+        var refreshToken = jwtService.GenerateRefreshToken();
+        user.RefreshToken = refreshToken;
+        await context.SaveChangesAsync();
         return new UserDto
         {
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
-            RefreshToken = jwtService.GenerateRefreshToken(),
+            RefreshToken = user.RefreshToken,
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
@@ -110,6 +113,31 @@ public class AccountController(
             RefreshTokenExpireTime = user.RefreshTokenExpireTime
         };
     }
+
+    /// <summary>
+    /// Logout a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPost("logout")]
+    [Authorize]
+    public async Task<IActionResult> LogoutAsync([FromBody] TokenDto dto)
+    {
+        var token = dto.Token;
+
+        blackListService.AddTokenToBlackList(token);
+
+        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
+        if (user != null)
+        {
+            user.RefreshToken = null;
+            user.RefreshTokenExpireTime = DateTime.UtcNow;
+            await context.SaveChangesAsync();
+        }
+
+        return Ok("Logged out successfully");
+    }
+
 
     /// <summary>
     /// Signin a user with Google
@@ -302,38 +330,4 @@ public class AccountController(
         return new string(Enumerable.Repeat(chars, length)
             .Select(s => s[random.Next(s.Length)]).ToArray());
     }
-
-    // private async Task<TokenDto> GenerateRefreshTokenAsync(RefreshTokenDto tokenDto)
-    // {
-    //     ArgumentNullException.ThrowIfNull(tokenDto);
-    //
-    //     if (string.IsNullOrEmpty(tokenDto.Token) || string.IsNullOrEmpty(tokenDto.RefreshToken))
-    //         throw new ArgumentNullException(nameof(tokenDto));
-    //
-    //     var principal = jwtService.GetPrincipalFromToken(tokenDto.Token);
-    //     if (principal == null)
-    //         logger.LogError("Invalid token");
-    //
-    //     var email = principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-    //     if (string.IsNullOrEmpty(email))
-    //         logger.LogError("Invalid token");
-    //
-    //     var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
-    //     if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpireTime <= DateTime.Now)
-    //         logger.LogError("Invalid token");
-    //
-    //     var newAccessToken = jwtService.GenerateSecurityToken(user!);
-    //     var newRefreshToken = jwtService.GenerateRefreshToken();
-    //
-    //     user.RefreshToken = newRefreshToken;
-    //     user.RefreshTokenExpireTime = DateTime.Now.AddMinutes(35);
-    //     await context.SaveChangesAsync();
-    //
-    //     return new TokenDto
-    //     {
-    //         Token = newAccessToken,
-    //         RefreshToken = newRefreshToken,
-    //         RefreshTokenExpireTime = user.RefreshTokenExpireTime
-    //     };
-    // }
 }

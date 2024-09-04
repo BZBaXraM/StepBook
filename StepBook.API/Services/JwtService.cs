@@ -1,12 +1,10 @@
-using StepBook.API.Data.Configs;
-
 namespace StepBook.API.Services;
 
 /// <summary>
 /// The JWT service
 /// </summary>
 /// <param name="config"></param>
-public class JwtService(JwtConfig config) : IJwtService
+public class JwtService(JwtConfig config, IBlackListService blackListService) : IJwtService
 {
     /// <summary>
     /// The JWT service configuration
@@ -141,6 +139,11 @@ public class JwtService(JwtConfig config) : IJwtService
 
     public ClaimsPrincipal GetPrincipalFromToken(string token)
     {
+        if (blackListService.IsTokenBlackListed(token))
+        {
+            throw new SecurityTokenException("This token has been blacklisted");
+        }
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(config.Secret);
 
@@ -153,15 +156,41 @@ public class JwtService(JwtConfig config) : IJwtService
             ClockSkew = TimeSpan.Zero
         };
 
-        var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+        var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
         return principal;
     }
+
 
     public string GenerateRefreshToken()
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
+
         rng.GetBytes(randomNumber);
         return Convert.ToBase64String(randomNumber);
+
+        // return Guid.NewGuid().ToString("N").ToLower();
+    }
+
+    public string GenerateRefreshTokenForEmail(User user)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(config.Secret);
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+            }),
+            Expires = DateTime.UtcNow.AddHours(config.Expiration),
+            SigningCredentials =
+                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
     }
 }

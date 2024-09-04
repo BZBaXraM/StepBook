@@ -60,6 +60,8 @@ app.UseCors(x => x
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
+app.UseMiddleware<BlackListMiddleware>();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
