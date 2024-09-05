@@ -308,6 +308,7 @@ public class AccountController(
     /// </summary>
     /// <returns></returns>
     [HttpDelete("delete-account")]
+    [Authorize]
     public async Task<ActionResult> DeleteAccountAsync()
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);

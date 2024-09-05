@@ -53,25 +53,25 @@ public class MemberDto
     /// <summary>
     /// Looking for
     /// </summary>
-    public string LookingFor { get; init; } = null!;
+    public string? LookingFor { get; init; } 
 
     /// <summary>
     /// Interests
     /// </summary>
-    public string Interests { get; init; } = null!;
+    public string? Interests { get; init; }
 
     /// <summary>
     /// City
     /// </summary>
-    public string City { get; init; } = null!;
+    public string? City { get; init; }
 
     /// <summary>
     /// Country
     /// </summary>
-    public string Country { get; init; } = null!;
+    public string? Country { get; init; }
 
     /// <summary>
     /// The photos of the user
     /// </summary>
-    public ICollection<PhotoDto> Photos { get; init; } = [];
+    public ICollection<PhotoDto?> Photos { get; init; } = [];
 }

@@ -1,6 +1,3 @@
-using StepBook.API.Contracts.Interfaces;
-using StepBook.API.Services;
-
 namespace StepBook.API.Controllers;
 
 /// <summary>
@@ -17,7 +14,7 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     /// Get all users
     /// </summary>
     /// <returns></returns>
-    [HttpGet] 
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsersAsync([FromQuery] PageParams pageParams)
     {
         pageParams.CurrentUsername = User.GetUsername()!;
@@ -64,6 +61,11 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     [HttpPut]
     public async Task<ActionResult> UpdateUserAsync(MemberUpdateDto dto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         if (string.IsNullOrEmpty(User.GetUsername()))
         {
             return BadRequest("Username claim not found");
