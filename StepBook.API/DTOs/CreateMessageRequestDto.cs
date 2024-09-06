@@ -9,9 +9,19 @@ public class CreateMessageRequestDto
     /// Recipient username.
     /// </summary>
     public required string RecipientUsername { get; set; }
+
     /// <summary>
     /// Message content.
     /// </summary>
     public required string Content { get; set; }
-    public byte[]? File { get; set; }
+
+    /// <summary>
+    /// File URL.
+    /// </summary>
+    public string? FileUrl { get; set; }
+
+    /// <summary>
+    /// Message type.
+    /// </summary>
+    public string? MessageType { get; set; }
 }

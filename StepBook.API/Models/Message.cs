@@ -64,8 +64,11 @@ public class Message
     /// Recipient
     /// </summary>
     public User Recipient { get; set; } = null!;
+
     /// <summary>
-    /// File
+    /// File URL
     /// </summary>
-    public byte[]? File { get; set; }
+    public string? FileUrl { get; set; }
+
+    public string? MessageType { get; set; } = "text"; // Добавленное поле
 }

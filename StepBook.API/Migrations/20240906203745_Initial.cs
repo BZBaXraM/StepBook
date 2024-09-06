@@ -111,7 +111,8 @@ namespace StepBook.API.Migrations
                     RecipientDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     SenderId = table.Column<int>(type: "integer", nullable: false),
                     RecipientId = table.Column<int>(type: "integer", nullable: false),
-                    File = table.Column<byte[]>(type: "bytea", nullable: true)
+                    FileUrl = table.Column<string>(type: "text", nullable: true),
+                    MessageType = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

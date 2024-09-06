@@ -66,7 +66,8 @@ public class MessageHub(
             SenderUsername = sender.UserName,
             RecipientUsername = recipient.UserName,
             Content = dto.Content,
-            File = dto.File
+            FileUrl = dto.FileUrl,
+            MessageType = dto.MessageType
         };
 
         var groupName = GetGroupName(sender.UserName, recipient.UserName);

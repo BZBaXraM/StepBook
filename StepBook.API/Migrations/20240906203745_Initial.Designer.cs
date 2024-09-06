@@ -12,7 +12,7 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240903205043_Initial")]
+    [Migration("20240906203745_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -69,11 +69,14 @@ namespace StepBook.API.Migrations
                     b.Property<DateTime?>("DateRead")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("File")
-                        .HasColumnType("bytea");
+                    b.Property<string>("FileUrl")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("MessageSent")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("MessageType")
+                        .HasColumnType("text");
 
                     b.Property<bool>("RecipientDeleted")
                         .HasColumnType("boolean");
