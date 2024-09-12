@@ -155,6 +155,28 @@ public class AccountController(
     }
 
     /// <summary>
+    /// Change the username of a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPut("change-username")]
+    [Authorize]
+    public async Task<ActionResult> ChangeUsernameAsync([FromBody] ChangeUsernameRequestDto dto)
+    {
+        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        user.UserName = dto.NewUsername;
+        await context.SaveChangesAsync();
+
+        return Ok("Username changed successfully");
+    }
+
+    /// <summary>
     ///     Forget the password of a user
     /// </summary>
     /// <param name="dto"></param>
