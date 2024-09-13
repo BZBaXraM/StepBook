@@ -104,7 +104,7 @@ public class MessageHub(
         if (group == null)
         {
             group = new Group { Name = groupName };
-            unitOfWork.MessageRepository.AddGroup(group);
+            await unitOfWork.MessageRepository.AddGroup(group);
         }
 
         group.Connections.Add(connection);
