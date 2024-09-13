@@ -1,5 +1,3 @@
-using StepBook.API.Repositories.Interfaces;
-
 namespace StepBook.API.Repositories.Classes;
 
 /// <summary>
@@ -8,13 +6,13 @@ namespace StepBook.API.Repositories.Classes;
 /// <param name="context"></param>
 public class LikesRepository(StepContext context, IMapper mapper) : ILikesRepository
 {
-    public void AddLike(UserLike like)
+    public async Task AddLikeAsync(UserLike like)
     {
-        context.Likes.Add(like);
+        await context.Likes.AddAsync(like);
     }
 
     public void DeleteLike(UserLike like)
-    {
+    { 
         context.Likes.Remove(like);
     }
 

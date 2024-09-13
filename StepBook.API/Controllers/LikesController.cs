@@ -1,7 +1,4 @@
-using StepBook.API.Contracts.Interfaces;
-
 namespace StepBook.API.Controllers;
-
 
 /// <summary>
 /// Likes controller
@@ -35,9 +32,9 @@ public class LikesController(IUnitOfWork unitOfWork) : ControllerBase
                 TargetUserId = targetUserId
             };
 
-            unitOfWork.LikeRepository.AddLike(like);
+            await unitOfWork.LikeRepository.AddLikeAsync(like);
         }
-        else 
+        else
         {
             unitOfWork.LikeRepository.DeleteLike(existingLike);
         }
@@ -63,7 +60,7 @@ public class LikesController(IUnitOfWork unitOfWork) : ControllerBase
     /// <param name="likesParams"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUserLikes([FromQuery]LikesParams likesParams)
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUserLikes([FromQuery] LikesParams likesParams)
     {
         likesParams.UserId = User.GetUserId();
         var users = await unitOfWork.LikeRepository.GetUserLikes(likesParams);
