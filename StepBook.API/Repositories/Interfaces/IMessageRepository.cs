@@ -31,6 +31,8 @@ public interface IMessageRepository
     /// <returns></returns>
     Task<PageList<MessageDto>> GetMessagesForUserAsync(MessageParams messageParams);
 
+    Task<List<Message>> GetPendingMessagesAsync();
+
     /// <summary>
     /// Get message thread.
     /// </summary>
@@ -43,7 +45,7 @@ public interface IMessageRepository
     /// 
     /// </summary>
     /// <param name="group"></param>
-    Task AddGroup(Group group);
+    Task AddGroupAsync(Group group);
 
     /// <summary>
     /// Remove connection.
@@ -77,4 +79,5 @@ public interface IMessageRepository
     /// <param name="username"></param>
     /// <returns></returns>
     Task<int> CountOfNewMessagesAsync(string username);
+    Task UpdateMessageAsync(MessageDto message);
 }

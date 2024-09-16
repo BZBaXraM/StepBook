@@ -1,3 +1,4 @@
+global using Microsoft.AspNetCore.SignalR;
 global using AutoMapper;
 global using Profile = AutoMapper.Profile;
 global using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,6 @@ global using FluentValidation.AspNetCore;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.OpenApi.Models;
-global using StepBook.API.Auth;
 global using StepBook.API.DTOs.Validation;
 global using StepBook.API.Mappings;
 global using StepBook.API.Providers;

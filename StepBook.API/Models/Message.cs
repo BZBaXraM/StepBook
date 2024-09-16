@@ -69,6 +69,4 @@ public class Message
     /// File URL
     /// </summary>
     public string? FileUrl { get; set; }
-
-    public string? MessageType { get; set; } = "text"; // Добавленное поле
 }

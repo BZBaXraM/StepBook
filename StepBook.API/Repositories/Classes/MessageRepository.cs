@@ -13,7 +13,7 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
     /// Add group to the context.
     /// </summary>
     /// <param name="group"></param>
-    public async Task AddGroup(Group group)
+    public async Task AddGroupAsync(Group group)
     {
         await context.Groups.AddAsync(group);
     }
@@ -114,6 +114,16 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
             messageParams.PageSize);
     }
 
+    public async Task<List<Message>> GetPendingMessagesAsync()
+    {
+        var query = context.Messages
+            .Where(x => x.DateRead == null)
+            .OrderBy(x => x.MessageSent)
+            .AsQueryable();
+
+        return await query.ToListAsync();
+    }
+
     /// <summary>
     /// Get message thread.
     /// </summary>
@@ -154,6 +164,20 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
     {
         return await context.Messages
             .CountAsync(x => x.Recipient.UserName == username && x.DateRead == null);
+    }
+
+    public async Task UpdateMessageAsync(MessageDto message)
+    {
+        var existingMessage = await context.Messages.FindAsync(message.Id);
+
+        if (existingMessage == null)
+            return;
+
+        context.Entry(existingMessage).CurrentValues.SetValues(message);
+
+        context.Messages.Update(existingMessage);
+
+        await context.SaveChangesAsync();
     }
 
 

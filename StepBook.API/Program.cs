@@ -1,6 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -60,8 +59,8 @@ app.UseCors(x => x
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
-app.UseMiddleware<BlackListMiddleware>();
 
+app.UseMiddleware<BlackListMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

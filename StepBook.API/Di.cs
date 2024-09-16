@@ -127,14 +127,6 @@ public static class Di
                 };
             });
 
-
-        services.AddAuthorizationBuilder()
-            .AddPolicy("CanTest", policy =>
-            {
-                policy.RequireAuthenticatedUser();
-                policy.Requirements.Add(new CanTestRequirement());
-            });
-
         return services;
     }
 }

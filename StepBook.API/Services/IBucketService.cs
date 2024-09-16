@@ -11,5 +11,7 @@ public interface IBucketService
     /// <param name="file"></param>
     /// <returns></returns>
     Task UploadFileAsync(IFormFile file);
+    Task<string> GetFileUrlAsync(string fileName);
+    Task<List<string>> GetAllFilesAsync();
     
 }
