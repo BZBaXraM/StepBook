@@ -111,23 +111,6 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
 
         return BadRequest("Problem deleting the message");
     }
-
-    [HttpPut("update-message/{id:int}")]
-    public async Task<ActionResult<MessageDto>> UpdateMessageAsync(int id, MessageUpdateDto dto)
-    {
-        var message = await unitOfWork.MessageRepository.GetMessageAsync(id);
-
-        if (message == null) return BadRequest("Cannot update this message");
-
-        message.Content = dto.Content;
-
-        await unitOfWork.MessageRepository.UpdateMessageAsync(message);
-
-        if (await unitOfWork.Complete()) return Ok(mapper.Map<MessageDto>(message));
-
-        return BadRequest("Problem updating the message");
-    }
-
     /// <summary>
     /// Count of new messages
     /// </summary>

@@ -79,11 +79,4 @@ public interface IMessageRepository
     /// <param name="username"></param>
     /// <returns></returns>
     Task<int> CountOfNewMessagesAsync(string username);
-
-    /// <summary>
-    /// Update message.
-    /// </summary>
-    /// <param name="message"></param>
-    /// <returns></returns>
-    Task UpdateMessageAsync(Message message);
 }
