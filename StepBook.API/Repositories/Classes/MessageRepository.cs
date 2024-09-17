@@ -166,17 +166,9 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
             .CountAsync(x => x.Recipient.UserName == username && x.DateRead == null);
     }
 
-    public async Task UpdateMessageAsync(MessageDto message)
+    public async Task UpdateMessageAsync(Message message)
     {
-        var existingMessage = await context.Messages.FindAsync(message.Id);
-
-        if (existingMessage == null)
-            return;
-
-        context.Entry(existingMessage).CurrentValues.SetValues(message);
-
-        context.Messages.Update(existingMessage);
-
+        context.Messages.Update(message);
         await context.SaveChangesAsync();
     }
 
