@@ -1,5 +1,5 @@
 services:
-  stepbook-db:
+  account-db:
     image: postgres:latest
 
 volumes:

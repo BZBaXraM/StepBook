@@ -1,10 +1,10 @@
 services:
-  stepbook-db:
-    container_name: stepbook-db
+  account-db:
+    container_name: account-db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=StepbookDb
+      - POSTGRES_DB=AccountDb
     restart: always
     ports:
       - "5432:5432"

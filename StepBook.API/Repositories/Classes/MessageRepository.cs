@@ -1,5 +1,3 @@
-using StepBook.API.Repositories.Interfaces;
-
 namespace StepBook.API.Repositories.Classes;
 
 /// <summary>
@@ -112,16 +110,6 @@ public class MessageRepository(StepContext context, IMapper mapper) : IMessageRe
 
         return await PageList<MessageDto>.CreateAsync(messages, messageParams.PageNumber,
             messageParams.PageSize);
-    }
-
-    public async Task<List<Message>> GetPendingMessagesAsync()
-    {
-        var query = context.Messages
-            .Where(x => x.DateRead == null)
-            .OrderBy(x => x.MessageSent)
-            .AsQueryable();
-
-        return await query.ToListAsync();
     }
 
     /// <summary>
