@@ -3,7 +3,7 @@ namespace StepBook.API;
 /// <summary>
 /// Dependency injection extension methods.
 /// </summary>
-public static class Di
+public static class DiExtension
 {
     /// <summary>
     /// Add services to the container.
