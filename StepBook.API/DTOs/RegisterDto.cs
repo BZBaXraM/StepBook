@@ -43,5 +43,5 @@ public class RegisterDto
     /// <summary>
     /// The password
     /// </summary>
-    public required string Password { get; set; } = null!;
+    public required string Password { get; set; } 
 }

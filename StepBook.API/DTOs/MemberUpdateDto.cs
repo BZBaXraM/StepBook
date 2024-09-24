@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace StepBook.API.DTOs;
 
 /// <summary>
@@ -25,12 +23,10 @@ public class MemberUpdateDto
     /// <summary>
     /// City
     /// </summary>
-    [Required(ErrorMessage = "City is required")]
     public string? City { get; set; }
 
     /// <summary>
     /// Country
     /// </summary>
-    [Required(ErrorMessage = "Country is required")]
     public string? Country { get; set; }
 }

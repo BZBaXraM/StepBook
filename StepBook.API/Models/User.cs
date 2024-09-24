@@ -21,14 +21,9 @@ public class User
     public required string UserName { get; set; }
 
     /// <summary>
-    /// The password hash of the user.
+    /// The password of the user.
     /// </summary>
-    public byte[] PasswordHash { get; set; }
-
-    /// <summary>
-    /// The password salt of the user.
-    /// </summary>
-    public byte[] PasswordSalt { get; set; }
+    public required string Password { get; set; }
 
     /// <summary>
     /// The email of the user.

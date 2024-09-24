@@ -24,12 +24,28 @@ public class AccountController(
     public async Task<ActionResult<UserDto>> RegisterAsync([FromBody] RegisterDto dto)
     {
         var user = mapper.Map<User>(dto);
-
-        using var hmac = new HMACSHA512();
-
         user.UserName = dto.Username;
-        user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password));
-        user.PasswordSalt = hmac.Key;
+
+
+        user.Password = PasswordHash(dto.Password);
+
+        if (await context.Users.AnyAsync(x => x.Email == user.Email))
+        {
+            return BadRequest("Email already exists");
+        }
+
+        if (await context.Users.AnyAsync(x => x.UserName == user.UserName))
+        {
+            return BadRequest("Username already exists");
+        }
+
+        if (!ModelState.IsValid) return BadRequest();
+
+        if (!PasswordVerify(dto.Password, user.Password))
+        {
+            return BadRequest("Invalid password");
+        }
+
         user.EmailConfirmationToken = jwtService.GenerateEmailConfirmationToken(user);
         user.RefreshToken = jwtService.GenerateRefreshToken();
 
@@ -60,10 +76,7 @@ public class AccountController(
             return Unauthorized("Invalid username, email, or email not confirmed.");
         }
 
-        using var hmac = new HMACSHA512(user.PasswordSalt);
-        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password));
-
-        if (!computedHash.SequenceEqual(user.PasswordHash))
+        if (!PasswordVerify(dto.Password, user.Password))
         {
             return Unauthorized("Invalid password");
         }
@@ -212,12 +225,11 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        using var hmac = new HMACSHA512(user.PasswordSalt);
-        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.CurrentPassword));
+        user.Password = PasswordHash(dto.CurrentPassword);
 
-        if (!computedHash.SequenceEqual(user.PasswordHash))
+        if (!PasswordVerify(dto.CurrentPassword, user.Password))
         {
-            return Unauthorized("Invalid password");
+            return BadRequest("Invalid password");
         }
 
         if (dto.NewPassword != dto.ConfirmNewPassword)
@@ -225,9 +237,8 @@ public class AccountController(
             return BadRequest("Passwords do not match");
         }
 
-        using var newHmac = new HMACSHA512();
-        user.PasswordHash = newHmac.ComputeHash(Encoding.UTF8.GetBytes(dto.NewPassword));
-        user.PasswordSalt = newHmac.Key;
+        user.Password = PasswordHash(dto.NewPassword);
+
 
         await context.SaveChangesAsync();
 
@@ -302,9 +313,7 @@ public class AccountController(
             return BadRequest("Invalid reset code");
         }
 
-        using var hmac = new HMACSHA512();
-        user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.NewPassword));
-        user.PasswordSalt = hmac.Key;
+        user.Password = PasswordHash(dto.NewPassword);
         user.RandomCode = null;
 
         await context.SaveChangesAsync();
@@ -338,5 +347,15 @@ public class AccountController(
 
         return new string(Enumerable.Repeat(chars, length)
             .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+
+    private string PasswordHash(string password)
+    {
+        return BCrypt.Net.BCrypt.HashPassword(password);
+    }
+
+    private bool PasswordVerify(string password, string hash)
+    {
+        return BCrypt.Net.BCrypt.Verify(password, hash);
     }
 }
