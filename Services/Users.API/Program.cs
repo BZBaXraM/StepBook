@@ -1,7 +1,3 @@
-using Account.API.Extensions;
-using Account.API.Middleware;
-using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,9 +6,6 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AuthenticationAndAuthorization(builder.Configuration);
-builder.Services.AddSwagger(builder.Configuration);
 
 var app = builder.Build();
 
@@ -23,18 +16,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-app.UseMiddleware<ExceptionMiddleware>();
-
 app.UseHttpsRedirection();
 
-app.UseMiddleware<BlackListMiddleware>();
-
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
-await app.RunAsync();
+app.Run();

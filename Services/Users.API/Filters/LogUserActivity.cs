@@ -1,13 +1,13 @@
-using Account.API.Data;
-using Account.API.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Users.API.Data;
+using Users.API.Extensions;
 
-namespace Account.API.Filters;
+namespace Users.API.Filters;
 
 /// <summary>
 /// Log the user activity filter
 /// </summary>
-public class LogUserActivity(AccountContext accountContext) : IAsyncActionFilter
+public class LogUserActivity(UserContext userContext) : IAsyncActionFilter
 {
     /// <summary>
     /// Log the user activity
@@ -22,12 +22,12 @@ public class LogUserActivity(AccountContext accountContext) : IAsyncActionFilter
 
         var userId = resultContext.HttpContext.User.GetUserId();
 
-        var user = await accountContext.Users.FindAsync(userId);
+        var user = await userContext.Users.FindAsync(userId);
 
         if (user == null) return;
 
         user.LastActive = DateTime.UtcNow;
 
-        await accountContext.SaveChangesAsync();
+        await userContext.SaveChangesAsync();
     }
 }

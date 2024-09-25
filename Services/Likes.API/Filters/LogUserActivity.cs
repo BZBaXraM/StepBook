@@ -1,13 +1,13 @@
-using Account.API.Data;
-using Account.API.Extensions;
+using Likes.API.Data;
+using Likes.API.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Account.API.Filters;
+namespace Likes.API.Filters;
 
 /// <summary>
 /// Log the user activity filter
 /// </summary>
-public class LogUserActivity(AccountContext accountContext) : IAsyncActionFilter
+public class LogUserActivity(LikeContext likeContext) : IAsyncActionFilter
 {
     /// <summary>
     /// Log the user activity
@@ -22,12 +22,12 @@ public class LogUserActivity(AccountContext accountContext) : IAsyncActionFilter
 
         var userId = resultContext.HttpContext.User.GetUserId();
 
-        var user = await accountContext.Users.FindAsync(userId);
+        var user = await likeContext.Users.FindAsync(userId);
 
         if (user == null) return;
 
         user.LastActive = DateTime.UtcNow;
 
-        await accountContext.SaveChangesAsync();
+        await likeContext.SaveChangesAsync();
     }
 }

@@ -1,6 +1,13 @@
 services:
   account-db:
     image: postgres:latest
+    
+  account.api:
+    image: ${DOCKER_REGISTRY-}account.api
+    build:
+      context: .
+      dockerfile: Services/Account.API/Dockerfile
+      
 
 volumes:
   postgres_account:

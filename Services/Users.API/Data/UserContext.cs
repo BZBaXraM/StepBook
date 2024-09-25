@@ -1,45 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using StepBook.Domain.Entities;
 
-namespace Account.API.Database;
+namespace Users.API.Data;
 
-public class AccountContext(DbContextOptions<AccountContext> options) : DbContext(options)
+public class UserContext(DbContextOptions<UserContext> options) : DbContext(options)
 {
     public DbSet<User> Users => Set<User>();
-
-    /// <summary>
-    /// Likes table.
-    /// </summary>
     public DbSet<UserLike> Likes => Set<UserLike>();
-
-    /// <summary>
-    /// Messages table.
-    /// </summary>
     public DbSet<Message> Messages => Set<Message>();
-
-    /// <summary>
-    /// Groups table.
-    /// </summary>
     public DbSet<Group> Groups => Set<Group>();
-
-    /// <summary>
-    /// Connections table.
-    /// </summary>
     public DbSet<Connection> Connections => Set<Connection>();
 
-    /// <summary>
-    /// Configure the database context.
-    /// </summary>
-    /// <param name="modelBuilder"></param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
-        });
 
         modelBuilder.Entity<UserLike>()
             .HasKey(k => new { k.SourceUserId, k.TargetUserId });

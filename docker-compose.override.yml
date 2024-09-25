@@ -10,3 +10,19 @@ services:
       - "5432:5432"
     volumes:
       - postgres_account:/var/lib/postgresql/data
+
+  account.api:
+      environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_HTTP_PORTS=8080
+        - ASPNETCORE_HTTPS_PORTS=8081
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+        - ConnectionStrings__Database=Server=account-db;Port=5432;Database=AccountDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      depends_on:
+        - account-db
+      ports:
+        - "6000:8080"
+        - "6060:8081"
+      volumes:
+        - ~/.aspnet/https:/https:ro

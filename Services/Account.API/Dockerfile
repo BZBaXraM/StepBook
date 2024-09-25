@@ -8,6 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Account.API/Account.API.csproj", "Services/Account.API/"]
+COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
+COPY ["StepBook.Domain/StepBook.Domain.csproj", "StepBook.Domain/"]
 RUN dotnet restore "Services/Account.API/Account.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Account.API"

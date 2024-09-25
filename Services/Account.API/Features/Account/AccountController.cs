@@ -1,4 +1,4 @@
-using Account.API.Database;
+using Account.API.Data;
 using Account.API.Filters;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
