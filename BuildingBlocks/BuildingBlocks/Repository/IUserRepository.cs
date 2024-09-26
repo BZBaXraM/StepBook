@@ -1,6 +1,6 @@
+using BuildingBlocks.Shared;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
-using Users.API.Shared;
 
 namespace Users.API.Data;
 

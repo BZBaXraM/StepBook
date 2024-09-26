@@ -1,3 +1,5 @@
+using StepBook.Domain.Shared;
+
 namespace Likes.API.Shared;
 
 public class LikesParams : PaginationParams
