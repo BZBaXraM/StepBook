@@ -39,6 +39,11 @@ public class StepContext : DbContext
     public DbSet<Connection> Connections => Set<Connection>();
 
     /// <summary>
+    /// UserLikes table.
+    /// </summary>
+    public DbSet<UserLike> UserLikes => Set<UserLike>();
+
+    /// <summary>
     /// Configure the database context.
     /// </summary>
     /// <param name="modelBuilder"></param>
@@ -52,8 +57,6 @@ public class StepContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
-        modelBuilder.Entity<UserLike>()
-            .HasKey(k => new { k.SourceUserId, k.TargetUserId });
 
         modelBuilder.Entity<UserLike>()
             .HasOne(s => s.SourceUser)
