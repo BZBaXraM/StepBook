@@ -1,8 +1,8 @@
-using Likes.API.Extensions;
+using BuildingBlocks.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using StepBook.DatabaseLayer.Data;
 
-namespace Likes.API.Filters;
+namespace Bucket.API.Filters;
 
 /// <summary>
 /// Log the user activity filter

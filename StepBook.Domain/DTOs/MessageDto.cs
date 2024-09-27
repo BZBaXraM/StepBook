@@ -1,4 +1,4 @@
-namespace StepBook.API.DTOs;
+namespace StepBook.Domain.DTOs;
 
 /// <summary>
 /// Data transfer object for message

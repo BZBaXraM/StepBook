@@ -1,13 +1,15 @@
 using AutoMapper;
+using BuildingBlocks.Extensions;
+using BuildingBlocks.Repository;
+using BuildingBlocks.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StepBook.DatabaseLayer.Data;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
-using Users.API.Data;
 using Users.API.Extensions;
 using Users.API.Filters;
 using Users.API.Services;
-using Users.API.Shared;
 
 namespace Users.API.Features.User;
 
@@ -15,7 +17,7 @@ namespace Users.API.Features.User;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class UsersController(UserContext context, IUserRepository repository, IMapper mapper, IPhotoService service)
+public class UsersController(StepContext context, IUserRepository repository, IMapper mapper, IPhotoService service)
     : ControllerBase
 {
     /// <summary>

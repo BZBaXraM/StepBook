@@ -1,6 +1,8 @@
-namespace Bucket.API.Feautures.Bucket;
+namespace Bucket.API.Features.Bucket;
 
-public class IBucketService
+public interface IBucketService
 {
-    
+    Task UploadFileAsync(IFormFile file);
+    Task<string> GetFileUrlAsync(string fileName);
+    Task<List<string>> GetAllFilesAsync();
 }

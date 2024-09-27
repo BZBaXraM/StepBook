@@ -1,6 +1,6 @@
 using StepBook.Domain.Shared;
 
-namespace Users.API.Shared;
+namespace BuildingBlocks.Shared;
 
 public class PageParams : PaginationParams
 {

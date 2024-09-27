@@ -1,8 +1,8 @@
-using Messages.API.Shared;
+using BuildingBlocks.Shared;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
-namespace Messages.API.Data;
+namespace BuildingBlocks.Repository;
 
 public interface IMessageRepository
 {

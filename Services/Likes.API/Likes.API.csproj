@@ -23,18 +23,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
+      <ProjectReference Include="..\..\StepBook.DatabaseLayer\StepBook.DatabaseLayer.csproj" />
       <ProjectReference Include="..\..\StepBook.Domain\StepBook.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Features\Likes\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

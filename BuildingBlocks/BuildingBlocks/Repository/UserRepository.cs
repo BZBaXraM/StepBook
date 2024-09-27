@@ -1,13 +1,14 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using BuildingBlocks.Shared;
 using Microsoft.EntityFrameworkCore;
+using StepBook.DatabaseLayer.Data;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
-using Users.API.Shared;
 
-namespace Users.API.Data;
+namespace BuildingBlocks.Repository;
 
-public class UserRepository(UserContext context, IMapper mapper) : IUserRepository
+public class UserRepository(StepContext context, IMapper mapper) : IUserRepository
 {
     /// <summary>
     /// Update the user
@@ -52,7 +53,6 @@ public class UserRepository(UserContext context, IMapper mapper) : IUserReposito
             .Include(p => p.Photos)
             .SingleOrDefaultAsync(u => u.UserName == username);
     }
-
     /// <summary>
     /// Get the members
     /// </summary>

@@ -1,13 +1,61 @@
 services:
   account-db:
     image: postgres:latest
-    
+  
+  user-db:
+    image: postgres:latest
+  
+  likes-db:
+    image: postgres:latest
+  
+  messages-db:
+    image: postgres:latest
+  
+  bucket-db:
+    image: postgres:latest
+  
   account.api:
     image: ${DOCKER_REGISTRY-}account.api
     build:
       context: .
       dockerfile: Services/Account.API/Dockerfile
-      
+  
+  user.api:
+    image: ${DOCKER_REGISTRY-}user.api
+    build:
+      context: .
+      dockerfile: Services/Users.API/Dockerfile
+  
+  likes.api:
+    image: ${DOCKER_REGISTRY-}likes.api
+    build:
+      context: .
+      dockerfile: Services/Likes.API/Dockerfile
+  
+  messages.api:
+    image: ${DOCKER_REGISTRY-}messages.api
+    build:
+      context: .
+      dockerfile: Services/Messages.API/Dockerfile
+  
+  bucket.api:
+    image: ${DOCKER_REGISTRY-}bucket.api
+    build:
+      context: .
+      dockerfile: Services/Bucket.API/Dockerfile
+  
+  gateway.api:
+    image: ${DOCKER_REGISTRY-}gateway
+    build:
+      context: .
+      dockerfile: StepBook.API.Gateway/Dockerfile
+
 
 volumes:
   postgres_account:
+  postgres_user:
+  postgres_likes:
+  postgres_messages:
+  postgres_bucket:
+  
+    

@@ -1,3 +1,76 @@
 {
-
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:6065"
+  },
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/api/account/{everything}",
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "https",
+      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "account.api",
+          "Port": 8081
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/users/{everything}",
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "https",
+      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "users.api",
+          "Port": 8081
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/api/basket/{everything}",
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "https",
+      "UpstreamHttpMethod": ["GET", "POST"],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "basket.api",
+          "Port": 8081
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/messages/{everything}",
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "https",
+      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "messages.api",
+          "Port": 8081
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/api/likes/{everything}",
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "https",
+      "UpstreamHttpMethod": ["GET", "POST"],
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "likes.api",
+          "Port": 8081
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    }
+  ]
 }

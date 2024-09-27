@@ -1,9 +1,9 @@
-using Account.API.Data;
 using Account.API.Filters;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StepBook.DatabaseLayer.Data;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
@@ -13,7 +13,7 @@ namespace Account.API.Features.Account;
 [Route("api/[controller]")]
 [ApiController]
 public class AccountController(
-    AccountContext context,
+    StepContext context,
     IMapper mapper,
     IEmailService emailService,
     IJwtService jwtService,
@@ -66,11 +66,7 @@ public class AccountController(
         }
         catch (Exception ex)
         {
-            // Log the exception details (you can use a logging framework here)
-            Console.WriteLine(ex);
-
-            // Return a generic error message
-            return StatusCode(500, "An error occurred while processing your request.");
+            return StatusCode(500, $"An error occurred while processing your request. {ex.Message}");
         }
     }
 

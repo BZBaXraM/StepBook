@@ -1,5 +1,4 @@
 using AutoMapper;
-using StepBook.API.DTOs;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 

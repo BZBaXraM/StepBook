@@ -1,9 +1,8 @@
 using BuildingBlocks.Shared;
-using Likes.API.Shared;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
-namespace Likes.API.Data;
+namespace BuildingBlocks.Repository;
 
 public interface ILikesRepository
 {

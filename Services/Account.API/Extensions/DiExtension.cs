@@ -1,5 +1,4 @@
 using System.Text;
-using Account.API.Data;
 using Account.API.Features.Account;
 using Account.API.Filters;
 using Account.API.Mappings;
@@ -11,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StepBook.API.Services;
+using StepBook.DatabaseLayer.Data;
 
 namespace Account.API.Extensions;
 
@@ -19,7 +19,7 @@ public static class DiExtension
     public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
-        services.AddDbContext<AccountContext>(options =>
+        services.AddDbContext<StepContext>(options =>
         {
             options.UseNpgsql(configuration.GetConnectionString("Database"));
         });
@@ -86,6 +86,22 @@ public static class DiExtension
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtConfig.Secret)),
                     ValidateIssuer = false,
                     ValidateAudience = false
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        context.Token = string.IsNullOrEmpty(accessToken) switch
+                        {
+                            false when path.StartsWithSegments("/hubs") => accessToken,
+                            _ => context.Token
+                        };
+
+                        return Task.CompletedTask;
+                    }
                 };
             });
 

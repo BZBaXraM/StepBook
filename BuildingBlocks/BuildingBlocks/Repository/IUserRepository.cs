@@ -2,7 +2,7 @@ using BuildingBlocks.Shared;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
-namespace Users.API.Data;
+namespace BuildingBlocks.Repository;
 
 public interface IUserRepository
 {

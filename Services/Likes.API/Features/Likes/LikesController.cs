@@ -1,9 +1,11 @@
-using Likes.API.Data;
+using BuildingBlocks.Extensions;
+using BuildingBlocks.Repository;
+using BuildingBlocks.Shared;
 using Likes.API.Extensions;
 using Likes.API.Filters;
-using Likes.API.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StepBook.DatabaseLayer.Data;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
@@ -16,7 +18,7 @@ namespace Likes.API.Features.Likes;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class LikesController(ILikesRepository repository, LikeContext context) : ControllerBase
+public class LikesController(ILikesRepository repository, StepContext context) : ControllerBase
 {
     /// <summary>
     /// Toggle like - like or unlike a user

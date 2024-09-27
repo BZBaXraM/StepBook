@@ -10,19 +10,155 @@ services:
       - "5432:5432"
     volumes:
       - postgres_account:/var/lib/postgresql/data
+  
+  user-db:
+    container_name: user-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=UserDb
+    restart: always
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_user:/var/lib/postgresql/data
+  
+  likes-db:
+    container_name: likes-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=LikesDb
+    restart: always
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_likes:/var/lib/postgresql/data
+  
+  messages-db:
+    container_name: messages-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=MessagesDb
+    restart: always
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_messages:/var/lib/postgresql/data
+  
+  bucket-db:
+    container_name: bucket-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=BucketDb
+    restart: always
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_bucket:/var/lib/postgresql/data
 
   account.api:
-      environment:
-        - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_HTTP_PORTS=8080
-        - ASPNETCORE_HTTPS_PORTS=8081
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-        - ConnectionStrings__Database=Server=account-db;Port=5432;Database=AccountDb;User Id=postgres;Password=postgres;Include Error Detail=true
-      depends_on:
-        - account-db
-      ports:
-        - "6000:8080"
-        - "6060:8081"
-      volumes:
-        - ~/.aspnet/https:/https:ro
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__Database=Server=account-db;Port=5432;Database=AccountDb;User Id=postgres;Password=postgres;Include Error Detail=true
+    depends_on:
+      - account-db
+    ports:
+      - "6000:8080"
+      - "6060:8081"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  
+  user.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__Database=Server=user-db;Port=5432;Database=UserDb;User Id=postgres;Password=postgres;Include Error Detail=true
+    depends_on:
+      - user-db
+    ports:
+      - "6001:8080"
+      - "6061:8081"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  
+  likes.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__Database=Server=likes-db;Port=5432;Database=LikeDb;User Id=postgres;Password=postgres;Include Error Detail=true
+    depends_on:
+      - likes-db
+    ports:
+      - "6002:8080"
+      - "6062:8081"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  
+  messages.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__Database=Server=messages-db;Port=5432;Database=MessagesDb;User Id=postgres;Password=postgres;Include Error Detail=true
+    depends_on:
+      - messages-db
+    ports:
+      - "6003:8080"
+      - "6063:8081"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  
+  bucket.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__Database=Server=bucket-db;Port=5432;Database=BucketDb;User Id=postgres;Password=postgres;Include Error Detail=true
+    depends_on:
+      - bucket-db
+    ports:
+      - "6004:8080"
+      - "6064:8081"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  
+  gateway.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__Database=Server=account-db;Port=5432;Database=AccountDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=user-db;Port=5432;Database=UserDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=likes-db;Port=5432;Database=LikeDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=messages-db;Port=5432;Database=MessagesDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=bucket-db;Port=5432;Database=BucketDb;User Id=postgres;Password=postgres;Include Error Detail=true
+    depends_on:
+      - account-db
+      - user-db
+      - likes-db
+      - messages-db
+      - bucket-db
+    ports:
+      - "6005:8080"
+      - "6065:8081"
+    volumes:
+      - ~/.aspnet/https:/https:ro

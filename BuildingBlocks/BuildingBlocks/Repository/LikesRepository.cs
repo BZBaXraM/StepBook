@@ -1,13 +1,12 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BuildingBlocks.Shared;
-using Likes.API.Shared;
 using Microsoft.EntityFrameworkCore;
 using StepBook.DatabaseLayer.Data;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
-namespace Likes.API.Data;
+namespace BuildingBlocks.Repository;
 
 public class LikesRepository(StepContext context, IMapper mapper) : ILikesRepository
 {

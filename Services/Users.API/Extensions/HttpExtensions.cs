@@ -1,4 +1,5 @@
 using System.Text.Json;
+using BuildingBlocks.Shared;
 using Users.API.Shared;
 
 namespace Users.API.Extensions;

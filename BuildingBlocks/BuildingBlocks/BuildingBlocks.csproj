@@ -11,4 +11,9 @@
       <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\StepBook.DatabaseLayer\StepBook.DatabaseLayer.csproj" />
+      <ProjectReference Include="..\..\StepBook.Domain\StepBook.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
