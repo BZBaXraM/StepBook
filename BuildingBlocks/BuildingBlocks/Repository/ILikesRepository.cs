@@ -1,3 +1,4 @@
+using BuildingBlocks.Shared;
 using Likes.API.Shared;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
