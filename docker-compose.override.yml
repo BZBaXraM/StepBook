@@ -158,7 +158,7 @@ services:
       - messages-db
       - bucket-db
     ports:
-      - "6005:8080"
-      - "6065:8081"
+      - "7000:8080"
+      - "7055:8081"
     volumes:
       - ~/.aspnet/https:/https:ro

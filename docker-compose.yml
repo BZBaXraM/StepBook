@@ -1,54 +1,87 @@
+networks:
+  backend:
+    driver: bridge
+
 services:
   account-db:
     image: postgres:latest
+    networks:
+      - backend
+  
   
   user-db:
     image: postgres:latest
+    networks:
+      - backend
   
   likes-db:
     image: postgres:latest
+    networks:
+      - backend
   
   messages-db:
     image: postgres:latest
+    networks:
+      - backend
   
   bucket-db:
     image: postgres:latest
+    networks:
+      - backend
   
   account.api:
     image: ${DOCKER_REGISTRY-}account.api
     build:
       context: .
       dockerfile: Services/Account.API/Dockerfile
+    networks:
+      - backend
   
   user.api:
     image: ${DOCKER_REGISTRY-}user.api
     build:
       context: .
       dockerfile: Services/Users.API/Dockerfile
+    networks:
+      - backend
   
   likes.api:
     image: ${DOCKER_REGISTRY-}likes.api
     build:
       context: .
       dockerfile: Services/Likes.API/Dockerfile
+    networks:
+      - backend
   
   messages.api:
     image: ${DOCKER_REGISTRY-}messages.api
     build:
       context: .
       dockerfile: Services/Messages.API/Dockerfile
+    networks:
+      - backend
   
   bucket.api:
     image: ${DOCKER_REGISTRY-}bucket.api
     build:
       context: .
       dockerfile: Services/Bucket.API/Dockerfile
+    networks:
+      - backend
   
   gateway.api:
     image: ${DOCKER_REGISTRY-}gateway
     build:
       context: .
       dockerfile: StepBook.API.Gateway/Dockerfile
+    networks:
+      - backend
+    depends_on:
+      - account.api
+      - user.api
+      - likes.api
+      - messages.api
+      - bucket.api
 
 
 volumes:
