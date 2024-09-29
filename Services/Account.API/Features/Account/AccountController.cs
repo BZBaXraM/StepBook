@@ -7,10 +7,10 @@ using StepBook.DatabaseLayer.Data;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
-namespace Account.API.Features.Account;
+namespace Account.API.Features.Account; // /Features/Account/AccountController.cs
 
 [ServiceFilter(typeof(LogUserActivity))]
-[Route("api/[controller]")]
+[Route("api/[controller]")] // /api/account
 [ApiController]
 public class AccountController(
     StepContext context,

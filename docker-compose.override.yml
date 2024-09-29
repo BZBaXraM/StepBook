@@ -1,3 +1,5 @@
+# docker-compose.override.yml is used to override the docker-compose.yml file.
+
 services:
   account-db:
     container_name: account-db
@@ -146,17 +148,12 @@ services:
       - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - ConnectionStrings__Database=Server=account-db;Port=5432;Database=AccountDb;User Id=postgres;Password=postgres;Include Error Detail=true
-      - ConnectionStrings__Database=Server=user-db;Port=5432;Database=UserDb;User Id=postgres;Password=postgres;Include Error Detail=true
-      - ConnectionStrings__Database=Server=likes-db;Port=5432;Database=LikeDb;User Id=postgres;Password=postgres;Include Error Detail=true
-      - ConnectionStrings__Database=Server=messages-db;Port=5432;Database=MessagesDb;User Id=postgres;Password=postgres;Include Error Detail=true
-      - ConnectionStrings__Database=Server=bucket-db;Port=5432;Database=BucketDb;User Id=postgres;Password=postgres;Include Error Detail=true
     depends_on:
-      - account-db
-      - user-db
-      - likes-db
-      - messages-db
-      - bucket-db
+      - account.api
+      - user.api
+      - likes.api
+      - messages.api
+      - bucket.api
     ports:
       - "7000:8080"
       - "7055:8081"

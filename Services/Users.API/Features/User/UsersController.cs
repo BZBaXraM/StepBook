@@ -11,7 +11,7 @@ using Users.API.Extensions;
 using Users.API.Filters;
 using Users.API.Services;
 
-namespace Users.API.Features.User;
+namespace Users.API.Features.User; // Users.API/Features/User/UsersController.cs
 
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]

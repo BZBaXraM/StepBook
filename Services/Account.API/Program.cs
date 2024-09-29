@@ -1,4 +1,5 @@
 using Account.API.Extensions;
+using Account.API.Features.Account;
 using Account.API.Middleware;
 using Microsoft.EntityFrameworkCore;
 

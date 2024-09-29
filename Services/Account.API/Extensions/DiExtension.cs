@@ -14,7 +14,7 @@ using StepBook.DatabaseLayer.Data;
 
 namespace Account.API.Extensions;
 
-public static class DiExtension
+public static class DiExtension // StepBook.API/Extensions/DiExtension.cs - from Account.API
 {
     public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
     {

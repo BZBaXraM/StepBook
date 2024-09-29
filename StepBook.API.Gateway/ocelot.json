@@ -1,11 +1,11 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:7055"
+    "BaseUrl": "http://localhost:7000"
   },
   "Routes": [
     {
       "UpstreamPathTemplate": "/api/Account/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "UpstreamHttpMethod": [
         "GET",
         "POST",
@@ -15,7 +15,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "account.api",
-          "Port": 8081
+          "Port": 8080
         }
       ],
       "DownstreamPathTemplate": "/{everything}"
@@ -23,7 +23,7 @@
     {
       "UpstreamPathTemplate": "/api/users/{everything}",
       "DownstreamPathTemplate": "/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "UpstreamHttpMethod": [
         "GET",
         "POST",
@@ -33,14 +33,14 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "users.api",
-          "Port": 8081
+          "Port": 8080
         }
       ]
     },
     {
       "UpstreamPathTemplate": "/api/basket/{everything}",
       "DownstreamPathTemplate": "/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "UpstreamHttpMethod": [
         "GET",
         "POST"
@@ -48,14 +48,14 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "basket.api",
-          "Port": 8081
+          "Port": 8080
         }
       ]
     },
     {
       "UpstreamPathTemplate": "/api/messages/{everything}",
       "DownstreamPathTemplate": "/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "UpstreamHttpMethod": [
         "GET",
         "POST",
@@ -65,14 +65,14 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "messages.api",
-          "Port": 8081
+          "Port": 8080
         }
       ]
     },
     {
       "UpstreamPathTemplate": "/api/likes/{everything}",
       "DownstreamPathTemplate": "/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "UpstreamHttpMethod": [
         "GET",
         "POST"
@@ -80,7 +80,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "likes.api",
-          "Port": 8081
+          "Port": 8080
         }
       ]
     }
