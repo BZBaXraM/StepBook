@@ -9,7 +9,6 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Messages.API/Messages.API.csproj", "Services/Messages.API/"]
 COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
-COPY ["StepBook.DatabaseLayer/StepBook.DatabaseLayer.csproj", "StepBook.DatabaseLayer/"]
 COPY ["StepBook.Domain/StepBook.Domain.csproj", "StepBook.Domain/"]
 COPY ["Services/Users.API/Users.API.csproj", "Services/Users.API/"]
 RUN dotnet restore "Services/Messages.API/Messages.API.csproj"
