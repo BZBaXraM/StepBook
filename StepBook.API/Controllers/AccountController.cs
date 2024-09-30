@@ -349,12 +349,12 @@ public class AccountController(
             .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 
-    private string PasswordHash(string password)
+    private static string PasswordHash(string password)
     {
         return BCrypt.Net.BCrypt.HashPassword(password);
     }
 
-    private bool PasswordVerify(string password, string hash)
+    private static bool PasswordVerify(string password, string hash)
     {
         return BCrypt.Net.BCrypt.Verify(password, hash);
     }
