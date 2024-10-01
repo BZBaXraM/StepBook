@@ -92,5 +92,3 @@ volumes:
   postgres_likes:
   postgres_messages:
   postgres_bucket:
-  
-    

@@ -1,8 +1,8 @@
 using System.Text.Json;
 using BuildingBlocks.Shared;
-using Likes.API.Shared;
+using Messages.API.Shared;
 
-namespace Likes.API.Extensions;
+namespace Messages.API.Extensions;
 
 public static class HttpExtensions
 {

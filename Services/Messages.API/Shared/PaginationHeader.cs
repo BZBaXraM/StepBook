@@ -1,4 +1,4 @@
-namespace Likes.API.Shared;
+namespace Messages.API.Shared;
 
 public class PaginationHeader(int currentPage, int itemsPerPage, int totalItems, int totalPages)
 {

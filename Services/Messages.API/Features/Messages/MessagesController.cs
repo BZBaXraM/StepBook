@@ -1,13 +1,13 @@
 using AutoMapper;
 using BuildingBlocks.Extensions;
-using BuildingBlocks.Repository;
 using BuildingBlocks.Shared;
+using Messages.API.Data;
+using Messages.API.Extensions;
 using Messages.API.Filters;
+using Messages.API.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using StepBook.DatabaseLayer.Data;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
-using Users.API.Extensions;
 
 namespace Messages.API.Features.Messages;
 
@@ -15,7 +15,7 @@ namespace Messages.API.Features.Messages;
 [Route("api/[controller]")]
 [ApiController]
 public class MessagesController(
-    StepContext context,
+    MessageContext context,
     IMapper mapper,
     IMessageRepository messageRepository,
     IUserRepository userRepository) : ControllerBase

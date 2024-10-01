@@ -28,7 +28,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
-      <ProjectReference Include="..\..\StepBook.DatabaseLayer\StepBook.DatabaseLayer.csproj" />
       <ProjectReference Include="..\..\StepBook.Domain\StepBook.Domain.csproj" />
     </ItemGroup>
 

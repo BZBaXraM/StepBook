@@ -1,8 +1,8 @@
-using BuildingBlocks.Repository;
+using Messages.API.Data;
 using Messages.API.Hubs;
 using Messages.API.Mappings;
+using Messages.API.Repositories;
 using Microsoft.EntityFrameworkCore;
-using StepBook.DatabaseLayer.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<StepContext>(options =>
+builder.Services.AddDbContext<MessageContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
 });
@@ -48,7 +48,7 @@ var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 try
 {
-    var context = services.GetRequiredService<StepContext>();
+    var context = services.GetRequiredService<MessageContext>();
     await context.Database.MigrateAsync();
     await context.Database.ExecuteSqlRawAsync("DELETE FROM  \"Connections\"");
 }

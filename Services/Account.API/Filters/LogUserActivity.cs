@@ -1,13 +1,13 @@
+using Account.API.Data;
 using BuildingBlocks.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
-using StepBook.DatabaseLayer.Data;
 
 namespace Account.API.Filters;
 
 /// <summary>
 /// Log the user activity filter
 /// </summary>
-public class LogUserActivity(StepContext stepContext) : IAsyncActionFilter
+public class LogUserActivity(AccountContext accountContext) : IAsyncActionFilter
 {
     /// <summary>
     /// Log the user activity
@@ -22,12 +22,12 @@ public class LogUserActivity(StepContext stepContext) : IAsyncActionFilter
 
         var userId = resultContext.HttpContext.User.GetUserId();
 
-        var user = await stepContext.Users.FindAsync(userId);
+        var user = await accountContext.Users.FindAsync(userId);
 
         if (user == null) return;
 
         user.LastActive = DateTime.UtcNow;
 
-        await stepContext.SaveChangesAsync();
+        await accountContext.SaveChangesAsync();
     }
 }

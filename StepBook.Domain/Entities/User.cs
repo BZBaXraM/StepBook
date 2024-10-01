@@ -83,21 +83,25 @@ public class User
     /// List of users liked by the current user.
     /// </summary>
 
+    [NotMapped]
     public List<UserLike> LikedByUsers { get; set; } = [];
 
     /// <summary>
     /// List of users that liked the current user.
     /// </summary>
+    [NotMapped]
     public List<UserLike> LikedUsers { get; set; } = [];
 
     /// <summary>
     /// List of messages sent by the current user.
     /// </summary>
+    [NotMapped]
     public List<Message> MessagesSent { get; set; } = [];
 
     /// <summary>
     /// List of messages received by the current user.
     /// </summary>
+    [NotMapped]
     public List<Message> MessagesReceived { get; set; } = [];
 
 

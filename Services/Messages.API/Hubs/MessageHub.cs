@@ -1,15 +1,15 @@
 using AutoMapper;
 using BuildingBlocks.Extensions;
-using BuildingBlocks.Repository;
+using Messages.API.Data;
+using Messages.API.Repositories;
 using Microsoft.AspNetCore.SignalR;
-using StepBook.DatabaseLayer.Data;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
 namespace Messages.API.Hubs;
 
 public class MessageHub(
-    StepContext context,
+    MessageContext context,
     IMessageRepository messageRepository,
     IUserRepository userRepository,
     IMapper mapper,

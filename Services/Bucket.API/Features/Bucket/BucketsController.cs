@@ -1,10 +1,8 @@
-using Bucket.API.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bucket.API.Features.Bucket;
 
-[ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]

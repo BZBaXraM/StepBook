@@ -1,14 +1,14 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BuildingBlocks.Shared;
+using Messages.API.Data;
 using Microsoft.EntityFrameworkCore;
-using StepBook.DatabaseLayer.Data;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
-namespace BuildingBlocks.Repository;
+namespace Messages.API.Repositories;
 
-public class MessageRepository(StepContext context, IMapper mapper) : IMessageRepository
+public class MessageRepository(MessageContext context, IMapper mapper) : IMessageRepository
 {
     /// <summary>
     /// Add group to the context.

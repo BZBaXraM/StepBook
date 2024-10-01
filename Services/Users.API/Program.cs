@@ -1,7 +1,8 @@
-using BuildingBlocks.Repository;
 using Microsoft.EntityFrameworkCore;
-using StepBook.DatabaseLayer.Data;
+using Users.API.Data;
 using Users.API.Mappings;
+using IUserRepository = Users.API.Repositories.IUserRepository;
+using UserRepository = Users.API.Repositories.UserRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<StepContext>(options =>
+builder.Services.AddDbContext<UserContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
 });

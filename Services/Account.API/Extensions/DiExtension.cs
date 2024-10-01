@@ -1,4 +1,5 @@
 using System.Text;
+using Account.API.Data;
 using Account.API.Features.Account;
 using Account.API.Filters;
 using Account.API.Mappings;
@@ -10,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StepBook.API.Services;
-using StepBook.DatabaseLayer.Data;
 
 namespace Account.API.Extensions;
 
@@ -19,7 +19,7 @@ public static class DiExtension // StepBook.API/Extensions/DiExtension.cs - from
     public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
-        services.AddDbContext<StepContext>(options =>
+        services.AddDbContext<AccountContext>(options =>
         {
             options.UseNpgsql(configuration.GetConnectionString("Database"));
         });

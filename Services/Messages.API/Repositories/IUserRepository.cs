@@ -2,7 +2,7 @@ using BuildingBlocks.Shared;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
-namespace Users.API.Repositories;
+namespace Messages.API.Repositories;
 
 public interface IUserRepository
 {

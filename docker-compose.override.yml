@@ -30,10 +30,10 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=LikesDb
+      - POSTGRES_DB=LikeDb
     restart: always
     ports:
-      - "5434:5432"
+      - "5439:5432"
     volumes:
       - postgres_likes:/var/lib/postgresql/data
   
@@ -42,7 +42,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=MessagesDb
+      - POSTGRES_DB=MessageDb
     restart: always
     ports:
       - "5435:5432"
@@ -100,7 +100,7 @@ services:
       - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - ConnectionStrings__Database=Server=likes-db;Port=5432;Database=LikeDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=likes-db;Port=5432;Database=LikeDb;Username=postgres;Password=postgres;Include Error Detail=true
     depends_on:
       - likes-db
     ports:
@@ -116,7 +116,7 @@ services:
       - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - ConnectionStrings__Database=Server=messages-db;Port=5432;Database=MessagesDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=messages-db;Port=5432;Database=MessageDb;User Id=postgres;Password=postgres;Include Error Detail=true
     depends_on:
       - messages-db
     ports:

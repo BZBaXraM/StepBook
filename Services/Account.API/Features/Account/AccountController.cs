@@ -1,9 +1,9 @@
+using Account.API.Data;
 using Account.API.Filters;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using StepBook.DatabaseLayer.Data;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
@@ -13,7 +13,7 @@ namespace Account.API.Features.Account; // /Features/Account/AccountController.c
 [Route("api/[controller]")] // /api/account
 [ApiController]
 public class AccountController(
-    StepContext context,
+    AccountContext context,
     IMapper mapper,
     IEmailService emailService,
     IJwtService jwtService,

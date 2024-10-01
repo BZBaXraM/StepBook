@@ -1,14 +1,14 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BuildingBlocks.Shared;
+using Messages.API.Data;
 using Microsoft.EntityFrameworkCore;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
-using Users.API.Data;
 
-namespace Users.API.Repositories;
+namespace Messages.API.Repositories;
 
-public class UserRepository(UserContext context, IMapper mapper) : IUserRepository
+public class UserRepository(MessageContext context, IMapper mapper) : IUserRepository
 {
     /// <summary>
     /// Update the user
