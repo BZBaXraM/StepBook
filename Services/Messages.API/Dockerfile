@@ -10,7 +10,6 @@ WORKDIR /src
 COPY ["Services/Messages.API/Messages.API.csproj", "Services/Messages.API/"]
 COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 COPY ["StepBook.Domain/StepBook.Domain.csproj", "StepBook.Domain/"]
-COPY ["Services/Users.API/Users.API.csproj", "Services/Users.API/"]
 RUN dotnet restore "Services/Messages.API/Messages.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Messages.API"
