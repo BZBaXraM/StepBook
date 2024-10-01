@@ -74,7 +74,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IJwtFromAccountService, JwtFromAccountService>();
 
-builder.Services.AddSingleton<JwtFromAccountMiddleware>();
+builder.Services.AddScoped<JwtFromAccountMiddleware>();
 
 var app = builder.Build();
 
@@ -88,7 +88,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+app.UseMiddleware<JwtCheckerMiddleware>();
+app.UseMiddleware<JwtFromAccountMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

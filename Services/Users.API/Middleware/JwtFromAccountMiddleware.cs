@@ -2,12 +2,15 @@ using Users.API.Services;
 
 namespace Users.API.Middleware;
 
-public class JwtFromAccountMiddleware(IJwtFromAccountService jwtFromAccountService) : IMiddleware
+public class JwtFromAccountMiddleware : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        string? usernameOrEmail = context.Request.Headers["UsernameOrEmail"];
-        string? password = context.Request.Headers["Password"];
+        // Resolve IJwtFromAccountService from the request scope
+        var jwtFromAccountService = context.RequestServices.GetRequiredService<IJwtFromAccountService>();
+
+        var usernameOrEmail = context.Request.Headers["UsernameOrEmail"];
+        var password = context.Request.Headers["Password"];
 
         if (string.IsNullOrWhiteSpace(usernameOrEmail) || string.IsNullOrWhiteSpace(password))
         {
