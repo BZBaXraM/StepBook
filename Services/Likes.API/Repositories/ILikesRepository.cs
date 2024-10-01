@@ -2,7 +2,7 @@ using BuildingBlocks.Shared;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
-namespace BuildingBlocks.Repository;
+namespace Likes.API.Repositories;
 
 public interface ILikesRepository
 {

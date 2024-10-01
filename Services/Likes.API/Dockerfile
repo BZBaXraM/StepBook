@@ -9,7 +9,6 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Likes.API/Likes.API.csproj", "Services/Likes.API/"]
 COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
-COPY ["StepBook.DatabaseLayer/StepBook.DatabaseLayer.csproj", "StepBook.DatabaseLayer/"]
 COPY ["StepBook.Domain/StepBook.Domain.csproj", "StepBook.Domain/"]
 RUN dotnet restore "Services/Likes.API/Likes.API.csproj"
 COPY . .
