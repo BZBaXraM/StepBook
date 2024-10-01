@@ -33,7 +33,7 @@ services:
       - POSTGRES_DB=LikeDb
     restart: always
     ports:
-      - "5439:5432"
+      - "5434:5432"
     volumes:
       - postgres_likes:/var/lib/postgresql/data
   
@@ -100,7 +100,7 @@ services:
       - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - ConnectionStrings__Database=Server=likes-db;Port=5432;Database=LikeDb;Username=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=likes-db;Port=5432;Database=LikeDb;User Id=postgres;Password=postgres;Include Error Detail=true
     depends_on:
       - likes-db
     ports:

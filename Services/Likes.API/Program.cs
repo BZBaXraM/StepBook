@@ -12,7 +12,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<LikeContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("Database");
+    var connectionString =
+        "Host=localhost;Port=5434;Database=LikeDb;Username=postgres;Password=postgres;Include Error Detail=true";
     options.UseNpgsql(connectionString);
 });
 
