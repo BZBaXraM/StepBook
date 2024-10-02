@@ -10,6 +10,7 @@ WORKDIR /src
 COPY ["Services/Account.API/Account.API.csproj", "Services/Account.API/"]
 COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 COPY ["StepBook.Domain/StepBook.Domain.csproj", "StepBook.Domain/"]
+COPY ["AuthMiddleware/AuthMiddleware.csproj", "AuthMiddleware/"]
 RUN dotnet restore "Services/Account.API/Account.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Account.API"

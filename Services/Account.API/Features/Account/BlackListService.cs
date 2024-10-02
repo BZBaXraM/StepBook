@@ -1,6 +1,4 @@
-using Account.API.Features.Account;
-
-namespace StepBook.API.Services;
+namespace AuthMiddleware.Jwt;
 
 /// <summary>
 /// Black list service.
