@@ -1,5 +1,7 @@
 using Account.API.Data;
 using Account.API.Filters;
+using Account.API.Services;
+using AuthMiddleware.Jwt;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

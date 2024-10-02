@@ -1,6 +1,6 @@
 using MimeKit;
 
-namespace Account.API.Features.Account;
+namespace Account.API.Services;
 
 /// <summary>
 /// Email service

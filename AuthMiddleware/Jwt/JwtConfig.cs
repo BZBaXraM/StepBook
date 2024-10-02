@@ -1,4 +1,4 @@
-namespace Account.API.Shared;
+namespace AuthMiddleware.Jwt;
 
 /// <summary>
 /// JWT configuration

@@ -2,18 +2,16 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Account.API.Services;
-using Account.API.Shared;
 using Microsoft.IdentityModel.Tokens;
 using StepBook.Domain.Entities;
 
-namespace Account.API.Features.Account;
+namespace AuthMiddleware.Jwt;
 
 /// <summary>
 /// The JWT service
 /// </summary>
 /// <param name="config"></param>
-public class JwtService(JwtConfig config, IBlackListService blackListService) : IJwtService
+public class JwtService(JwtConfig config) : IJwtService
 {
     /// <summary>
     /// The JWT service configuration
@@ -148,11 +146,6 @@ public class JwtService(JwtConfig config, IBlackListService blackListService) : 
 
     public ClaimsPrincipal GetPrincipalFromToken(string token)
     {
-        if (blackListService.IsTokenBlackListed(token))
-        {
-            throw new SecurityTokenException("This token has been blacklisted");
-        }
-
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(config.Secret);
 
@@ -177,8 +170,6 @@ public class JwtService(JwtConfig config, IBlackListService blackListService) : 
 
         rng.GetBytes(randomNumber);
         return Convert.ToBase64String(randomNumber);
-
-        // return Guid.NewGuid().ToString("N").ToLower();
     }
 
     public string GenerateRefreshTokenForEmail(User user)

@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using StepBook.Domain.Entities;
 
-namespace Account.API.Services;
+namespace AuthMiddleware.Jwt;
 
 /// <summary>
 /// The JWT service
@@ -32,9 +32,9 @@ public interface IJwtService
 
     string GenerateForgetPasswordToken(User user);
     bool ValidateForgetPasswordToken(User user, string token);
-    
+
     ClaimsPrincipal GetPrincipalFromToken(string token);
-    
+
     string GenerateRefreshToken();
     string GenerateRefreshTokenForEmail(User user);
 }

@@ -1,19 +1,16 @@
 using Account.API.Extensions;
-using Account.API.Features.Account;
 using Account.API.Middleware;
-using Microsoft.EntityFrameworkCore;
+using AuthMiddleware.Jwt;
+using BlackListMiddleware = Account.API.Middleware.BlackListMiddleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwagger(builder.Configuration); // Custom Swagger setup
 
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
-builder.Services.AddSwagger(builder.Configuration);
 
 var app = builder.Build();
 
@@ -24,11 +21,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<JwtMiddleware>();
 app.UseMiddleware<BlackListMiddleware>();
 
 app.UseAuthentication();

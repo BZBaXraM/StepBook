@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Http;
+using Account.API.Features.Account;
 
-namespace AuthMiddleware.Jwt;
+namespace Account.API.Middleware;
 
 /// <summary>
 /// The black list middleware
