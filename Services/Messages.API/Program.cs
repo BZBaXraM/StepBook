@@ -1,7 +1,7 @@
+using AuthMiddleware.Jwt;
 using Messages.API.Data;
+using Messages.API.Extensions;
 using Messages.API.Hubs;
-using Messages.API.Mappings;
-using Messages.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,20 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<MessageContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
-});
-
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
-
-builder.Services.AddSignalR();
-
-builder.Services.AddSingleton<PresenceTracker>();
+builder.Services.AddSwagger(builder.Configuration);
+builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 
 var app = builder.Build();
 
@@ -35,11 +23,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
 
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/message");
@@ -60,5 +43,13 @@ catch (Exception e)
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
+app.UseHttpsRedirection();
+
+app.UseMiddleware<JwtMiddleware>();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();

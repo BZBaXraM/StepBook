@@ -1,5 +1,3 @@
-# docker.compose.yml
-
 networks:
   backend:
     driver: bridge
@@ -84,4 +82,3 @@ volumes:
   postgres_account:
   postgres_likes:
   postgres_messages:
-  postgres_bucket:

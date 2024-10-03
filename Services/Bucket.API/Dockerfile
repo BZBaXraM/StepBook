@@ -8,8 +8,9 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Bucket.API/Bucket.API.csproj", "Services/Bucket.API/"]
-COPY ["StepBook.Domain/StepBook.Domain.csproj", "StepBook.Domain/"]
 COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
+COPY ["StepBook.Domain/StepBook.Domain.csproj", "StepBook.Domain/"]
+COPY ["AuthMiddleware/AuthMiddleware.csproj", "AuthMiddleware/"]
 RUN dotnet restore "Services/Bucket.API/Bucket.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Bucket.API"

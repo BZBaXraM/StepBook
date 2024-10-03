@@ -7,7 +7,6 @@ public class JwtMiddleware(IJwtService jwtService) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        // Get the token from the Authorization header
         var bearer = context.Request.Headers.Authorization.ToString();
         var token = bearer.Replace("Bearer ", string.Empty);
 
