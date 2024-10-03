@@ -13,18 +13,6 @@ services:
     volumes:
       - postgres_account:/var/lib/postgresql/data
   
-  user-db:
-    container_name: user-db
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=UserDb
-    restart: always
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_user:/var/lib/postgresql/data
-  
   likes-db:
     container_name: likes-db
     environment:
@@ -84,9 +72,9 @@ services:
       - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - ConnectionStrings__Database=Server=user-db;Port=5432;Database=UserDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=account-db;Port=5432;Database=AccountDb;User Id=postgres;Password=postgres;Include Error Detail=true
     depends_on:
-      - user-db
+      - account-db
     ports:
       - "6001:8080"
       - "6061:8081"

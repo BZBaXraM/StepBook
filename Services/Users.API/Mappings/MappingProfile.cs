@@ -14,8 +14,8 @@ public class MappingProfile : Profile
             .ForMember(d => d.Age, o => o.MapFrom(s => s.DateOfBirth.CalculateAge()))
             .ForMember(d => d.PhotoUrl, o =>
                 o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain)!.Url));
+        CreateMap<Photo, PhotoDto>();
         CreateMap<MemberUpdateDto, User>();
         CreateMap<string, DateOnly>().ConvertUsing(s => DateOnly.Parse(s));
-
     }
 }

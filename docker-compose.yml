@@ -10,12 +10,6 @@ services:
     networks:
       - backend
   
-  
-  user-db:
-    image: postgres:latest
-    networks:
-      - backend
-  
   likes-db:
     image: postgres:latest
     networks:
@@ -88,7 +82,6 @@ services:
 
 volumes:
   postgres_account:
-  postgres_user:
   postgres_likes:
   postgres_messages:
   postgres_bucket:
