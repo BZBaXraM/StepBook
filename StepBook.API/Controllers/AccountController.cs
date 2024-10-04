@@ -287,12 +287,13 @@ public class AccountController(
         user.RandomCode = resetCode;
         await context.SaveChangesAsync();
 
-        const string resetLink = "http://localhost:4200/reset-password";
+        const string resetLink = "поставь ссылку на страницу сброса пароля, которую ты сделал в клиентской части!!!";
         await emailService.SendEmailAsync(user.Email, "Reset your password",
             $"Your password reset code is: {resetCode}. You can also reset your password by clicking <a href='{resetLink}'>here</a>.");
 
         return Ok("Password reset code sent to your email");
     }
+
 
     /// <summary>
     /// Reset the password of a user

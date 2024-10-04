@@ -16,32 +16,37 @@ public class RegisterDto
     public required string Username { get; init; } = null!;
 
     /// <summary>
-    /// The user's known as name
+    /// The user's first name
     /// </summary>
-    public required string KnownAs { get; init; } = null!;
+    public required string FirstName { get; init; } = null!;
+
+    /// <summary>
+    /// The user's last name
+    /// </summary>
+    public required string LastName { get; init; } = null!;
 
     /// <summary>
     /// The user's
     /// </summary>
-    public required string Gender { get; init; } = null!;
+    public string Gender { get; init; } = null!;
 
     /// <summary>
     /// The user's date of birth
     /// </summary>
-    public required DateTime DateOfBirth { get; init; }
+    public DateTime DateOfBirth { get; init; }
 
     /// <summary>
     /// The user's city
     /// </summary>
-    public required string City { get; init; } = null!;
+    public string City { get; init; } = null!;
 
     /// <summary>
     /// The user's country
     /// </summary>
-    public required string Country { get; init; } = null!;
+    public string Country { get; init; } = null!;
 
     /// <summary>
     /// The password
     /// </summary>
-    public required string Password { get; set; } 
+    public required string Password { get; set; } = null!;
 }
