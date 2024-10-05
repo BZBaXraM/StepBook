@@ -26,7 +26,6 @@ app.UseMiddleware<JwtMiddleware>();
 
 app.UseAuthentication();
 
-
 await app.UseOcelot();
 
 app.Run();

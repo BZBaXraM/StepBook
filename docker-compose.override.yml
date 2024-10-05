@@ -118,9 +118,9 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+#      - ASPNETCORE_HTTPS_PORTS=8081
+#      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+#      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     depends_on:
       - account.api
       - user.api
@@ -132,6 +132,6 @@ services:
       - messages-db
     ports:
       - "7000:8080"
-      - "7055:8081"
-    volumes:
-      - ~/.aspnet/https:/https:ro
+#      - "7055:8081"
+#    volumes:
+#      - ~/.aspnet/https:/https:ro

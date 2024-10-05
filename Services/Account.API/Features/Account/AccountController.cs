@@ -75,7 +75,7 @@ public class AccountController(
     /// <summary>
     /// Login a user
     /// </summary>
-    [HttpPost("login")]
+    [HttpPost("login")] // /api/account/login
     public async Task<ActionResult<UserDto>> LoginAsync([FromBody] LoginRequest request)
     {
         var user = await context.Users
