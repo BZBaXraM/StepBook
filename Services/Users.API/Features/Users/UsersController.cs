@@ -9,9 +9,10 @@ using Users.API.Data;
 using Users.API.Extensions;
 using Users.API.Filters;
 using Users.API.Services;
-using IUserRepository = Users.API.Repositories.IUserRepository;
+using Users.API.Repositories;
 
-namespace Users.API.Features.User; // Users.API/Features/User/UsersController.cs
+namespace Users.API.Features.Users;
+// Users.API/Features/User/UsersController.cs
 
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
@@ -42,7 +43,7 @@ public class UsersController(UserContext context, IUserRepository repository, IM
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<StepBook.Domain.Entities.User>> GetUserByIdAsync(int id)
+    public async Task<ActionResult<User>> GetUserByIdAsync(int id)
         => Ok(await repository.GetUserByIdAsync(id));
 
     /// <summary>

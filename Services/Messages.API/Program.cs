@@ -14,6 +14,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger(builder.Configuration);
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,6 +46,12 @@ catch (Exception e)
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 app.UseHttpsRedirection();
+
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(_ => true)
+    .AllowCredentials());
 
 app.UseMiddleware<JwtMiddleware>();
 

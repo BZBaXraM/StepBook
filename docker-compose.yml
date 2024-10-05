@@ -17,12 +17,7 @@ services:
     image: postgres:latest
     networks:
       - backend
-  
-  bucket-db:
-    image: postgres:latest
-    networks:
-      - backend
-  
+        
   account.api:
     image: ${DOCKER_REGISTRY-}account.api
     build:

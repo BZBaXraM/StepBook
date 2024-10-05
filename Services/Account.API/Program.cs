@@ -12,6 +12,8 @@ builder.Services.AddSwagger(builder.Configuration); // Custom Swagger setup
 
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +24,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(_ => true)
+    .AllowCredentials());
 
 app.UseHttpsRedirection();
 

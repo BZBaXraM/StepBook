@@ -53,6 +53,7 @@ public class UserRepository(MessageContext context, IMapper mapper) : IUserRepos
             .Include(p => p.Photos)
             .SingleOrDefaultAsync(u => u.UserName == username);
     }
+
     /// <summary>
     /// Get the members
     /// </summary>

@@ -6,8 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwagger(builder.Configuration); 
+builder.Services.AddSwagger(builder.Configuration);
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
+
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -19,6 +21,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(_ => true)
+    .AllowCredentials());
 
 app.UseMiddleware<JwtMiddleware>();
 

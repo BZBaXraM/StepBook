@@ -16,7 +16,9 @@ public static class DiExtension
         services.AddHttpContextAccessor();
         services.AddDbContext<MessageContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("Database"));
+            const string connectionString =
+                "Host=localhost;Port=5435;Database=MessagesDb;Username=postgres;Password=postgres;Include Error Detail=true";
+            options.UseNpgsql(connectionString);
         });
 
         services.AddScoped<IMessageRepository, MessageRepository>();

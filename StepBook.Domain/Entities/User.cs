@@ -95,13 +95,11 @@ public class User
     /// <summary>
     /// List of messages sent by the current user.
     /// </summary>
-    [NotMapped]
     public List<Message> MessagesSent { get; set; } = [];
 
     /// <summary>
     /// List of messages received by the current user.
     /// </summary>
-    [NotMapped]
     public List<Message> MessagesReceived { get; set; } = [];
 
 
