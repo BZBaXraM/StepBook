@@ -1,21 +1,18 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:7055"
+    "BaseUrl": "http://localhost:7000"
   },
   "Routes": [
     {
       "UpstreamPathTemplate": "/api/Account/login",
-      "DownstreamScheme": "https",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6060
+          "Host": "account.api",
+          "Port": 80
         }
       ],
-      "DownstreamPathTemplate": "/api/Account/login"
+      "DownstreamPathTemplate": "/api/Account/login",
+      "DownstreamScheme": "http"
     },
     {
       "UpstreamPathTemplate": "/api/users/{everything}",

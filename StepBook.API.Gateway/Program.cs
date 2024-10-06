@@ -1,20 +1,27 @@
 using AuthMiddleware.Jwt;
-using Ocelot.DependencyInjection;
-using Ocelot.Middleware;
+using Microsoft.AspNetCore.RateLimiting;
 using StepBook.API.Gateway.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
-    .AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+builder.Services.AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
-builder.Services.AddOcelot();
+builder.Services.AddRateLimiter(rateLimiterOptions =>
+{
+    rateLimiterOptions.AddFixedWindowLimiter("fixed", options =>
+    {
+        options.Window = TimeSpan.FromSeconds(10);
+        options.PermitLimit = 5;
+    });
+});
+
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 builder.Services.AddCors();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseCors(x => x
     .AllowAnyMethod()
@@ -26,6 +33,8 @@ app.UseMiddleware<JwtMiddleware>();
 
 app.UseAuthentication();
 
-await app.UseOcelot();
+app.UseRateLimiter();
+
+app.MapReverseProxy();
 
 app.Run();

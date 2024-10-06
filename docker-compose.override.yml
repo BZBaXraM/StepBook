@@ -127,9 +127,6 @@ services:
       - likes.api
       - messages.api
       - bucket.api
-      - account-db
-      - likes-db
-      - messages-db
     ports:
       - "7000:8080"
       - "7055:8081"
