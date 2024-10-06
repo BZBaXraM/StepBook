@@ -1,4 +1,3 @@
-using Account.API.Data;
 using BuildingBlocks.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
 

@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Account.API.Shared;
 
 namespace Account.API.Providers;
 

@@ -1,16 +1,5 @@
-using Account.API.Data;
 using Account.API.Features.Account;
-using Account.API.Filters;
-using Account.API.Mappings;
-using Account.API.Providers;
-using Account.API.Services;
-using Account.API.Shared;
-using AuthMiddleware.Jwt;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using BlackListMiddleware = Account.API.Middleware.BlackListMiddleware;
-using BlackListService = Account.API.Features.Account.BlackListService;
-using IBlackListService = Account.API.Features.Account.IBlackListService;
 
 namespace Account.API.Extensions;
 

@@ -1,31 +1,21 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:7000",
-    "RateLimitOptions": {
-      "ClientWhitelist": [],
-      "EnableRateLimiting": true,
-      "Period": "1s",
-      "PeriodTimespan": 1,
-      "Limit": 5
-    }
+    "BaseUrl": "https://localhost:7055"
   },
   "Routes": [
     {
-      "UpstreamPathTemplate": "/api/Account/{everything}",
-      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/api/Account/login",
+      "DownstreamScheme": "https",
       "UpstreamHttpMethod": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE"
+        "POST"
       ],
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6000
+          "Port": 6060
         }
       ],
-      "DownstreamPathTemplate": "/{everything}"
+      "DownstreamPathTemplate": "/api/Account/login"
     },
     {
       "UpstreamPathTemplate": "/api/users/{everything}",

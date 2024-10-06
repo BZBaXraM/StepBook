@@ -1,6 +1,5 @@
 using Account.API.Extensions;
 using Account.API.Middleware;
-using AuthMiddleware.Jwt;
 using BlackListMiddleware = Account.API.Middleware.BlackListMiddleware;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using StepBook.Domain.Entities;
-
 namespace Account.API.Data;
 
 public class AccountContext(DbContextOptions<AccountContext> options) : DbContext(options)

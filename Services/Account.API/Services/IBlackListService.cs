@@ -1,4 +1,4 @@
-namespace Account.API.Features.Account;
+namespace Account.API.Services;
 
 /// <summary>
 /// The black list service

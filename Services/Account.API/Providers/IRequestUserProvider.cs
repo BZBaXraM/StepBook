@@ -1,5 +1,3 @@
-using Account.API.Shared;
-
 namespace Account.API.Providers;
 
 /// <summary>

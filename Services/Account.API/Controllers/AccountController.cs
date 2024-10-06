@@ -1,15 +1,4 @@
-using Account.API.Data;
-using Account.API.Filters;
-using Account.API.Services;
-using AuthMiddleware.Jwt;
-using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StepBook.Domain.DTOs;
-using StepBook.Domain.Entities;
-
-namespace Account.API.Features.Account; // /Features/Account/AccountController.cs
+namespace Account.API.Controllers;
 
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")] // /api/account

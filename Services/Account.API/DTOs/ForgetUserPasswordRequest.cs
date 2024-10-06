@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace Account.API.Features.Account;
+namespace Account.API.DTOs;
 
 /// <summary>
 /// Represents the data transfer object for the forget user password request.

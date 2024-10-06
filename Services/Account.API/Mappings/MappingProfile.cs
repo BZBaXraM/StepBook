@@ -1,6 +1,4 @@
 using Account.API.Features.Account;
-using AutoMapper;
-using StepBook.Domain.Entities;
 
 namespace Account.API.Mappings;
 

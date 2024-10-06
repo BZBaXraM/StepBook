@@ -1,6 +1,4 @@
 using Account.API.Helpers;
-using Account.API.Services;
-using Account.API.Shared;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;

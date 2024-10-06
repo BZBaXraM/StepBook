@@ -1,4 +1,4 @@
-namespace Account.API.Features.Account;
+namespace Account.API.DTOs;
 
 /// <summary>
 /// DTO for user login.

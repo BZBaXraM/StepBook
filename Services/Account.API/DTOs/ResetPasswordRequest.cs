@@ -1,4 +1,4 @@
-namespace Account.API.Features.Account;
+namespace Account.API.DTOs;
 
 /// <summary>
 /// Represents the data transfer object for the reset password.
