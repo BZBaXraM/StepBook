@@ -130,4 +130,5 @@ public class User
     /// Refresh token expire time.
     /// </summary>
     public DateTime RefreshTokenExpireTime { get; set; }
+    public string? EmailConfirmationCode { get; set; }
 }

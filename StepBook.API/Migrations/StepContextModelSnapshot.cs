@@ -158,6 +158,9 @@ namespace StepBook.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("EmailConfirmationCode")
+                        .HasColumnType("text");
+
                     b.Property<string>("EmailConfirmationToken")
                         .HasColumnType("text");
 

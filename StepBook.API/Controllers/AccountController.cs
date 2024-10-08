@@ -21,13 +21,10 @@ public class AccountController(
     /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> RegisterAsync([FromBody] RegisterDto dto)
+    public async Task<ActionResult<string>> RegisterAsync([FromBody] RegisterDto dto)
     {
         var user = mapper.Map<User>(dto);
         user.UserName = dto.Username;
-
-
-        user.Password = PasswordHash(dto.Password);
 
         if (await context.Users.AnyAsync(x => x.Email == user.Email))
         {
@@ -39,26 +36,22 @@ public class AccountController(
             return BadRequest("Username already exists");
         }
 
+        user.Password = PasswordHash(dto.Password);
+
         if (!ModelState.IsValid) return BadRequest();
 
-        if (!PasswordVerify(dto.Password, user.Password))
-        {
-            return BadRequest("Invalid password");
-        }
-
-        user.EmailConfirmationToken = jwtService.GenerateEmailConfirmationToken(user);
-        user.RefreshToken = jwtService.GenerateRefreshToken();
+        // Генерация кода подтверждения
+        var confirmationCode = GenerateRandomCode();
+        user.EmailConfirmationCode = confirmationCode;
 
         await context.Users.AddAsync(user);
         await context.SaveChangesAsync();
 
-
-        var confirmLink = Url.Action("ConfirmEmail", "Account",
-            new { token = user.EmailConfirmationToken, email = user.Email }, Request.Scheme);
         await emailService.SendEmailAsync(user.Email, "Confirm your email",
-            $"Please confirm your email by clicking <a href='{confirmLink}'>here</a>.");
+            $"Your confirmation code is: {confirmationCode}");
 
-        return Ok("Registration successful. Please check your email for confirmation link.");
+
+        return Ok("Registration successful. Please check your email for the confirmation code.");
     }
 
     /// <summary>
@@ -179,6 +172,27 @@ public class AccountController(
         };
 
         return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+    }
+
+    /// <summary>
+    /// Confirm the email of a user using a confirmation code
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPost("confirm-email-code")]
+    public async Task<ActionResult> ConfirmEmailCodeAsync([FromBody] ConfirmEmailCodeDto dto)
+    {
+        var user = await context.Users.SingleOrDefaultAsync(x => x.EmailConfirmationCode == dto.Code);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        user.IsEmailConfirmed = true;
+        await context.SaveChangesAsync();
+
+        return Ok("Email confirmed successfully. You can now log in.");
     }
 
     /// <summary>
