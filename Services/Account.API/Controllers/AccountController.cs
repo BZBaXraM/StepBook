@@ -1,5 +1,12 @@
 namespace Account.API.Controllers;
 
+
+public class Test
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")] // /api/account
 [ApiController]
@@ -10,6 +17,23 @@ public class AccountController(
     IJwtService jwtService,
     IBlackListService blackListService) : ControllerBase
 {
+    
+    private static readonly string[] Names =
+    [
+        "John", "Jane", "Doe", "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller"
+    ];
+
+    [HttpGet("test")]
+    public IEnumerable<Test> Get()
+    {
+        return Enumerable.Range(1, 5).Select(index => new Test
+            {
+                Id = index,
+                Name = Names[Random.Shared.Next(Names.Length)]
+            })
+            .ToArray();
+    }
+    
     /// <summary>
     /// Register a new user
     /// </summary>

@@ -1,95 +1,147 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:7000"
+    "BaseUrl": "http://localhost:7000",
+    "RateLimitOptions": {
+      "QuotaExceededMessage": "Too many requests, please try again later."
+    }
   },
   "Routes": [
     {
-      "UpstreamPathTemplate": "/api/Account/login",
+      "UpstreamPathTemplate": "/api/account/test",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/api/account/test",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "account.api",
-          "Port": 80
-        }
-      ],
-      "DownstreamPathTemplate": "/api/Account/login",
-      "DownstreamScheme": "http"
-    },
-    {
-      "UpstreamPathTemplate": "/api/users/{everything}",
-      "DownstreamPathTemplate": "/{everything}",
-      "DownstreamScheme": "https",
-      "UpstreamHttpMethod": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE"
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 6061
+          "Port": 8080
         }
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/messages/{everything}",
-      "DownstreamPathTemplate": "/{everything}",
-      "DownstreamScheme": "https",
+      "UpstreamPathTemplate": "/api/account/register",
       "UpstreamHttpMethod": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE"
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 6063
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/basket/{everything}",
-      "DownstreamPathTemplate": "/{everything}",
-      "DownstreamScheme": "https",
-      "UpstreamHttpMethod": [
-        "GET",
         "POST"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
+      "DownstreamPathTemplate": "/api/account/register",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6064
+          "Host": "account.api",
+          "Port": 8080
         }
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/likes/{everything}",
-      "DownstreamPathTemplate": "/{everything}",
-      "DownstreamScheme": "https",
+      "UpstreamPathTemplate": "/api/account/login",
       "UpstreamHttpMethod": [
-        "GET",
         "POST"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
+      "DownstreamPathTemplate": "/api/account/login",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "account.api",
+          "Port": 8080
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/account/logout",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/account/logout",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "account.api",
+          "Port": 8080
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/account/refresh",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/account/refresh",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "account.api",
+          "Port": 8080
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/account/confirm-email",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/account/confirm-email",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "account.api",
+          "Port": 6000
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/account/forgot-password",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/account/forgot-password",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "account.api",
+          "Port": 8080
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/account/reset-password",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/account/reset-password",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "account.api",
+          "Port": 8080
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/account/change-password",
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
+      "DownstreamPathTemplate": "/api/account/change-password",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "account.api",
+          "Port": 8080
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/account/change-username",
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
+      "DownstreamPathTemplate": "/api/account/change-username",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "account.api",
           "Port": 8080
         }
       ]
