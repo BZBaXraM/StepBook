@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace StepBook.Domain.Entities;
 
 public class User
@@ -77,30 +75,27 @@ public class User
     /// <summary>
     /// The user's photo URL.
     /// </summary>
-    public List<Photo> Photos { get; set; } = [];
+    public ICollection<Photo> Photos { get; set; } = [];
 
     /// <summary>
     /// List of users liked by the current user.
     /// </summary>
-
-    [NotMapped]
-    public List<UserLike> LikedByUsers { get; set; } = [];
+    public ICollection<UserLike> LikedByUsers { get; set; } = [];
 
     /// <summary>
     /// List of users that liked the current user.
     /// </summary>
-    [NotMapped]
-    public List<UserLike> LikedUsers { get; set; } = [];
+    public ICollection<UserLike> LikedUsers { get; set; } = [];
 
     /// <summary>
     /// List of messages sent by the current user.
     /// </summary>
-    public List<Message> MessagesSent { get; set; } = [];
+    public ICollection<Message> MessagesSent { get; set; } = [];
 
     /// <summary>
     /// List of messages received by the current user.
     /// </summary>
-    public List<Message> MessagesReceived { get; set; } = [];
+    public ICollection<Message> MessagesReceived { get; set; } = [];
 
 
     /// <summary>
@@ -132,4 +127,6 @@ public class User
     /// Refresh token expire time.
     /// </summary>
     public DateTime RefreshTokenExpireTime { get; set; }
+
+    public string? EmailConfirmationCode { get; set; }
 }

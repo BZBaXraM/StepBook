@@ -17,8 +17,8 @@ public class AccountContext(DbContextOptions<AccountContext> options) : DbContex
             entity.HasMany(u => u.MessagesSent)
                 .WithOne(m => m.Sender)
                 .HasForeignKey(m => m.SenderId)
-                .OnDelete(DeleteBehavior.Restrict);  // Ensures referential integrity when deleting users
-        
+                .OnDelete(DeleteBehavior.Restrict); // Ensures referential integrity when deleting users
+
             // Configure the one-to-many relationship for messages received by the user
             entity.HasMany(u => u.MessagesReceived)
                 .WithOne(m => m.Recipient)
@@ -42,6 +42,20 @@ public class AccountContext(DbContextOptions<AccountContext> options) : DbContex
                 .HasForeignKey(m => m.RecipientId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
-    }
 
+        modelBuilder.Entity<UserLike>()
+            .HasKey(k => new { k.SourceUserId, k.TargetUserId });
+
+        modelBuilder.Entity<UserLike>()
+            .HasOne(s => s.SourceUser)
+            .WithMany(l => l.LikedUsers)
+            .HasForeignKey(s => s.SourceUserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserLike>()
+            .HasOne(s => s.TargetUser)
+            .WithMany(l => l.LikedByUsers)
+            .HasForeignKey(s => s.TargetUserId)
+            .OnDelete(DeleteBehavior.NoAction);
+    }
 }

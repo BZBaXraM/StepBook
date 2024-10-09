@@ -15,7 +15,7 @@ namespace Users.API.Features.Users;
 // Users.API/Features/User/UsersController.cs
 
 [ServiceFilter(typeof(LogUserActivity))]
-[Route("api/[controller]")]
+[Route("api/[controller]")] // /api/users
 [ApiController]
 [Authorize]
 public class UsersController(UserContext context, IUserRepository repository, IMapper mapper, IPhotoService service)

@@ -1,12 +1,5 @@
 namespace Account.API.Controllers;
 
-
-public class Test
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-}
-
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")] // /api/account
 [ApiController]
@@ -17,72 +10,42 @@ public class AccountController(
     IJwtService jwtService,
     IBlackListService blackListService) : ControllerBase
 {
-    
-    private static readonly string[] Names =
-    [
-        "John", "Jane", "Doe", "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller"
-    ];
-
-    [HttpGet("test")]
-    public IEnumerable<Test> Get()
-    {
-        return Enumerable.Range(1, 5).Select(index => new Test
-            {
-                Id = index,
-                Name = Names[Random.Shared.Next(Names.Length)]
-            })
-            .ToArray();
-    }
-    
     /// <summary>
     /// Register a new user
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> RegisterAsync([FromBody] RegisterRequest request)
+    public async Task<ActionResult<string>> RegisterAsync([FromBody] RegisterRequest request)
     {
-        try
+        var user = mapper.Map<User>(request);
+        user.UserName = request.Username;
+
+        if (await context.Users.AnyAsync(x => x.Email == user.Email))
         {
-            var user = mapper.Map<User>(request);
-            user.UserName = request.Username;
-
-            user.Password = PasswordHash(request.Password);
-
-            if (await context.Users.AnyAsync(x => x.Email == user.Email))
-            {
-                return BadRequest("Email already exists");
-            }
-
-            if (await context.Users.AnyAsync(x => x.UserName == user.UserName))
-            {
-                return BadRequest("Username already exists");
-            }
-
-            if (!ModelState.IsValid) return BadRequest();
-
-            if (!PasswordVerify(request.Password, user.Password))
-            {
-                return BadRequest("Invalid password");
-            }
-
-            user.EmailConfirmationToken = jwtService.GenerateEmailConfirmationToken(user);
-            user.RefreshToken = jwtService.GenerateRefreshToken();
-
-            await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
-
-            var confirmLink = Url.Action("ConfirmEmail", "Account",
-                new { token = user.EmailConfirmationToken, email = user.Email }, Request.Scheme);
-            await emailService.SendEmailAsync(user.Email, "Confirm your email",
-                $"Please confirm your email by clicking <a href='{confirmLink}'>here</a>.");
-
-            return Ok("Registration successful. Please check your email for confirmation link.");
+            return BadRequest("Email already exists");
         }
-        catch (Exception ex)
+
+        if (await context.Users.AnyAsync(x => x.UserName == user.UserName))
         {
-            return StatusCode(500, $"An error occurred while processing your request. {ex.Message}");
+            return BadRequest("Username already exists");
         }
+
+        user.Password = PasswordHash(request.Password);
+
+        if (!ModelState.IsValid) return BadRequest();
+
+        var confirmationCode = GenerateRandomCode();
+        user.EmailConfirmationCode = confirmationCode;
+
+        await context.Users.AddAsync(user);
+        await context.SaveChangesAsync();
+
+        await emailService.SendEmailAsync(user.Email, "Confirm your email",
+            $"Your confirmation code is: {confirmationCode}");
+
+
+        return Ok("Registration successful. Please check your email for the confirmation code.");
     }
 
     /// <summary>
@@ -159,6 +122,27 @@ public class AccountController(
         }
 
         return Ok("Logged out successfully");
+    }
+
+    /// <summary>
+    /// Confirm the email of a user using a confirmation code
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPost("confirm-email-code")]
+    public async Task<ActionResult> ConfirmEmailCodeAsync([FromBody] ConfirmEmailCodeDto dto)
+    {
+        var user = await context.Users.SingleOrDefaultAsync(x => x.EmailConfirmationCode == dto.Code);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        user.IsEmailConfirmed = true;
+        await context.SaveChangesAsync();
+
+        return Ok("Email confirmed successfully. You can now log in.");
     }
 
     /// <summary>

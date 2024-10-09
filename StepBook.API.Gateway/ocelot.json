@@ -7,11 +7,14 @@
   },
   "Routes": [
     {
-      "UpstreamPathTemplate": "/api/account/test",
+      "UpstreamPathTemplate": "/api/account/{everything}",
       "UpstreamHttpMethod": [
-        "GET"
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
       ],
-      "DownstreamPathTemplate": "/api/account/test",
+      "DownstreamPathTemplate": "/api/account/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -21,127 +24,22 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/api/account/register",
+      "UpstreamPathTemplate": "/api/users/{everything}",
       "UpstreamHttpMethod": [
-        "POST"
+        "GET",
+        "PUT",
+        "POST",
+        "DELETE"
       ],
-      "DownstreamPathTemplate": "/api/account/register",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "DownstreamPathTemplate": "/api/users/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "account.api",
-          "Port": 8080
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/account/login",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "DownstreamPathTemplate": "/api/account/login",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "account.api",
-          "Port": 8080
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/account/logout",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "DownstreamPathTemplate": "/api/account/logout",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "account.api",
-          "Port": 8080
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/account/refresh",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "DownstreamPathTemplate": "/api/account/refresh",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "account.api",
-          "Port": 8080
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/account/confirm-email",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "DownstreamPathTemplate": "/api/account/confirm-email",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "account.api",
-          "Port": 6000
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/account/forgot-password",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "DownstreamPathTemplate": "/api/account/forgot-password",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "account.api",
-          "Port": 8080
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/account/reset-password",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "DownstreamPathTemplate": "/api/account/reset-password",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "account.api",
-          "Port": 8080
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/account/change-password",
-      "UpstreamHttpMethod": [
-        "PUT"
-      ],
-      "DownstreamPathTemplate": "/api/account/change-password",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "account.api",
-          "Port": 8080
-        }
-      ]
-    },
-    {
-      "UpstreamPathTemplate": "/api/account/change-username",
-      "UpstreamHttpMethod": [
-        "PUT"
-      ],
-      "DownstreamPathTemplate": "/api/account/change-username",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "account.api",
+          "Host": "user.api",
           "Port": 8080
         }
       ]
