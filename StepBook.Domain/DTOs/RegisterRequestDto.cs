@@ -3,7 +3,7 @@ namespace Account.API.DTOs;
 /// <summary>
 /// DTO for user registration.
 /// </summary>
-public class RegisterRequest
+public class RegisterRequestDto
 {
     /// <summary>
     /// The user's email

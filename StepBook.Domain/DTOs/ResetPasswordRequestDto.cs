@@ -3,7 +3,7 @@ namespace Account.API.DTOs;
 /// <summary>
 /// Represents the data transfer object for the reset password.
 /// </summary>
-public class ResetPasswordRequest
+public class ResetPasswordRequestDto
 {
     /// <summary>
     /// The email of the user.

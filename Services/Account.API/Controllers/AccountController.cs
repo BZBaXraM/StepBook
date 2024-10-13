@@ -13,13 +13,13 @@ public class AccountController(
     /// <summary>
     /// Register a new user
     /// </summary>
-    /// <param name="request"></param>
+    /// <param name="requestDto"></param>
     /// <returns></returns>
     [HttpPost("register")]
-    public async Task<ActionResult<string>> RegisterAsync([FromBody] RegisterRequest request)
+    public async Task<ActionResult<string>> RegisterAsync([FromBody] RegisterRequestDto requestDto)
     {
-        var user = mapper.Map<User>(request);
-        user.UserName = request.Username;
+        var user = mapper.Map<User>(requestDto);
+        user.UserName = requestDto.Username;
 
         if (await context.Users.AnyAsync(x => x.Email == user.Email))
         {
@@ -31,7 +31,7 @@ public class AccountController(
             return BadRequest("Username already exists");
         }
 
-        user.Password = PasswordHash(request.Password);
+        user.Password = PasswordHash(requestDto.Password);
 
         if (!ModelState.IsValid) return BadRequest();
 
@@ -52,18 +52,19 @@ public class AccountController(
     /// Login a user
     /// </summary>
     [HttpPost("login")] // /api/account/login
-    public async Task<ActionResult<UserDto>> LoginAsync([FromBody] LoginRequest request)
+    public async Task<ActionResult<UserDto>> LoginAsync([FromBody] LoginRequestDto requestDto)
     {
         var user = await context.Users
             .Include(u => u.Photos)
-            .FirstOrDefaultAsync(x => x.UserName == request.UsernameOrEmail || x.Email == request.UsernameOrEmail);
+            .FirstOrDefaultAsync(x =>
+                x.UserName == requestDto.UsernameOrEmail || x.Email == requestDto.UsernameOrEmail);
 
         if (user == null || !user.IsEmailConfirmed)
         {
             return Unauthorized("Invalid username, email, or email not confirmed.");
         }
 
-        if (!PasswordVerify(request.Password, user.Password))
+        if (!PasswordVerify(requestDto.Password, user.Password))
         {
             return Unauthorized("Invalid password");
         }
@@ -176,11 +177,11 @@ public class AccountController(
     /// <summary>
     /// Change the password of a user
     /// </summary>
-    /// <param name="request"></param>
+    /// <param name="requestDto"></param>
     /// <returns></returns>
     [HttpPut("change-password")]
     [Authorize]
-    public async Task<ActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequest request)
+    public async Task<ActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequestDto requestDto)
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
 
@@ -189,19 +190,19 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        user.Password = PasswordHash(request.CurrentPassword);
+        user.Password = PasswordHash(requestDto.CurrentPassword);
 
-        if (!PasswordVerify(request.CurrentPassword, user.Password))
+        if (!PasswordVerify(requestDto.CurrentPassword, user.Password))
         {
             return BadRequest("Invalid password");
         }
 
-        if (request.NewPassword != request.ConfirmNewPassword)
+        if (requestDto.NewPassword != requestDto.ConfirmNewPassword)
         {
             return BadRequest("Passwords do not match");
         }
 
-        user.Password = PasswordHash(request.NewPassword);
+        user.Password = PasswordHash(requestDto.NewPassword);
 
 
         await context.SaveChangesAsync();
@@ -212,11 +213,11 @@ public class AccountController(
     /// <summary>
     /// Change the username of a user
     /// </summary>
-    /// <param name="request"></param>
+    /// <param name="requestDto"></param>
     /// <returns></returns>
     [HttpPut("change-username")]
     [Authorize]
-    public async Task<ActionResult> ChangeUsernameAsync([FromBody] ChangeUsernameRequest request)
+    public async Task<ActionResult> ChangeUsernameAsync([FromBody] ChangeUsernameRequestDto requestDto)
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
 
@@ -225,7 +226,7 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        user.UserName = request.NewUsername;
+        user.UserName = requestDto.NewUsername;
         await context.SaveChangesAsync();
 
         return Ok("Username changed successfully");
@@ -234,14 +235,14 @@ public class AccountController(
     /// <summary>
     ///     Forget the password of a user
     /// </summary>
-    /// <param name="request"></param>
+    /// <param name="requestDto"></param>
     /// <returns></returns>
     [HttpPost("forget-password")]
-    public async Task<ActionResult> ForgotPasswordAsync([FromBody] ForgetUserPasswordRequest request)
+    public async Task<ActionResult> ForgotPasswordAsync([FromBody] ForgetUserPasswordRequestDto requestDto)
     {
         if (!ModelState.IsValid) return BadRequest();
 
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Email == requestDto.Email);
         if (user == null)
         {
             return NotFound("User not found");
@@ -261,23 +262,23 @@ public class AccountController(
     /// <summary>
     /// Reset the password of a user
     /// </summary>
-    /// <param name="request"></param>
+    /// <param name="requestDto"></param>
     /// <returns></returns>
     [HttpPost("reset-password")]
-    public async Task<ActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequest request)
+    public async Task<ActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequestDto requestDto)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Email == requestDto.Email);
         if (user == null)
         {
             return NotFound("User not found");
         }
 
-        if (user.RandomCode != request.Code)
+        if (user.RandomCode != requestDto.Code)
         {
             return BadRequest("Invalid reset code");
         }
 
-        user.Password = PasswordHash(request.NewPassword);
+        user.Password = PasswordHash(requestDto.NewPassword);
         user.RandomCode = null;
 
         await context.SaveChangesAsync();

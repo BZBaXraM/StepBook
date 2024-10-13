@@ -1,5 +1,3 @@
-using Account.API.Features.Account;
-
 namespace Account.API.Middleware;
 
 /// <summary>

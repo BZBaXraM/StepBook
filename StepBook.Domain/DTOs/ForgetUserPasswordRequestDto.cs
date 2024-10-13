@@ -3,7 +3,7 @@ namespace Account.API.DTOs;
 /// <summary>
 /// Represents the data transfer object for the forget user password request.
 /// </summary>
-public class ForgetUserPasswordRequest
+public class ForgetUserPasswordRequestDto
 {
     /// <summary>
     /// The email of the user.

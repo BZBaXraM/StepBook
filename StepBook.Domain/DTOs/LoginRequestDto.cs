@@ -3,7 +3,7 @@ namespace Account.API.DTOs;
 /// <summary>
 /// DTO for user login.
 /// </summary>
-public class LoginRequest
+public class LoginRequestDto
 {
     /// <summary>
     /// The username or email

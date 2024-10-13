@@ -3,7 +3,7 @@ namespace Account.API.DTOs;
 /// <summary>
 /// Change password request DTO
 /// </summary>
-public class ChangePasswordRequest
+public class ChangePasswordRequestDto
 {
     /// <summary>
     /// Current password 

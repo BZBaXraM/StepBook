@@ -3,7 +3,7 @@ namespace Account.API.DTOs;
 /// <summary>
 /// Change username request DTO
 /// </summary>
-public class ChangeUsernameRequest
+public class ChangeUsernameRequestDto
 {
     /// <summary>
     /// New username

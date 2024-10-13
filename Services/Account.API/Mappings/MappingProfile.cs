@@ -6,6 +6,6 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<RegisterRequest, User>();
+        CreateMap<RegisterRequestDto, User>();
     }
 }
