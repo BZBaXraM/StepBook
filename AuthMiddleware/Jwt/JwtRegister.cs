@@ -10,6 +10,7 @@ public static class JwtRegister
 {
     public static IServiceCollection RegisterJwt(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<IBlackListService, BlackListService>();
         services.AddSingleton<IJwtService, JwtService>();
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);

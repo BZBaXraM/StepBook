@@ -12,7 +12,7 @@ namespace AuthMiddleware.Jwt;
 /// The JWT service
 /// </summary>
 /// <param name="config"></param>
-public class JwtService(JwtConfig config, ILogger<JwtService> logger) : IJwtService
+public class JwtService(IBlackListService blackListService, JwtConfig config, ILogger<JwtService> logger) : IJwtService
 {
     /// <summary>
     /// The JWT service configuration
@@ -38,12 +38,10 @@ public class JwtService(JwtConfig config, ILogger<JwtService> logger) : IJwtServ
                 )
             };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
 
             logger.LogInformation("Token generated for user {UserName}", user.UserName);
             Console.WriteLine($"Token generated for user {user.UserName}");
-            return tokenHandler.WriteToken(token);
+            return new JwtSecurityTokenHandler().CreateEncodedJwt(tokenDescriptor);
         }
         catch (Exception ex)
         {
@@ -56,6 +54,11 @@ public class JwtService(JwtConfig config, ILogger<JwtService> logger) : IJwtServ
 
     public ClaimsPrincipal GetPrincipalFromToken(string token)
     {
+        if (blackListService.IsTokenBlackListed(token))
+        {
+            throw new SecurityTokenException("This token has been blacklisted");
+        }
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(config.Secret);
 

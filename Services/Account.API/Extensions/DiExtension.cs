@@ -55,8 +55,6 @@ public static class DiExtension // StepBook.API/Extensions/DiExtension.cs - from
         services.AddScoped<IRequestUserProvider, RequestUserProvider>();
         services.AddSingleton<IEmailService, EmailService>();
         services.AddScoped<LogUserActivity>();
-
-        services.AddSingleton<IBlackListService, BlackListService>();
         services.AddSingleton<BlackListMiddleware>();
         services.RegisterJwt(configuration);
         services.AddSingleton<JwtMiddleware>();

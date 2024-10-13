@@ -7,7 +7,7 @@ public class JwtMiddleware(IJwtService jwtService, ILogger<JwtMiddleware> logger
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+        var authHeader = context.Request.Headers.Authorization.FirstOrDefault();
         if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
         {
             var token = authHeader.Split(" ").Last();

@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwagger(builder.Configuration); // Custom Swagger setup
+builder.Services.AddSwagger(builder.Configuration);
 
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 
