@@ -15,7 +15,7 @@ public class PhotoService : IPhotoService
     /// <param name="helper"></param>
     public PhotoService(IOptions<CloudinaryHelper> helper)
     {
-        var account = new Account
+        var account = new CloudinaryDotNet.Account
         {
             Cloud = helper.Value.CloudName,
             ApiKey = helper.Value.ApiKey,

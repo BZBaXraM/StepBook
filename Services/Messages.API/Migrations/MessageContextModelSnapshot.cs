@@ -158,6 +158,9 @@ namespace Messages.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("EmailConfirmationCode")
+                        .HasColumnType("text");
+
                     b.Property<string>("EmailConfirmationToken")
                         .HasColumnType("text");
 
@@ -209,6 +212,21 @@ namespace Messages.API.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("StepBook.Domain.Entities.UserLike", b =>
+                {
+                    b.Property<int>("SourceUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TargetUserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("SourceUserId", "TargetUserId");
+
+                    b.HasIndex("TargetUserId");
+
+                    b.ToTable("UserLike");
+                });
+
             modelBuilder.Entity("StepBook.Domain.Entities.Connection", b =>
                 {
                     b.HasOne("StepBook.Domain.Entities.Group", null)
@@ -246,6 +264,25 @@ namespace Messages.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("StepBook.Domain.Entities.UserLike", b =>
+                {
+                    b.HasOne("StepBook.Domain.Entities.User", "SourceUser")
+                        .WithMany("LikedUsers")
+                        .HasForeignKey("SourceUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StepBook.Domain.Entities.User", "TargetUser")
+                        .WithMany("LikedByUsers")
+                        .HasForeignKey("TargetUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("SourceUser");
+
+                    b.Navigation("TargetUser");
+                });
+
             modelBuilder.Entity("StepBook.Domain.Entities.Group", b =>
                 {
                     b.Navigation("Connections");
@@ -253,6 +290,10 @@ namespace Messages.API.Migrations
 
             modelBuilder.Entity("StepBook.Domain.Entities.User", b =>
                 {
+                    b.Navigation("LikedByUsers");
+
+                    b.Navigation("LikedUsers");
+
                     b.Navigation("MessagesReceived");
 
                     b.Navigation("MessagesSent");

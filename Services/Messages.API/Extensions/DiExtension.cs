@@ -67,7 +67,7 @@ public static class DiExtension
     {
         services.AddScoped<LogUserActivity>();
         services.RegisterJwt(configuration);
-        services.AddSingleton<JwtMiddleware>();
+        // services.AddSingleton<JwtMiddleware>();
 
         return services;
     }

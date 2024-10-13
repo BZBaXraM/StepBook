@@ -12,7 +12,7 @@ using StepBook.Domain.Entities;
 namespace Messages.API.Features.Messages;
 
 [ServiceFilter(typeof(LogUserActivity))]
-[Route("api/[controller]")]
+[Route("api/[controller]")] // api/messages
 [ApiController]
 public class MessagesController(
     MessageContext context,

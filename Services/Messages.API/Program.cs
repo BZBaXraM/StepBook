@@ -26,8 +26,15 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.MapHub<PresenceHub>("hubs/presence");
-app.MapHub<MessageHub>("hubs/message");
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(_ => true)
+    .AllowCredentials());
+
+app.MapControllers();
+app.MapHub<PresenceHub>("hubs/presence"); // /hubs/presence
+app.MapHub<MessageHub>("hubs/message"); // /hubs/message
 
 var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
@@ -43,21 +50,12 @@ catch (Exception e)
     log.LogError(e, "An error occurred during migration");
 }
 
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-app.UseHttpsRedirection();
-
-app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(_ => true)
-    .AllowCredentials());
-
-app.UseMiddleware<JwtMiddleware>();
+// app.UseMiddleware<JwtMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-app.Run();
+await app.RunAsync();

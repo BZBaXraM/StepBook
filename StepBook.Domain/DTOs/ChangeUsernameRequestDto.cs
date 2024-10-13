@@ -1,4 +1,4 @@
-namespace Account.API.DTOs;
+namespace StepBook.Domain.DTOs;
 
 /// <summary>
 /// Change username request DTO

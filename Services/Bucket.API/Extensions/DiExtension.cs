@@ -59,7 +59,7 @@ public static class DiExtension
         IConfiguration configuration)
     {
         services.RegisterJwt(configuration);
-        services.AddSingleton<JwtMiddleware>();
+        // services.AddSingleton<JwtMiddleware>();
 
         return services;
     }

@@ -49,9 +49,9 @@ services:
       - account-db
     ports:
       - "6000:8080"
-      - "6060:8081"
-    volumes:
-      - ~/.aspnet/https:/https:ro
+#      - "6060:8081"
+#    volumes:
+#      - ~/.aspnet/https:/https:ro
   
   user.api:
     environment:
@@ -73,46 +73,46 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+#      - ASPNETCORE_HTTPS_PORTS=8081
+#      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+#      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
       - ConnectionStrings__Database=Server=likes-db;Port=5432;Database=LikeDb;User Id=postgres;Password=postgres;Include Error Detail=true
     depends_on:
       - likes-db
     ports:
       - "6002:8080"
-      - "6062:8081"
-    volumes:
-      - ~/.aspnet/https:/https:ro
+#      - "6062:8081"
+#    volumes:
+#      - ~/.aspnet/https:/https:ro
   
   messages.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+#      - ASPNETCORE_HTTPS_PORTS=8081
+#      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+#      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
       - ConnectionStrings__Database=Server=messages-db;Port=5432;Database=MessageDb;User Id=postgres;Password=postgres;Include Error Detail=true
     depends_on:
       - messages-db
     ports:
       - "6003:8080"
-      - "6063:8081"
-    volumes:
-      - ~/.aspnet/https:/https:ro
+#      - "6063:8081"
+#    volumes:
+#      - ~/.aspnet/https:/https:ro
   
   bucket.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+#      - ASPNETCORE_HTTPS_PORTS=8081
+#      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+#      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     ports:
       - "6004:8080"
-      - "6064:8081"
-    volumes:
-      - ~/.aspnet/https:/https:ro
+#      - "6064:8081"
+#    volumes:
+#      - ~/.aspnet/https:/https:ro
   
   gateway.api:
     environment:

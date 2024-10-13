@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bucket.API.Features.Bucket;
 
-[Route("api/[controller]")]
+[Route("api/[controller]")] // api/buckets
 [ApiController]
 [Authorize]
 public class BucketsController(IBucketService service) : ControllerBase
