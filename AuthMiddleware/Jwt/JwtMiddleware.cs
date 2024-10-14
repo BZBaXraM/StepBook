@@ -10,13 +10,21 @@ public class JwtMiddleware(IJwtService jwtService, ILogger<JwtMiddleware> logger
         var authHeader = context.Request.Headers.Authorization.FirstOrDefault();
         if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
         {
-            var token = authHeader.Split(" ").Last();
+            var token = authHeader["Bearer ".Length..].Trim();
 
             logger.LogInformation("Authorization header: {AuthHeader}, Extracted token: {Token}", authHeader, token);
 
             if (!string.IsNullOrWhiteSpace(token))
             {
-                AttachUserToContext(context, token);
+                var tokenSegments = token.Split('.').Length;
+                if (tokenSegments is 3 or 5)
+                {
+                    AttachUserToContext(context, token);
+                }
+                else
+                {
+                    logger.LogWarning("Invalid token format");
+                }
             }
             else
             {
@@ -31,7 +39,6 @@ public class JwtMiddleware(IJwtService jwtService, ILogger<JwtMiddleware> logger
         await next(context);
     }
 
-
     private void AttachUserToContext(HttpContext context, string token)
     {
         try
@@ -40,10 +47,13 @@ public class JwtMiddleware(IJwtService jwtService, ILogger<JwtMiddleware> logger
             if (principal != null)
             {
                 context.User = principal;
+                logger.LogInformation("User attached to context {Name}", context.User.Identity!.Name);
+                Console.WriteLine($"User attached to context {context.User.Identity.Name}");
             }
-
-            logger.LogInformation("User attached to context {Name}", context.User.Identity!.Name);
-            Console.WriteLine($"User attached to context {context.User.Identity.Name}");
+            else
+            {
+                logger.LogWarning("Principal is null");
+            }
         }
         catch (Exception ex)
         {
