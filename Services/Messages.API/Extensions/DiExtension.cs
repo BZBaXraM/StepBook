@@ -16,9 +16,7 @@ public static class DiExtension
         services.AddHttpContextAccessor();
         services.AddDbContext<MessageContext>(options =>
         {
-            const string connectionString =
-                "Host=localhost;Port=5435;Database=MessagesDb;Username=postgres;Password=postgres;Include Error Detail=true";
-            options.UseNpgsql(connectionString);
+            options.UseNpgsql(configuration.GetConnectionString("Database"));
         });
 
         services.AddScoped<IMessageRepository, MessageRepository>();
@@ -67,7 +65,7 @@ public static class DiExtension
     {
         services.AddScoped<LogUserActivity>();
         services.RegisterJwt(configuration);
-        // services.AddSingleton<JwtMiddleware>();
+        services.AddSingleton<JwtMiddleware>();
 
         return services;
     }

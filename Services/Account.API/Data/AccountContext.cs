@@ -27,6 +27,7 @@ public class AccountContext(DbContextOptions<AccountContext> options) : DbContex
         modelBuilder.Entity<Message>(entity =>
         {
             entity.HasKey(m => m.Id);
+
             entity.HasOne(m => m.Sender)
                 .WithMany(u => u.MessagesSent)
                 .HasForeignKey(m => m.SenderId)

@@ -76,6 +76,10 @@
       "UpstreamHttpMethod": [
         "POST"
       ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
       "DownstreamPathTemplate": "/hubs/presence/negotiate",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -91,6 +95,10 @@
         "GET",
         "POST"
       ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
       "DownstreamPathTemplate": "/hubs/presence",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -106,6 +114,10 @@
         "GET",
         "POST"
       ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
       "DownstreamPathTemplate": "/hubs/message",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

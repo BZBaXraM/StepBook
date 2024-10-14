@@ -15,8 +15,7 @@ public static class DiExtension
         services.AddHttpContextAccessor();
         services.AddDbContext<LikeContext>(options =>
         {
-            const string connectionString = "Host=localhost;Port=5434;Database=LikeDb;Username=postgres;Password=postgres;Include Error Detail=true";
-            options.UseNpgsql(connectionString);
+            options.UseNpgsql(configuration.GetConnectionString("Database"));
         });
 
         services.AddAutoMapper(typeof(MappingProfile).Assembly);
@@ -59,7 +58,7 @@ public static class DiExtension
     {
         services.AddScoped<LogUserActivity>();
         services.RegisterJwt(configuration);
-        // services.AddSingleton<JwtMiddleware>();
+        services.AddSingleton<JwtMiddleware>();
 
         return services;
     }
