@@ -8,6 +8,11 @@ services:
     networks:
       - backend
   
+  user-db:
+    image: postgres:latest
+    networks:
+      - backend
+  
   likes-db:
     image: postgres:latest
     networks:
@@ -17,7 +22,7 @@ services:
     image: postgres:latest
     networks:
       - backend
-        
+  
   account.api:
     image: ${DOCKER_REGISTRY-}account.api
     build:
@@ -75,5 +80,6 @@ services:
 
 volumes:
   postgres_account:
+  postgres_user:
   postgres_likes:
   postgres_messages:
