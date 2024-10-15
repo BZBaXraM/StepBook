@@ -14,5 +14,8 @@ public class AccountContext(DbContextOptions<AccountContext> options) : DbContex
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
+
+        modelBuilder.Ignore<UserLike>();
+        modelBuilder.Ignore<Message>();
     }
 }

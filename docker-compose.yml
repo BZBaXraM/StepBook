@@ -31,13 +31,13 @@ services:
     networks:
       - backend
   
-  user.api:
-    image: ${DOCKER_REGISTRY-}user.api
-    build:
-      context: .
-      dockerfile: Services/Users.API/Dockerfile
-    networks:
-      - backend
+#  user.api:
+#    image: ${DOCKER_REGISTRY-}user.api
+#    build:
+#      context: .
+#      dockerfile: Services/Users.API/Dockerfile
+#    networks:
+#      - backend
   
   likes.api:
     image: ${DOCKER_REGISTRY-}likes.api

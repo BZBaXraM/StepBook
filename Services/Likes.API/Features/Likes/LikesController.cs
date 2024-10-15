@@ -14,7 +14,7 @@ namespace Likes.API.Features.Likes;
 /// <summary>
 /// Likes controller
 /// </summary>
-[ServiceFilter(typeof(LogUserActivity))]
+// [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
