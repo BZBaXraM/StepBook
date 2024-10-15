@@ -8,10 +8,10 @@ services:
     networks:
       - backend
   
-  user-db:
-    image: postgres:latest
-    networks:
-      - backend
+#  user-db:
+#    image: postgres:latest
+#    networks:
+#      - backend
   
   likes-db:
     image: postgres:latest
@@ -72,7 +72,7 @@ services:
       - backend
     depends_on:
       - account.api
-      - user.api
+#      - user.api
       - likes.api
       - messages.api
       - bucket.api
@@ -80,6 +80,6 @@ services:
 
 volumes:
   postgres_account:
-  postgres_user:
+#  postgres_user:
   postgres_likes:
   postgres_messages:

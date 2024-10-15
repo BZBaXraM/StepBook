@@ -1,4 +1,6 @@
 using Account.API.Features.Account;
+using Account.API.Repositories.Classes;
+using Account.API.Repositories.Interfaces;
 using BlackListMiddleware = Account.API.Middleware.BlackListMiddleware;
 
 namespace Account.API.Extensions;
@@ -13,6 +15,9 @@ public static class DiExtension // StepBook.API/Extensions/DiExtension.cs - from
             options.UseNpgsql(configuration.GetConnectionString("Database"));
         });
 
+        services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPhotoService, PhotoService>();
 
         services.AddAutoMapper(typeof(MappingProfile).Assembly);
 

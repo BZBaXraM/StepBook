@@ -13,17 +13,17 @@ services:
     volumes:
       - postgres_account:/var/lib/postgresql/data
   
-  user-db:
-    container_name: user-db
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=UserDb
-    restart: always
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_user:/var/lib/postgresql/data
+#  user-db:
+#    container_name: user-db
+#    environment:
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
+#      - POSTGRES_DB=UserDb
+#    restart: always
+#    ports:
+#      - "5433:5432"
+#    volumes:
+#      - postgres_user:/var/lib/postgresql/data
   
   likes-db:
     container_name: likes-db
@@ -65,21 +65,21 @@ services:
   #    volumes:
   #      - ~/.aspnet/https:/https:ro
   
-  user.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      #      - ASPNETCORE_HTTPS_PORTS=8081
-      #      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
-      #      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - ConnectionStrings__Database=Server=account-db;Port=5432;Database=UserDb;User Id=postgres;Password=postgres;Include Error Detail=true
-    depends_on:
-      - user-db
-    ports:
-      - "6001:8080"
-  #      - "6061:8081"
-  #    volumes:
-  #      - ~/.aspnet/https:/https:ro
+#  user.api:
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - ASPNETCORE_HTTP_PORTS=8080
+#      #      - ASPNETCORE_HTTPS_PORTS=8081
+#      #      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+#      #      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+#      - ConnectionStrings__Database=Server=account-db;Port=5432;Database=UserDb;User Id=postgres;Password=postgres;Include Error Detail=true
+#    depends_on:
+#      - user-db
+#    ports:
+#      - "6001:8080"
+#  #      - "6061:8081"
+#  #    volumes:
+#  #      - ~/.aspnet/https:/https:ro
   
   likes.api:
     environment:
@@ -135,7 +135,7 @@ services:
     #      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     depends_on:
       - account.api
-      - user.api
+#      - user.api
       - likes.api
       - messages.api
       - bucket.api

@@ -27,6 +27,21 @@ public class UserContext(DbContextOptions<UserContext> options) : DbContext(opti
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
+        modelBuilder.Entity<UserLike>()
+            .HasKey(k => new { k.SourceUserId, k.TargetUserId });
+
+        modelBuilder.Entity<UserLike>()
+            .HasOne(s => s.SourceUser)
+            .WithMany(l => l.LikedUsers)
+            .HasForeignKey(s => s.SourceUserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserLike>()
+            .HasOne(s => s.TargetUser)
+            .WithMany(l => l.LikedByUsers)
+            .HasForeignKey(s => s.TargetUserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
         modelBuilder.Entity<Message>(entity =>
         {
             entity.HasKey(m => m.Id);

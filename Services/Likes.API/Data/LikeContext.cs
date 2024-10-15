@@ -6,6 +6,7 @@ namespace Likes.API.Data;
 public class LikeContext(DbContextOptions<LikeContext> options) : DbContext(options)
 {
     public DbSet<User> Users => Set<User>();
+
     public DbSet<UserLike> Likes => Set<UserLike>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,9 +28,7 @@ public class LikeContext(DbContextOptions<LikeContext> options) : DbContext(opti
             .HasForeignKey(s => s.TargetUserId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        modelBuilder.Entity<Message>()
-            .HasOne(x => x.Sender)
-            .WithMany(x => x.MessagesSent)
-            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Ignore<Message>();
     }
 }

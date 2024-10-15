@@ -46,7 +46,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "user.api",
+          "Host": "account.api",
           "Port": 8080
         }
       ]
