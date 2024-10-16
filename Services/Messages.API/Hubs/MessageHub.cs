@@ -56,45 +56,32 @@ public class MessageHub(
     /// <exception cref="HubException"></exception>
     public async Task SendMessage(CreateMessageRequestDto dto)
     {
-        var username = Context.User?.GetUsername();
-        if (string.IsNullOrEmpty(username))
-        {
-            logger.LogError("Could not get user");
-            throw new HubException("Could not get user");
-        }
-
-        logger.LogInformation("Username: {Username}", username);
+        var username = Context.User?.GetUsername() ?? throw new Exception("Cannot get username");
 
         if (username == dto.RecipientUsername.ToLower())
             throw new HubException("You cannot message yourself");
 
         var sender =
-            await userRepository.GetUserByUsernameAsync(
-                username.ToLower() ?? throw new Exception("Cannot get username"));
+            await userRepository
+                .GetUserByUsernameAsync(
+                    username ??
+                    throw new HubException("Sender not found"));
+
+        var recipient = await userRepository.GetUserByUsernameAsync(dto.RecipientUsername);
+
         if (sender == null)
         {
             logger.LogError("User {Username} not found in the repository", username);
         }
 
-
-        var recipient = await userRepository.GetUserByUsernameAsync(dto.RecipientUsername);
         if (recipient == null)
         {
-            logger.LogError("Recipient not found");
+            logger.LogError("Recipient {RecipientUsername} not found in the repository", dto.RecipientUsername);
             throw new HubException("Recipient not found");
         }
 
-        if (sender?.UserName == null)
-        {
-            logger.LogError("Sender username is null");
-            throw new HubException("Sender username is null");
-        }
-
-        if (recipient.UserName == null)
-        {
-            logger.LogError("Recipient username is null");
-            throw new HubException("Recipient username is null");
-        }
+        if (recipient == null || sender?.UserName == null || recipient.UserName == null)
+            throw new HubException("Cannot send message at this time");
 
         var message = new Message
         {
