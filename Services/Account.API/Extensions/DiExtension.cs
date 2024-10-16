@@ -12,7 +12,8 @@ public static class DiExtension // StepBook.API/Extensions/DiExtension.cs - from
         services.AddHttpContextAccessor();
         services.AddDbContext<AccountContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("Database"));
+            // options.UseNpgsql(configuration.GetConnectionString("Database"));
+            options.UseNpgsql(configuration.GetConnectionString("Local"));
         });
 
         services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));

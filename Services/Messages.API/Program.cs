@@ -2,6 +2,7 @@ using AuthMiddleware.Jwt;
 using Messages.API.Data;
 using Messages.API.Extensions;
 using Messages.API.Hubs;
+using Messages.API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args); // Services/Messages.API/Program.cs
@@ -13,6 +14,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger(builder.Configuration);
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
+
+builder.Services.AddHttpClient();
+
+builder.Services.AddSingleton<AccountService>();
 
 builder.Services.AddCors();
 

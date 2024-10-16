@@ -1,6 +1,6 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:7000",
+    "BaseUrl": "http://localhost:5004",
     "RateLimitOptions": {
       "QuotaExceededMessage": "Too many requests, please try again later."
     }
@@ -25,8 +25,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "account.api",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5000
         }
       ]
     },
@@ -46,8 +46,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "account.api",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5000
         }
       ]
     },
@@ -58,6 +58,13 @@
         "POST",
         "DELETE"
       ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 10
+      },
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -66,8 +73,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "messages.api",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5008
         }
       ]
     },
@@ -76,55 +83,57 @@
       "UpstreamHttpMethod": [
         "POST"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "DownstreamPathTemplate": "/hubs/presence/negotiate",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "ws",
       "DownstreamHostAndPorts": [
         {
-          "Host": "messages.api",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5008
         }
       ]
     },
     {
+      "UpstreamPathTemplate": "/hubs/message/negotiate",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/hubs/message/negotiate",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5008
+        }
+      ]
+    },
+    {
+      "DownstreamPathTemplate": "/hubs/presence",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5008
+        }
+      ],
       "UpstreamPathTemplate": "/hubs/presence",
       "UpstreamHttpMethod": [
         "GET",
         "POST"
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
-      "DownstreamPathTemplate": "/hubs/presence",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "messages.api",
-          "Port": 8080
-        }
       ]
     },
     {
+      "DownstreamPathTemplate": "/hubs/message",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5008
+        }
+      ],
       "UpstreamPathTemplate": "/hubs/message",
       "UpstreamHttpMethod": [
         "GET",
         "POST"
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
-      "DownstreamPathTemplate": "/hubs/message",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "messages.api",
-          "Port": 8080
-        }
       ]
     },
     {
@@ -141,8 +150,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "likes.api",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5048
         }
       ]
     },

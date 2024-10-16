@@ -15,7 +15,8 @@ public static class DiExtension
         services.AddHttpContextAccessor();
         services.AddDbContext<LikeContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("Database"));
+            // options.UseNpgsql(configuration.GetConnectionString("Database"));
+            options.UseNpgsql(configuration.GetConnectionString("Local"));
         });
 
         services.AddAutoMapper(typeof(MappingProfile).Assembly);

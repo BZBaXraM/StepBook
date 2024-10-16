@@ -68,40 +68,6 @@ namespace Likes.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Message",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SenderUsername = table.Column<string>(type: "text", nullable: false),
-                    RecipientUsername = table.Column<string>(type: "text", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    DateRead = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    MessageSent = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SenderDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    RecipientDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    SenderId = table.Column<int>(type: "integer", nullable: false),
-                    RecipientId = table.Column<int>(type: "integer", nullable: false),
-                    FileUrl = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Message", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Message_Users_RecipientId",
-                        column: x => x.RecipientId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Message_Users_SenderId",
-                        column: x => x.SenderId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Photos",
                 columns: table => new
                 {
@@ -130,16 +96,6 @@ namespace Likes.API.Migrations
                 column: "TargetUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Message_RecipientId",
-                table: "Message",
-                column: "RecipientId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Message_SenderId",
-                table: "Message",
-                column: "SenderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Photos_UserId",
                 table: "Photos",
                 column: "UserId");
@@ -150,9 +106,6 @@ namespace Likes.API.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Likes");
-
-            migrationBuilder.DropTable(
-                name: "Message");
 
             migrationBuilder.DropTable(
                 name: "Photos");

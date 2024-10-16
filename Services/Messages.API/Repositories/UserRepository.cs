@@ -2,13 +2,14 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BuildingBlocks.Shared;
 using Messages.API.Data;
+using Messages.API.Services;
 using Microsoft.EntityFrameworkCore;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
 
 namespace Messages.API.Repositories;
 
-public class UserRepository(MessageContext context, IMapper mapper) : IUserRepository
+public class UserRepository(MessageContext context, AccountService accountService, IMapper mapper) : IUserRepository
 {
     /// <summary>
     /// Update the user
@@ -49,9 +50,11 @@ public class UserRepository(MessageContext context, IMapper mapper) : IUserRepos
     /// <returns></returns>
     public async Task<User?> GetUserByUsernameAsync(string username)
     {
-        return await context.Users
-            .Include(p => p.Photos)
-            .SingleOrDefaultAsync(u => u.UserName == username);
+        // return await context.Users
+        //     .Include(p => p.Photos)
+        //     .SingleOrDefaultAsync(u => u.UserName == username);
+
+        return await accountService.GetUserByUsernameAsync(username);
     }
 
     /// <summary>

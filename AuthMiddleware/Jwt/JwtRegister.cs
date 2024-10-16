@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AuthMiddleware.Jwt;
 
-public static class JwtRegister
+public static class JwtRegister // AuthMiddleware/Jwt/JwtRegister.cs
 {
     public static IServiceCollection RegisterJwt(this IServiceCollection services, IConfiguration configuration)
     {

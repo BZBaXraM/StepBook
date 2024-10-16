@@ -15,7 +15,7 @@ namespace Likes.API.Features.Likes;
 /// Likes controller
 /// </summary>
 // [ServiceFilter(typeof(LogUserActivity))]
-[Route("api/[controller]")]
+[Route("api/[controller]")] // api/likes
 [ApiController]
 [Authorize]
 public class LikesController(ILikesRepository repository, LikeContext context) : ControllerBase
@@ -25,7 +25,7 @@ public class LikesController(ILikesRepository repository, LikeContext context) :
     /// </summary>
     /// <param name="targetUserId"></param>
     /// <returns></returns>
-    [HttpPost("{targetUserId:int}")]
+    [HttpPost("{targetUserId:int}")] // api/likes/{targetUserId}
     public async Task<ActionResult> ToggleLike(int targetUserId)
     {
         var sourceUserId = User.GetUserId();
@@ -58,7 +58,7 @@ public class LikesController(ILikesRepository repository, LikeContext context) :
     /// Get the current user's like ids
     /// </summary>
     /// <returns></returns>
-    [HttpGet("list")]
+    [HttpGet("list")] // api/likes/list
     public async Task<ActionResult<List<int>>> GetCurrentUserLikeIds()
     {
         return Ok(await repository.GetCurrentUserLikeIds(User.GetUserId()));
@@ -69,7 +69,7 @@ public class LikesController(ILikesRepository repository, LikeContext context) :
     /// </summary>
     /// <param name="likesParams"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpGet] // api/likes
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUserLikes([FromQuery] LikesParams likesParams)
     {
         likesParams.UserId = User.GetUserId();

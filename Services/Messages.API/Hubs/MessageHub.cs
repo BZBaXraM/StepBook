@@ -2,6 +2,7 @@ using AutoMapper;
 using BuildingBlocks.Extensions;
 using Messages.API.Data;
 using Messages.API.Repositories;
+using Messages.API.Services;
 using Microsoft.AspNetCore.SignalR;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
@@ -61,7 +62,6 @@ public class MessageHub(
 
         var sender = await userRepository.GetUserByUsernameAsync(username);
         var recipient = await userRepository.GetUserByUsernameAsync(dto.RecipientUsername);
-
         if (recipient == null || sender == null || sender.UserName == null || recipient.UserName == null)
             throw new HubException("Cannot send message at this time");
 
