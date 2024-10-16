@@ -7,8 +7,8 @@ namespace Account.API.Controllers;
 
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")] // /api/users
-[ApiController]
-[Authorize]
+[ApiController] 
+[Authorize] 
 public class UsersController(AccountContext context, IUserRepository repository, IMapper mapper, IPhotoService service)
     : ControllerBase
 {
