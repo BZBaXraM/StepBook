@@ -182,6 +182,28 @@ public class AccountController(
     }
 
     /// <summary>
+    /// Confirm the email of a user using a confirmation code
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPost("confirm-email-code")]
+    public async Task<ActionResult> ConfirmEmailCodeAsync([FromBody] ConfirmEmailCodeDto dto)
+    {
+        var user = await context.Users.SingleOrDefaultAsync(x => x.EmailConfirmationCode == dto.Code);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        user.IsEmailConfirmed = true;
+        await context.SaveChangesAsync();
+
+        return Ok("Email confirmed successfully. You can now log in.");
+    }
+
+
+    /// <summary>
     /// Confirm the email of a user
     /// </summary>
     /// <param name="token"></param>

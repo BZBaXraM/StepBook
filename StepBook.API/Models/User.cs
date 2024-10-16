@@ -126,8 +126,14 @@ public class User
     /// </summary>
     public string? RefreshToken { get; set; }
 
+
     /// <summary>
     /// Refresh token expire time.
     /// </summary>
     public DateTime RefreshTokenExpireTime { get; set; }
+
+    /// <summary>
+    /// The email confirmation code of the user.
+    /// </summary>
+    public string? EmailConfirmationCode { get; set; }
 }

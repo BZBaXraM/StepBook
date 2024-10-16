@@ -12,7 +12,7 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20240930175334_Initial")]
+    [Migration("20241016204407_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -159,6 +159,9 @@ namespace StepBook.API.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EmailConfirmationCode")
                         .HasColumnType("text");
 
                     b.Property<string>("EmailConfirmationToken")

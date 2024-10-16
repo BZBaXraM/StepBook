@@ -47,7 +47,8 @@ namespace StepBook.API.Migrations
                     ForgotPasswordToken = table.Column<string>(type: "text", nullable: true),
                     RandomCode = table.Column<string>(type: "text", nullable: true),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
-                    RefreshTokenExpireTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    RefreshTokenExpireTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EmailConfirmationCode = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
