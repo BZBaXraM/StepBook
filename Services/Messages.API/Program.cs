@@ -4,7 +4,7 @@ using Messages.API.Extensions;
 using Messages.API.Hubs;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args); // Services/Messages.API/Program.cs
 
 // Add services to the container.
 
@@ -29,6 +29,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
+    .WithOrigins("http://localhost:4200")
     .SetIsOriginAllowed(_ => true)
     .AllowCredentials());
 
@@ -52,6 +53,8 @@ catch (Exception e)
 
 
 app.UseMiddleware<JwtMiddleware>();
+
+// app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

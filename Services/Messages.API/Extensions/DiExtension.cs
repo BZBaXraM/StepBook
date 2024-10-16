@@ -7,7 +7,7 @@ using Messages.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
-namespace Messages.API.Extensions;
+namespace Messages.API.Extensions; // Services/Messages.API/Extensions/DiExtension.cs
 
 public static class DiExtension
 {
@@ -16,7 +16,8 @@ public static class DiExtension
         services.AddHttpContextAccessor();
         services.AddDbContext<MessageContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("Database"));
+            // options.UseNpgsql(configuration.GetConnectionString("Database"));
+            options.UseNpgsql(configuration.GetConnectionString("Local"));
         });
 
         services.AddScoped<IMessageRepository, MessageRepository>();
