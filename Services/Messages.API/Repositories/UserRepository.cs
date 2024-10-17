@@ -50,11 +50,13 @@ public class UserRepository(MessageContext context, AccountService accountServic
     /// <returns></returns>
     public async Task<User?> GetUserByUsernameAsync(string username)
     {
-        return await context.Users
-            .Include(p => p.Photos)
-            .SingleOrDefaultAsync(u => u.UserName == username);
+        // return await context.Users
+        //     .Include(p => p.Photos)
+        //     .SingleOrDefaultAsync(u => u.UserName == username);
 
-        // return await accountService.GetUserByUsernameAsync(username);
+        var user = await accountService.GetUserByUsernameAsync(username);
+
+        return user;
     }
 
     /// <summary>

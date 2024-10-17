@@ -10,7 +10,7 @@ public class User
     /// <summary>
     /// The email of the user.
     /// </summary>
-    public required string Email { get; set; }
+    public string? Email { get; set; }
 
     /// <summary>
     /// The login username of the user.
@@ -20,7 +20,7 @@ public class User
     /// <summary>
     /// The password of the user.
     /// </summary>
-    public required string Password { get; set; }
+    public string? Password { get; set; }
 
     /// <summary>
     /// The email of the user.
@@ -30,7 +30,7 @@ public class User
     /// <summary>
     /// The user's known as name.
     /// </summary>
-    public required string KnownAs { get; set; }
+    public string? KnownAs { get; set; }
 
     /// <summary>
     /// Created date of the user.
@@ -45,7 +45,7 @@ public class User
     /// <summary>
     /// Gender of the user.
     /// </summary>
-    public required string Gender { get; set; }
+    public string? Gender { get; set; }
 
     /// <summary>
     /// The user's self-introduction.

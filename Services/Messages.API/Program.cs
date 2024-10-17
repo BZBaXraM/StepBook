@@ -2,6 +2,7 @@ using AuthMiddleware.Jwt;
 using Messages.API.Data;
 using Messages.API.Extensions;
 using Messages.API.Hubs;
+using Messages.API.Middleware;
 using Messages.API.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,8 +17,8 @@ builder.Services.AddSwagger(builder.Configuration);
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 
 builder.Services.AddHttpClient();
-
-builder.Services.AddSingleton<AccountService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<AccountService>();
 
 builder.Services.AddCors();
 

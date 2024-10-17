@@ -12,7 +12,7 @@ namespace Messages.API.Hubs;
 public class MessageHub(
     MessageContext context,
     IMessageRepository messageRepository,
-    IUserRepository userRepository,
+    AccountService accountService,
     IMapper mapper,
     ILogger<MessageHub> logger,
     IHubContext<PresenceHub> presenceHub) : Hub
@@ -62,12 +62,12 @@ public class MessageHub(
             throw new HubException("You cannot message yourself");
 
         var sender =
-            await userRepository
+            await accountService
                 .GetUserByUsernameAsync(
                     username ??
                     throw new HubException("Sender not found"));
 
-        var recipient = await userRepository.GetUserByUsernameAsync(dto.RecipientUsername);
+        var recipient = await accountService.GetUserByUsernameAsync(dto.RecipientUsername);
 
         if (sender == null)
         {
