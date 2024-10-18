@@ -21,7 +21,7 @@ public static class DiExtension
         });
 
         services.AddScoped<IMessageRepository, MessageRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
+        // services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
