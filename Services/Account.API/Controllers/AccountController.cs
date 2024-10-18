@@ -105,6 +105,18 @@ public class AccountController(
         };
     }
 
+    [HttpGet("token")]
+    public async Task<ActionResult<string>> GetTokenAsync()
+    {
+        var user = await context.Users.FirstOrDefaultAsync();
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        return Ok(jwtService.GenerateSecurityToken(user));
+    }
+
     /// <summary>
     /// Logout a user
     /// </summary>

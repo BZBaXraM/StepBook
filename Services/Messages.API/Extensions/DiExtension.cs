@@ -64,6 +64,7 @@ public static class DiExtension
     public static IServiceCollection AuthenticationAndAuthorization(this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddHttpContextAccessor();
         services.AddScoped<LogUserActivity>();
         services.RegisterJwt(configuration);
         services.AddSingleton<JwtMiddleware>();

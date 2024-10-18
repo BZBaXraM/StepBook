@@ -6,14 +6,14 @@ using StepBook.Domain.Entities;
 namespace Messages.API.Services;
 
 public class AccountService(
-    HttpClient client,
+    IHttpClientFactory httpClientFactory,
     IHttpContextAccessor httpContextAccessor,
     ILogger<AccountService> logger)
 {
     // public async Task<User?> GetUserByUsernameAsync(string username)
     // {
     //     var token =
-    //         "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJiYXhyYW05NyIsIm5iZiI6MTcyOTIwMjg4NywiZXhwIjoxNzI5NjM0ODg3LCJpYXQiOjE3MjkyMDI4ODd9.MV20_FvoQh0lxNWTOXhfpWC7V3PDynB9mXkBAG2qosp9cEuqFQGMBQHd2-F-Nqr5ixa-G609M_h3t4Gt5UPxlg";
+    //         "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJiYXhyYW05NyIsIm5iZiI6MTcyOTI1MTgzNywiZXhwIjoxNzI5NjgzODM3LCJpYXQiOjE3MjkyNTE4Mzd9.tizsEhxD7DJaQVeY2lWQl7tjp1hRExg9qjhWu2od3btDZz6Du-Ka_s87mYcedEA51VIIVl4NmVLb4PTo8LwiOw";
     //     if (string.IsNullOrEmpty(token))
     //     {
     //         logger.LogWarning("Token is null or empty");
@@ -23,7 +23,7 @@ public class AccountService(
     //     logger.LogInformation("Token: {Token}", token);
     //     logger.LogInformation("Fetching user {Username} from API", username);
     //
-    //     var user = await GetUserFromApi(username, token);
+    //     var user = await GetUserFromApiAsync(username, token);
     //     if (user == null)
     //     {
     //         logger.LogWarning("User {Username} not found", username);
@@ -34,17 +34,18 @@ public class AccountService(
 
     public async Task<User?> GetUserByUsernameAsync(string username)
     {
-        var token = await GetTokenAsync();
-        if (string.IsNullOrEmpty(token))
+        var token = httpContextAccessor.HttpContext?.Request.Headers.Authorization.FirstOrDefault();
+        if (string.IsNullOrEmpty(token) || !token.StartsWith("Bearer "))
         {
-            logger.LogWarning("Token is null or empty");
+            logger.LogWarning("Token is null or not in correct format");
             return null;
         }
 
+        token = token["Bearer ".Length..].Trim(); // Извлечение токена
         logger.LogInformation("Token: {Token}", token);
         logger.LogInformation("Fetching user {Username} from API", username);
 
-        var user = await GetUserFromApi(username, token);
+        var user = await GetUserFromApiAsync(username, token);
         if (user == null)
         {
             logger.LogWarning("User {Username} not found", username);
@@ -53,21 +54,16 @@ public class AccountService(
         return user;
     }
 
-    private async Task<string?> GetTokenAsync()
+    private async Task<User?> GetUserFromApiAsync(string username, string token)
     {
-        var httpContext = httpContextAccessor.HttpContext;
-        return await Task.FromResult(httpContext?.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
-    }
+        var client = httpClientFactory.CreateClient("Account.API");
 
-    private async Task<User?> GetUserFromApi(string username, string token)
-    {
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        var response = await client.GetAsync($"http://localhost:5000/api/users/{username}");
 
+        var response = await client.GetAsync($"api/users/{username}");
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
-            logger.LogWarning("User not found");
-            return null!;
+            return null;
         }
 
         response.EnsureSuccessStatusCode();
@@ -78,6 +74,6 @@ public class AccountService(
             PropertyNameCaseInsensitive = true
         });
 
-        return user ?? throw new Exception("Cannot deserialize user");
+        return user;
     }
 }

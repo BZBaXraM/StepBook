@@ -2,7 +2,6 @@ using AuthMiddleware.Jwt;
 using Messages.API.Data;
 using Messages.API.Extensions;
 using Messages.API.Hubs;
-using Messages.API.Middleware;
 using Messages.API.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,8 +15,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger(builder.Configuration);
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 
-builder.Services.AddHttpClient();
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient("Account.API", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5000/"); // Account.API
+    client.DefaultRequestHeaders.Add("User-Agent", "HttpClientFactory-Sample");
+});
+
+builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddScoped<AccountService>();
 
 builder.Services.AddCors();
@@ -66,5 +70,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+
 
 await app.RunAsync();

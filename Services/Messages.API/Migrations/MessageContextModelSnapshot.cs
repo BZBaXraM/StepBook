@@ -155,7 +155,6 @@ namespace Messages.API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("EmailConfirmationCode")
@@ -168,7 +167,6 @@ namespace Messages.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Gender")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Interests")
@@ -181,7 +179,6 @@ namespace Messages.API.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("KnownAs")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("LastActive")
@@ -191,7 +188,6 @@ namespace Messages.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("RandomCode")
