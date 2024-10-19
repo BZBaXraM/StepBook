@@ -20,7 +20,7 @@ builder.Services.AddHttpClient("Account.API", client =>
 });
 
 builder.Services.AddSingleton<HttpClient>();
-builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddCors();
 

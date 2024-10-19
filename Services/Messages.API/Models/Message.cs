@@ -1,4 +1,6 @@
-namespace StepBook.Domain.Entities;
+using StepBook.Domain.Entities;
+
+namespace Messages.API.Models;
 
 public class Message
 {
@@ -26,8 +28,8 @@ public class Message
     public bool SenderDeleted { get; set; }
     public bool RecipientDeleted { get; set; }
     public int SenderId { get; set; }
-    public User Sender { get; set; } = null!;
+    public UserBasic Sender { get; set; } = null!;
     public int RecipientId { get; set; }
-    public User Recipient { get; set; } = null!;
+    public UserBasic Recipient { get; set; } = null!;
     public string? FileUrl { get; set; }
 }

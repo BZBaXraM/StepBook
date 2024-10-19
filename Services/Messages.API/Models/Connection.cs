@@ -1,4 +1,4 @@
-namespace StepBook.Domain.Entities;
+namespace Messages.API.Models;
 
 /// <summary>
 /// Represents a connection in the application.

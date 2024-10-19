@@ -1,6 +1,10 @@
 using BuildingBlocks.Shared;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
+using Connection = Messages.API.Models.Connection;
+using Group = Messages.API.Models.Group;
+using Message = Messages.API.Models.Message;
+using MessageDto = Messages.API.DTOs.MessageDto;
 
 namespace Messages.API.Repositories;
 

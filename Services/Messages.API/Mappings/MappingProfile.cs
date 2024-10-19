@@ -1,6 +1,8 @@
 using AutoMapper;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
+using Message = Messages.API.Models.Message;
+using MessageDto = Messages.API.DTOs.MessageDto;
 
 namespace Messages.API.Mappings;
 

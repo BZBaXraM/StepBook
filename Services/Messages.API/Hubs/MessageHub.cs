@@ -6,13 +6,17 @@ using Messages.API.Services;
 using Microsoft.AspNetCore.SignalR;
 using StepBook.Domain.DTOs;
 using StepBook.Domain.Entities;
+using Connection = Messages.API.Models.Connection;
+using Group = Messages.API.Models.Group;
+using Message = Messages.API.Models.Message;
+using MessageDto = Messages.API.DTOs.MessageDto;
 
 namespace Messages.API.Hubs;
 
 public class MessageHub(
     MessageContext context,
     IMessageRepository messageRepository,
-    AccountService accountService,
+    UserService userService,
     IMapper mapper,
     ILogger<MessageHub> logger,
     IHubContext<PresenceHub> presenceHub) : Hub
@@ -62,12 +66,12 @@ public class MessageHub(
             throw new HubException("You cannot message yourself");
 
         var sender =
-            await accountService
+            await userService
                 .GetUserByUsernameAsync(
                     username ??
                     throw new HubException("Sender not found"));
 
-        var recipient = await accountService.GetUserByUsernameAsync(dto.RecipientUsername);
+        var recipient = await userService.GetUserByUsernameAsync(dto.RecipientUsername);
 
         if (sender == null)
         {

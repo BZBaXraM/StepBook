@@ -6,9 +6,9 @@ using StepBook.Domain.Entities;
 
 namespace Messages.API.Services;
 
-public class AccountService(
+public class UserService(
     IHttpClientFactory httpClientFactory,
-    ILogger<AccountService> logger)
+    ILogger<UserService> logger)
 {
     public async Task<User?> GetUserByUsernameAsync(string username)
     {
