@@ -1,23 +1,16 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using StepBook.Domain.Entities;
 
 namespace Likes.API.Data;
 
 public class LikeContext(DbContextOptions<LikeContext> options) : DbContext(options)
 {
-    public DbSet<User> Users => Set<User>();
-
     public DbSet<UserLike> Likes => Set<UserLike>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
-        });
 
         modelBuilder.Entity<UserLike>()
             .HasKey(k => new { k.SourceUserId, k.TargetUserId });
@@ -33,7 +26,5 @@ public class LikeContext(DbContextOptions<LikeContext> options) : DbContext(opti
             .WithMany(l => l.LikedByUsers)
             .HasForeignKey(s => s.TargetUserId)
             .OnDelete(DeleteBehavior.NoAction);
-
-        modelBuilder.Ignore<Message>();
     }
 }

@@ -1,4 +1,4 @@
-namespace AuthMiddleware.Jwt;
+namespace Account.API.Services;
 
 /// <summary>
 /// Black list service.

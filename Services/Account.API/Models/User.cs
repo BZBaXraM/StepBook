@@ -1,4 +1,4 @@
-namespace StepBook.Domain.Entities;
+namespace Account.API.Models;
 
 public class User
 {
@@ -10,7 +10,7 @@ public class User
     /// <summary>
     /// The email of the user.
     /// </summary>
-    public string? Email { get; set; }
+    public string Email { get; set; }
 
     /// <summary>
     /// The login username of the user.
@@ -20,7 +20,7 @@ public class User
     /// <summary>
     /// The password of the user.
     /// </summary>
-    public string? Password { get; set; }
+    public required string Password { get; set; }
 
     /// <summary>
     /// The email of the user.
@@ -30,7 +30,7 @@ public class User
     /// <summary>
     /// The user's known as name.
     /// </summary>
-    public string? KnownAs { get; set; }
+    public required string KnownAs { get; set; }
 
     /// <summary>
     /// Created date of the user.
@@ -45,7 +45,7 @@ public class User
     /// <summary>
     /// Gender of the user.
     /// </summary>
-    public string? Gender { get; set; }
+    public required string Gender { get; set; }
 
     /// <summary>
     /// The user's self-introduction.
@@ -71,32 +71,6 @@ public class User
     /// Country of the user.
     /// </summary>
     public required string Country { get; set; }
-
-    /// <summary>
-    /// The user's photo URL.
-    /// </summary>
-    public ICollection<Photo> Photos { get; set; } = [];
-
-    /// <summary>
-    /// List of users liked by the current user.
-    /// </summary>
-    public ICollection<UserLike> LikedByUsers { get; set; } = [];
-
-    /// <summary>
-    /// List of users that liked the current user.
-    /// </summary>
-    public ICollection<UserLike> LikedUsers { get; set; } = [];
-
-    /// <summary>
-    /// List of messages sent by the current user.
-    /// </summary>
-    public ICollection<Message> MessagesSent { get; set; } = [];
-
-    /// <summary>
-    /// List of messages received by the current user.
-    /// </summary>
-    public ICollection<Message> MessagesReceived { get; set; } = [];
-
 
     /// <summary>
     /// Is the email of the user confirmed?
@@ -129,4 +103,6 @@ public class User
     public DateTime RefreshTokenExpireTime { get; set; }
 
     public string? EmailConfirmationCode { get; set; }
+
+    public ICollection<Photo> Photos { get; set; } = [];
 }

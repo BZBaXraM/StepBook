@@ -1,9 +1,10 @@
+using Account.API.Models;
+
 namespace Account.API.Data;
 
 public class AccountContext(DbContextOptions<AccountContext> options) : DbContext(options)
 {
     public DbSet<User> Users => Set<User>();
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -15,7 +16,8 @@ public class AccountContext(DbContextOptions<AccountContext> options) : DbContex
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
-        modelBuilder.Ignore<UserLike>();
-        modelBuilder.Ignore<Message>();
+        // Игнорируем ненужные для этого контекста сущности
+        // modelBuilder.Ignore<UserLike>();
+        // modelBuilder.Ignore<Message>();
     }
 }

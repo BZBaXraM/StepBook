@@ -1,6 +1,7 @@
 using Account.API.Repositories.Interfaces;
 using AutoMapper.QueryableExtensions;
 using BuildingBlocks.Shared;
+using User = Account.API.Models.User;
 
 namespace Account.API.Repositories.Classes;
 

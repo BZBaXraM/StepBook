@@ -1,5 +1,3 @@
-using StepBook.Domain.Entities;
-
 namespace Messages.API.Models;
 
 public class Message

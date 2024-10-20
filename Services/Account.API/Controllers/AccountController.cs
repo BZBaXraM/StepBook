@@ -1,3 +1,5 @@
+using Account.API.Models;
+
 namespace Account.API.Controllers;
 
 [ServiceFilter(typeof(LogUserActivity))]
@@ -103,18 +105,6 @@ public class AccountController(
             RefreshToken = jwtService.GenerateRefreshToken(),
             RefreshTokenExpireTime = user.RefreshTokenExpireTime
         };
-    }
-
-    [HttpGet("token")]
-    public async Task<ActionResult<string>> GetTokenAsync()
-    {
-        var user = await context.Users.FirstOrDefaultAsync();
-        if (user == null)
-        {
-            return NotFound("User not found");
-        }
-
-        return Ok(jwtService.GenerateSecurityToken(user));
     }
 
     /// <summary>

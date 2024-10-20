@@ -2,17 +2,16 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Extensions.Logging;
+using Account.API.Models;
 using Microsoft.IdentityModel.Tokens;
-using StepBook.Domain.Entities;
 
-namespace AuthMiddleware.Jwt;
+namespace Account.API.Services;
 
 /// <summary>
 /// The JWT service
 /// </summary>
 /// <param name="config"></param>
-public class JwtService(IBlackListService blackListService, JwtConfig config, ILogger<JwtService> logger) : IJwtService
+public class JwtService(IBlackListService blackListService, Shared.JwtConfig config, ILogger<JwtService> logger) : IJwtService
 {
     /// <summary>
     /// The JWT service configuration

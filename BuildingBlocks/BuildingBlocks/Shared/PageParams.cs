@@ -1,5 +1,3 @@
-using StepBook.Domain.Shared;
-
 namespace BuildingBlocks.Shared;
 
 public class PageParams : PaginationParams
@@ -28,4 +26,25 @@ public class PageParams : PaginationParams
     /// The order by 
     /// </summary>
     public string OrderBy { get; set; } = "lastActive";
+}
+
+public class PaginationParams
+{
+    private const int MaxPageSize = 50;
+
+    /// <summary>
+    /// The page number
+    /// </summary>
+    public int PageNumber { get; set; } = 1;
+
+    private int _pageSize = 10;
+
+    /// <summary>
+    /// The page size
+    /// </summary>
+    public int PageSize
+    {
+        get => _pageSize;
+        set => _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
+    }
 }

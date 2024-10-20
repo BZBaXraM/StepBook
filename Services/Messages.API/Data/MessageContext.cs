@@ -1,8 +1,5 @@
+using Messages.API.Models;
 using Microsoft.EntityFrameworkCore;
-using StepBook.Domain.Entities;
-using Connection = Messages.API.Models.Connection;
-using Group = Messages.API.Models.Group;
-using Message = Messages.API.Models.Message;
 
 namespace Messages.API.Data;
 
@@ -11,6 +8,7 @@ public class MessageContext(DbContextOptions<MessageContext> options) : DbContex
     public DbSet<Message> Messages => Set<Message>();
     public DbSet<Group> Groups => Set<Group>();
     public DbSet<Connection> Connections => Set<Connection>();
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,7 +20,7 @@ public class MessageContext(DbContextOptions<MessageContext> options) : DbContex
             .OnDelete(DeleteBehavior.Restrict);
 
         // Игнорируем ненужные сущности для этого контекста
-        modelBuilder.Ignore<UserLike>();
+        // modelBuilder.Ignore<UserLike>();
     }
 
     public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,

@@ -1,4 +1,4 @@
-namespace StepBook.Domain.DTOs;
+namespace Account.API.DTOs;
 
 /// <summary>
 /// The member DTO
@@ -73,5 +73,5 @@ public class MemberDto
     /// <summary>
     /// The photos of the user
     /// </summary>
-    public ICollection<PhotoDto?> Photos { get; init; } = [];
+    public ICollection<Account.API.DTOs.PhotoDto?> Photos { get; init; } = [];
 }

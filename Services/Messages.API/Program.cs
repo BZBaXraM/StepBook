@@ -1,4 +1,3 @@
-using AuthMiddleware.Jwt;
 using Messages.API.Data;
 using Messages.API.Extensions;
 using Messages.API.Hubs;

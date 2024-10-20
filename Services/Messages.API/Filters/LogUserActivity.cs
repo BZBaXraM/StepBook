@@ -1,5 +1,5 @@
 using BuildingBlocks.Extensions;
-using Messages.API.Data;
+using Messages.API.Services;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Messages.API.Filters;
@@ -7,7 +7,7 @@ namespace Messages.API.Filters;
 /// <summary>
 /// Log the user activity filter
 /// </summary>
-public class LogUserActivity(MessageContext messageContext) : IAsyncActionFilter
+public class LogUserActivity(UserService service) : IAsyncActionFilter
 {
     /// <summary>
     /// Log the user activity
@@ -22,12 +22,12 @@ public class LogUserActivity(MessageContext messageContext) : IAsyncActionFilter
 
         var userId = resultContext.HttpContext.User.GetUserId();
 
-        var user = await messageContext.Users.FindAsync(userId);
+        var user = await service.GetUserByIdAsync(userId);
 
         if (user == null) return;
 
         user.LastActive = DateTime.UtcNow;
 
-        await messageContext.SaveChangesAsync();
+        await service.UpdateUserAsync(user);
     }
 }

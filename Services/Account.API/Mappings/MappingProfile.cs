@@ -1,4 +1,7 @@
 using BuildingBlocks.Extensions;
+using Photo = Account.API.Models.Photo;
+using PhotoDto = Account.API.DTOs.PhotoDto;
+using User = Account.API.Models.User;
 
 namespace Account.API.Mappings;
 

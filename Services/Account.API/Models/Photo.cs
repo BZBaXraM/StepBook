@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace StepBook.Domain.Entities;
+namespace Account.API.Models;
 
 /// <summary>
 /// The photo class

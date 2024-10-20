@@ -1,7 +1,6 @@
 using AutoMapper;
 using Messages.API.Models;
 using Messages.API.Services;
-using StepBook.Domain.Entities;
 
 namespace Messages.API.Repositories;
 

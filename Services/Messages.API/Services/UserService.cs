@@ -1,8 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using AuthMiddleware.Jwt;
-using StepBook.Domain.Entities;
+using Messages.API.Models;
 
 namespace Messages.API.Services;
 
@@ -10,7 +9,7 @@ public class UserService(
     IHttpClientFactory httpClientFactory,
     ILogger<UserService> logger)
 {
-    public async Task<User?> GetUserByUsernameAsync(string username)
+    public async Task<UserBasic?> GetUserByUsernameAsync(string username)
     {
         var token =
             "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJiYXhyYW05NyIsIm5iZiI6MTcyOTI1MTgzNywiZXhwIjoxNzI5NjgzODM3LCJpYXQiOjE3MjkyNTE4Mzd9.tizsEhxD7DJaQVeY2lWQl7tjp1hRExg9qjhWu2od3btDZz6Du-Ka_s87mYcedEA51VIIVl4NmVLb4PTo8LwiOw";
@@ -33,7 +32,7 @@ public class UserService(
     }
 
     // GetUserByIdAsync
-    public async Task<User?> GetUserByIdAsync(int id)
+    public async Task<UserBasic?> GetUserByIdAsync(int id)
     {
         var token =
             "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJiYXhyYW05NyIsIm5iZiI6MTcyOTI1MTgzNywiZXhwIjoxNzI5NjgzODM3LCJpYXQiOjE3MjkyNTE4Mzd9.tizsEhxD7DJaQVeY2lWQl7tjp1hRExg9qjhWu2od3btDZz6Du-Ka_s87mYcedEA51VIIVl4NmVLb4PTo8LwiOw";
@@ -55,7 +54,36 @@ public class UserService(
         return user;
     }
 
-    private async Task<User?> GetUserFromApiAsync(string username, string token)
+    public async Task<UserBasic> UpdateUserAsync(UserBasic user)
+    {
+        var token =
+            "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJiYXhyYW05NyIsIm5iZiI6MTcyOTI1MTgzNywiZXhwIjoxNzI5NjgzODM3LCJpYXQiOjE3MjkyNTE4Mzd9.tizsEhxD7DJaQVeY2lWQl7tjp1hRExg9qjhWu2od3btDZz6Du-Ka_s87mYcedEA51VIIVl4NmVLb4PTo8LwiOw";
+        if (string.IsNullOrEmpty(token))
+        {
+            logger.LogWarning("Token is null or empty");
+            return null!;
+        }
+
+        logger.LogInformation("Token: {Token}", token);
+        logger.LogInformation("Updating user {Id} in API", user.Id);
+
+        var client = httpClientFactory.CreateClient("Account.API");
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await client.PutAsJsonAsync($"api/users/{user.Id}", user);
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync();
+        var updatedUser = JsonSerializer.Deserialize<UserBasic>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        return updatedUser!;
+    }
+
+    private async Task<UserBasic?> GetUserFromApiAsync(string username, string token)
     {
         var client = httpClientFactory.CreateClient("Account.API");
 
@@ -70,7 +98,7 @@ public class UserService(
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadAsStringAsync();
-        var user = JsonSerializer.Deserialize<User>(content, new JsonSerializerOptions
+        var user = JsonSerializer.Deserialize<UserBasic>(content, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         });

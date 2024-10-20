@@ -2,6 +2,7 @@ using AutoMapper;
 using BuildingBlocks.Extensions;
 using BuildingBlocks.Shared;
 using Messages.API.Data;
+using Messages.API.DTOs;
 using Messages.API.Extensions;
 using Messages.API.Filters;
 using Messages.API.Repositories;

@@ -1,4 +1,4 @@
-namespace StepBook.Domain.DTOs;
+namespace Messages.API.DTOs;
 
 public class CreateMessageRequestDto
 {
@@ -16,9 +16,4 @@ public class CreateMessageRequestDto
     /// File URL.
     /// </summary>
     public string? FileUrl { get; set; }
-
-    /// <summary>
-    /// Message type.
-    /// </summary>
-    public string? MessageType { get; set; }
 }

@@ -1,7 +1,11 @@
+using System.Text;
 using Account.API.Features.Account;
 using Account.API.Repositories.Classes;
 using Account.API.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using BlackListMiddleware = Account.API.Middleware.BlackListMiddleware;
+using JwtMiddleware = Account.API.Middleware.JwtMiddleware;
 
 namespace Account.API.Extensions;
 
@@ -62,8 +66,41 @@ public static class DiExtension // StepBook.API/Extensions/DiExtension.cs - from
         services.AddSingleton<IEmailService, EmailService>();
         services.AddScoped<LogUserActivity>();
         services.AddSingleton<BlackListMiddleware>();
-        services.RegisterJwt(configuration);
         services.AddSingleton<JwtMiddleware>();
+
+        services.AddSingleton<IBlackListService, BlackListService>();
+        services.AddSingleton<IJwtService, JwtService>();
+        JwtConfig jwtConfig = new();
+        configuration.GetSection("JWT").Bind(jwtConfig);
+        services.AddSingleton(jwtConfig);
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtConfig.Secret)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        context.Token = string.IsNullOrEmpty(accessToken) switch
+                        {
+                            false when path.StartsWithSegments("/hubs") => accessToken,
+                            _ => context.Token
+                        };
+
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
         return services;
     }

@@ -1,4 +1,4 @@
-namespace StepBook.Domain.DTOs;
+namespace Account.API.DTOs;
 
 public class RefreshTokenDto
 {

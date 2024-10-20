@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using StepBook.Domain.Entities;
+using Account.API.Models;
 
-namespace AuthMiddleware.Jwt;
+namespace Account.API.Services;
 
 /// <summary>
 /// The JWT service
