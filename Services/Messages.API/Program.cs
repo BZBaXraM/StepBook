@@ -64,6 +64,5 @@ catch (Exception e)
 }
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-// AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 
 await app.RunAsync();

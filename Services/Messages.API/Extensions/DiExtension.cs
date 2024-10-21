@@ -3,6 +3,7 @@ using Messages.API.Data;
 using Messages.API.Filters;
 using Messages.API.Hubs;
 using Messages.API.Mappings;
+using Messages.API.Middleware;
 using Messages.API.Repositories;
 using Messages.API.Services;
 using Messages.API.Shared.Configs;
@@ -74,6 +75,7 @@ public static class DiExtension
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);
         services.AddSingleton(jwtConfig);
+        services.AddSingleton<JwtMiddleware>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

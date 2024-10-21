@@ -31,7 +31,7 @@ app.UseCors(x => x
     .SetIsOriginAllowed(_ => true)
     .AllowCredentials());
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseMiddleware<JwtMiddleware>();
 app.UseMiddleware<BlackListMiddleware>();

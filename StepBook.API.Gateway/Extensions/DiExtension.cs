@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using StepBook.API.Gateway.Configs;
+using StepBook.API.Gateway.Middleware;
 using StepBook.API.Gateway.Services;
 
 namespace StepBook.API.Gateway.Extensions;
@@ -15,6 +16,7 @@ public static class DiExtension
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);
         services.AddSingleton(jwtConfig);
+        services.AddSingleton<JwtMiddleware>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
