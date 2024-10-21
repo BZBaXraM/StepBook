@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Messages.API.Services;
+namespace StepBook.API.Gateway.Services;
 
 /// <summary>
 /// The JWT service

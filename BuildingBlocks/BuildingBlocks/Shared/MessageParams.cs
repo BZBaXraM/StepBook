@@ -1,5 +1,3 @@
-using StepBook.Domain.Shared;
-
 namespace BuildingBlocks.Shared;
 
 public class MessageParams : PaginationParams

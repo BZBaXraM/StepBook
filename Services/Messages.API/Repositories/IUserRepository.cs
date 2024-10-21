@@ -1,7 +1,4 @@
-using BuildingBlocks.Shared;
 using Messages.API.Models;
-using StepBook.Domain.DTOs;
-using StepBook.Domain.Entities;
 
 namespace Messages.API.Repositories;
 

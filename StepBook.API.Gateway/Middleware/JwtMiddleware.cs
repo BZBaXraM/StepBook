@@ -1,6 +1,6 @@
-using Messages.API.Services;
+using StepBook.API.Gateway.Services;
 
-namespace Messages.API.Middleware;
+namespace StepBook.API.Gateway.Middleware;
 
 public class JwtMiddleware(IJwtService jwtService, ILogger<JwtMiddleware> logger) : IMiddleware
 {

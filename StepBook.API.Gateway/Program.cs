@@ -1,7 +1,7 @@
-using AuthMiddleware.Jwt;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using StepBook.API.Gateway.Extensions;
+using StepBook.API.Gateway.Middleware;
 
 var builder = WebApplication.CreateBuilder(args); // StepBook.API.Gateway/Program.cs
 
@@ -11,8 +11,6 @@ builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 builder.Services.AddCors();
 
 var app = builder.Build();
-
-// app.UseHttpsRedirection();
 
 app.UseCors(x => x
     .AllowAnyMethod()

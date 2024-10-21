@@ -7,10 +7,7 @@ using Messages.API.Extensions;
 using Messages.API.Filters;
 using Messages.API.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using StepBook.Domain.DTOs;
-using StepBook.Domain.Entities;
-using Message = Messages.API.Models.Message;
-using MessageDto = Messages.API.DTOs.MessageDto;
+using Messages.API.Models;
 
 namespace Messages.API.Features.Messages;
 

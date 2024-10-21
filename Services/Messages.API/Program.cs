@@ -1,6 +1,7 @@
 using Messages.API.Data;
 using Messages.API.Extensions;
 using Messages.API.Hubs;
+using Messages.API.Middleware;
 using Messages.API.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -63,6 +64,6 @@ catch (Exception e)
 }
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+// AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 
 await app.RunAsync();

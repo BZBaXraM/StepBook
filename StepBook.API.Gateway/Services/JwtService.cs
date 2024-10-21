@@ -1,10 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Messages.API.Shared.Configs;
 using Microsoft.IdentityModel.Tokens;
+using StepBook.API.Gateway.Configs;
 
-namespace Messages.API.Services;
+namespace StepBook.API.Gateway.Services;
 
 /// <summary>
 /// The JWT service
