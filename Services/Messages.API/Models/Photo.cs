@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using StepBook.Domain.Entities;
 
 namespace Messages.API.Models;
 
