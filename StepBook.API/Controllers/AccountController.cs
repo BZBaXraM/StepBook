@@ -159,22 +159,6 @@ public class AccountController(
     }
 
     /// <summary>
-    /// Login with Google
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("login-google")]
-    public IActionResult GoogleLogin()
-    {
-        var properties = new AuthenticationProperties
-        {
-            RedirectUri = Url.Action("GoogleSignIn"),
-            Items = { { "scheme", GoogleDefaults.AuthenticationScheme } }
-        };
-
-        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
-    }
-
-    /// <summary>
     /// Confirm the email of a user using a confirmation code
     /// </summary>
     /// <param name="dto"></param>

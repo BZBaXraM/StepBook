@@ -12,19 +12,6 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-    }).AddCookie()
-    .AddGoogle(options =>
-    {
-        options.ClientId = builder.Configuration["Google:client_id"]!;
-        options.ClientSecret = builder.Configuration["Google:client_secret"]!;
-    });
-
-
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("/Logs/StepBook.log", rollingInterval: RollingInterval.Day)
