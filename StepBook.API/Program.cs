@@ -1,3 +1,5 @@
+using StepBook.DAL.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

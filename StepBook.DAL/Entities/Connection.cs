@@ -9,6 +9,7 @@ public class Connection
     /// Connection id
     /// </summary>
     public required string ConnectionId { get; set; }
+
     /// <summary>
     /// Username
     /// </summary>

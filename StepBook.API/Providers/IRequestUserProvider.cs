@@ -1,3 +1,5 @@
+using StepBook.DAL.Data.Configs;
+
 namespace StepBook.API.Providers;
 
 /// <summary>

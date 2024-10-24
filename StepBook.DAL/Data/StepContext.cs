@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using StepBook.DAL.Entities;
-using Group = System.Text.RegularExpressions.Group;
 
 namespace StepBook.DAL.Data;
 

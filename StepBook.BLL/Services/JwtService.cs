@@ -3,8 +3,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using StepBook.API.Data.Configs;
 using StepBook.API.Services;
+using StepBook.DAL.Data.Configs;
 using StepBook.DAL.Entities;
 
 namespace StepBook.BLL.Services;

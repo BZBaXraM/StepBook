@@ -1,6 +1,6 @@
 using System.Net;
 using System.Text.Json;
-using StepBook.API.Exceptions;
+using StepBook.BLL.Exceptions;
 
 namespace StepBook.API.Middleware;
 

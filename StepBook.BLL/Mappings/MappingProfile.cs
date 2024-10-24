@@ -1,5 +1,5 @@
 using AutoMapper;
-using StepBook.BLL.Extensions;
+using StepBook.BuildingBlocks.Extensions;
 using StepBook.DAL.Entities;
 using StepBook.DTO.DTOs;
 

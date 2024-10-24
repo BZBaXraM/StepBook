@@ -1,3 +1,6 @@
+using StepBook.DAL.Data;
+using StepBook.DAL.Entities;
+
 namespace StepBook.API.Controllers;
 
 /// <summary>

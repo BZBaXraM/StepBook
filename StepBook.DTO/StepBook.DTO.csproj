@@ -6,9 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\StepBook.BuildingBlocks\StepBook.BuildingBlocks.csproj" />
-        <ProjectReference Include="..\StepBook.DTO\StepBook.DTO.csproj"/>
-    </ItemGroup>
-
 </Project>

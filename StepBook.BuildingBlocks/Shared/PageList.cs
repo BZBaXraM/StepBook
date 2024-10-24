@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace StepBook.BLL.Helpers;
+namespace StepBook.BuildingBlocks.Shared;
 
 /// <summary>
 /// Pagination helper class

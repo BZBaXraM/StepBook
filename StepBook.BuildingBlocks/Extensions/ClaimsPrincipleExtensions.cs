@@ -1,4 +1,6 @@
-namespace StepBook.API.Extensions;
+using System.Security.Claims;
+
+namespace StepBook.BuildingBlocks.Extensions;
 
 /// <summary>
 /// Claims principle extensions

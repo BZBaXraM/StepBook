@@ -1,4 +1,5 @@
 using StepBook.API.Contracts.Interfaces;
+using StepBook.BuildingBlocks.Extensions;
 
 namespace StepBook.API.Filters;
 

@@ -1,4 +1,4 @@
-namespace StepBook.BLL.Helpers;
+namespace StepBook.BuildingBlocks.Shared;
 
 /// <summary>
 /// The page parameters

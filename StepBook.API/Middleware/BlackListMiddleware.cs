@@ -1,3 +1,5 @@
+using StepBook.API.Services;
+
 namespace StepBook.API.Middleware;
 
 /// <summary>
