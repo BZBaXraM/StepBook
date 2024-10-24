@@ -12,11 +12,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-namespace Messages.API.Extensions; // Services/Messages.API/Extensions/DiExtension.cs
+namespace Messages.API.Extensions;
+// Services/Messages.API/Extensions/DiExtension.cs
 
 public static class DiExtension
 {
-    public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AuthenticationAndAuthorization(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
         services.AddDbContext<MessageContext>(options =>
@@ -26,50 +28,13 @@ public static class DiExtension
         });
 
         services.AddScoped<IMessageRepository, MessageRepository>();
-        // services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
         services.AddSignalR();
 
         services.AddSingleton<PresenceTracker>();
-
-        services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "StepBook.API", Version = "v1" });
-
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Description =
-                    "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "Bearer"
-            });
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    []
-                }
-            });
-        });
-
-        return services;
-    }
-
-    public static IServiceCollection AuthenticationAndAuthorization(this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        services.AddHttpContextAccessor();
         services.AddScoped<LogUserActivity>();
         services.AddSingleton<IJwtService, JwtService>();
         JwtConfig jwtConfig = new();

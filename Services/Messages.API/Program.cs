@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwagger(builder.Configuration);
+// builder.Services.AddSwagger(builder.Configuration);
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 
 builder.Services.AddHttpClient("Account.API", client =>
@@ -27,11 +27,11 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
 
 app.UseCors(x => x
     .AllowAnyMethod()

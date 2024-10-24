@@ -10,7 +10,11 @@ public static class ClaimsPrincipleExtensions
     /// <param name="user"></param>
     /// <returns></returns>
     public static string? GetUsername(this ClaimsPrincipal user)
-        => user.FindFirst(ClaimTypes.Name)?.Value ?? user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    {
+        // return user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        return user.FindFirst(ClaimTypes.Name)?.Value ?? user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    }
 
     /// <summary>
     /// Get the email from the claims principle

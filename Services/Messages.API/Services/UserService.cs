@@ -1,5 +1,5 @@
 using System.Net;
-using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using Messages.API.Models;
 
@@ -11,18 +11,7 @@ public class UserService(
 {
     public async Task<UserBasic?> GetUserByUsernameAsync(string username)
     {
-        var token =
-            "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJiYXhyYW05NyIsIm5iZiI6MTcyOTI1MTgzNywiZXhwIjoxNzI5NjgzODM3LCJpYXQiOjE3MjkyNTE4Mzd9.tizsEhxD7DJaQVeY2lWQl7tjp1hRExg9qjhWu2od3btDZz6Du-Ka_s87mYcedEA51VIIVl4NmVLb4PTo8LwiOw";
-        if (string.IsNullOrEmpty(token))
-        {
-            logger.LogWarning("Token is null or empty");
-            return null;
-        }
-
-        logger.LogInformation("Token: {Token}", token);
-        logger.LogInformation("Fetching user {Username} from API", username);
-
-        var user = await GetUserFromApiAsync(username, token);
+        var user = await GetUserFromApiAsync(username);
         if (user == null)
         {
             logger.LogWarning("User {Username} not found", username);
@@ -34,18 +23,7 @@ public class UserService(
     // GetUserByIdAsync
     public async Task<UserBasic?> GetUserByIdAsync(int id)
     {
-        var token =
-            "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJiYXhyYW05NyIsIm5iZiI6MTcyOTI1MTgzNywiZXhwIjoxNzI5NjgzODM3LCJpYXQiOjE3MjkyNTE4Mzd9.tizsEhxD7DJaQVeY2lWQl7tjp1hRExg9qjhWu2od3btDZz6Du-Ka_s87mYcedEA51VIIVl4NmVLb4PTo8LwiOw";
-        if (string.IsNullOrEmpty(token))
-        {
-            logger.LogWarning("Token is null or empty");
-            return null;
-        }
-
-        logger.LogInformation("Token: {Token}", token);
-        logger.LogInformation("Fetching user {Id} from API", id);
-
-        var user = await GetUserFromApiAsync(id.ToString(), token);
+        var user = await GetUserFromApiAsync(id.ToString());
         if (user == null)
         {
             logger.LogWarning("User {Id} not found", id);
@@ -54,40 +32,21 @@ public class UserService(
         return user;
     }
 
-    public async Task<UserBasic> UpdateUserAsync(UserBasic user)
+    public async Task UpdateUserAsync(UserBasic user)
     {
-        var token =
-            "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJiYXhyYW05NyIsIm5iZiI6MTcyOTI1MTgzNywiZXhwIjoxNzI5NjgzODM3LCJpYXQiOjE3MjkyNTE4Mzd9.tizsEhxD7DJaQVeY2lWQl7tjp1hRExg9qjhWu2od3btDZz6Du-Ka_s87mYcedEA51VIIVl4NmVLb4PTo8LwiOw";
-        if (string.IsNullOrEmpty(token))
-        {
-            logger.LogWarning("Token is null or empty");
-            return null!;
-        }
-
-        logger.LogInformation("Token: {Token}", token);
-        logger.LogInformation("Updating user {Id} in API", user.Id);
-
         var client = httpClientFactory.CreateClient("Account.API");
 
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var content = new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json");
+        var response = await client.PutAsync($"api/users/{user.Id}", content);
 
-        var response = await client.PutAsJsonAsync($"api/users/{user.Id}", user);
         response.EnsureSuccessStatusCode();
-
-        var content = await response.Content.ReadAsStringAsync();
-        var updatedUser = JsonSerializer.Deserialize<UserBasic>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-
-        return updatedUser!;
     }
 
-    private async Task<UserBasic?> GetUserFromApiAsync(string username, string token)
+    private async Task<UserBasic?> GetUserFromApiAsync(string username)
     {
         var client = httpClientFactory.CreateClient("Account.API");
 
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        // client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var response = await client.GetAsync($"api/users/{username}");
         if (response.StatusCode == HttpStatusCode.NotFound)
