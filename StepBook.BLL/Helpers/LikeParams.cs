@@ -1,4 +1,4 @@
-namespace StepBook.API.Helpers;
+namespace StepBook.BLL.Helpers;
 
 /// <inheritdoc />
 public class LikeParams : PaginationParams

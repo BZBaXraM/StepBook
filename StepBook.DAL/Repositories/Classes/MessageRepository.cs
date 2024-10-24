@@ -1,4 +1,10 @@
-namespace StepBook.API.Repositories.Classes;
+using Microsoft.EntityFrameworkCore;
+using StepBook.DAL.Data;
+using StepBook.DAL.Entities;
+using StepBook.DAL.Repositories.Interfaces;
+using StepBook.DTO.DTOs;
+
+namespace StepBook.DAL.Repositories.Classes;
 
 /// <summary>
 /// Message service

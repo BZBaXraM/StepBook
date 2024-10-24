@@ -1,4 +1,4 @@
-namespace StepBook.API.DTOs;
+namespace StepBook.DTO.DTOs;
 
 /// <summary>
 /// The photo DTO
@@ -13,7 +13,7 @@ public class PhotoDto
     /// <summary>
     /// The URL
     /// </summary>
-    public required string Url { get; init; } = null!;
+    public required string Url { get; init; } 
 
     /// <summary>
     /// The description

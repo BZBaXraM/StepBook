@@ -1,4 +1,4 @@
-namespace StepBook.API.DTOs;
+namespace StepBook.DTO.DTOs;
 
 /// <summary>
 /// DTO for user registration.

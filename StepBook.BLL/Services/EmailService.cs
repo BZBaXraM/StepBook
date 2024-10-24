@@ -3,9 +3,9 @@ using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using StepBook.API.Data.Configs;
-using StepBook.API.Repositories.Interfaces;
+using StepBook.BLL.Helpers;
 
-namespace StepBook.API.Services;
+namespace StepBook.BLL.Services;
 
 public class EmailService : IEmailService
 {

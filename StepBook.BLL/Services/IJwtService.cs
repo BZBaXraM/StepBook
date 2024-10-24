@@ -1,4 +1,7 @@
-namespace StepBook.API.Services;
+using System.Security.Claims;
+using StepBook.DAL.Entities;
+
+namespace StepBook.BLL.Services;
 
 /// <summary>
 /// The JWT service

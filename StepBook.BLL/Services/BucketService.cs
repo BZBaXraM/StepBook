@@ -1,10 +1,15 @@
-namespace StepBook.API.Services;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Microsoft.AspNetCore.Http;
+using StepBook.API.Services;
+
+namespace StepBook.BLL.Services;
 
 /// <summary>
 /// Bucket service.
 /// </summary>
 /// <param name="amazonS3"></param>
-public class BucketService(IAmazonS3 amazonS3) : IBucketService
+public class BucketService(IAmazonS3 amazonS3)
 {
     private const string BucketName = "stepbook-bucket";
     private const string BucketUrl = "https://stepbook-bucket.s3.eu-north-1.amazonaws.com/";

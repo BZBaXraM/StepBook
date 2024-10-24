@@ -1,4 +1,4 @@
-namespace StepBook.Models.Models;
+namespace StepBook.DAL.Entities;
 
 /// <summary>
 /// Represents a user in the application.

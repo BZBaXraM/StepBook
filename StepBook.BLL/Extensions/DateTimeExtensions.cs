@@ -1,4 +1,4 @@
-namespace StepBook.API.Extensions;
+namespace StepBook.BLL.Extensions;
 
 /// <summary>
 /// The DateTimeExtentions class

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace StepBook.API.DTOs;
+namespace StepBook.DTO.DTOs;
 
 /// <summary>
 /// Represents the data transfer object for the forget user password request.
@@ -10,9 +10,9 @@ public class ForgetUserPasswordRequestDto
     /// <summary>
     /// The email of the user.
     /// </summary>
-    [EmailAddress] public required string Email { get; set; } = null!;
+    [EmailAddress] public required string Email { get; set; } 
     /// <summary>
     /// The client URI.
     /// </summary>
-    public required string? ClientURI { get; set; }
+    public required string ClientURI { get; set; }
 }

@@ -1,4 +1,6 @@
-namespace StepBook.API.Helpers;
+using Microsoft.EntityFrameworkCore;
+
+namespace StepBook.BLL.Helpers;
 
 /// <summary>
 /// Pagination helper class
@@ -13,7 +15,7 @@ public class PageList<T> : List<T>
     /// <param name="count"></param>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
-    private PageList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
+    public PageList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
     {
         CurrentPage = pageNumber;
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);

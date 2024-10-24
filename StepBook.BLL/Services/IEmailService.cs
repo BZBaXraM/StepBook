@@ -1,6 +1,6 @@
 using MimeKit;
 
-namespace StepBook.API.Services;
+namespace StepBook.BLL.Services;
 
 /// <summary>
 /// Email service

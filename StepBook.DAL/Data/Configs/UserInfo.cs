@@ -1,4 +1,4 @@
-namespace StepBook.API.Data.Configs;
+namespace StepBook.DAL.Data.Configs;
 
 /// <summary>
 ///  This class is used to define the UserInfo.

@@ -1,6 +1,6 @@
 using MimeKit;
 
-namespace StepBook.API.Helpers;
+namespace StepBook.BLL.Helpers;
 
 /// <summary>
 /// Email helper

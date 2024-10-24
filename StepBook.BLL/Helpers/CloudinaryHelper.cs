@@ -1,4 +1,4 @@
-namespace StepBook.API.Helpers;
+namespace StepBook.BLL.Helpers;
 
 public class CloudinaryHelper
 {

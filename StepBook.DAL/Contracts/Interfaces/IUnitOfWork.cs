@@ -1,4 +1,4 @@
-using StepBook.API.Repositories.Interfaces;
+using StepBook.DAL.Repositories.Interfaces;
 
 namespace StepBook.API.Contracts.Interfaces;
 

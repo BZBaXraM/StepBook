@@ -1,9 +1,11 @@
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using StepBook.API.Contracts.Interfaces;
-using StepBook.API.Repositories.Interfaces;
+using StepBook.DAL.Data;
+using StepBook.DAL.Repositories.Interfaces;
 
-namespace StepBook.API.Contracts.Classes;
+namespace StepBook.DAL.Contracts.Classes;
 
 public class UnitOfWork(
     StepContext context,

@@ -1,4 +1,7 @@
-namespace StepBook.API.Services;
+using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Http;
+
+namespace StepBook.BLL.Services;
 
 /// <summary>
 /// Interface for the photo service.
