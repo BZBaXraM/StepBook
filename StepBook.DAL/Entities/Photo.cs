@@ -1,4 +1,6 @@
-namespace StepBook.API.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace StepBook.Models.Models;
 
 /// <summary>
 /// The photo class

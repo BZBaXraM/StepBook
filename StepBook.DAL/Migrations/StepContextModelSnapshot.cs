@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using StepBook.API.Data;
+using StepBook.DAL.Data;
 
 #nullable disable
 
@@ -160,6 +161,9 @@ namespace StepBook.API.Migrations
 
                     b.Property<string>("EmailConfirmationCode")
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("EmailConfirmationCodeGeneratedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EmailConfirmationToken")
                         .HasColumnType("text");

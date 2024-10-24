@@ -1,4 +1,4 @@
-namespace StepBook.API.Data;
+namespace StepBook.DataAccsess.Layer.Data;
 
 /// <summary>
 /// Database context for the application.

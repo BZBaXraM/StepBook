@@ -1,4 +1,4 @@
-namespace StepBook.API.Models;
+namespace StepBook.Models.Models;
 
 /// <summary>
 /// Represents a user in the application.
@@ -130,5 +130,9 @@ public class User
     /// Refresh token expire time.
     /// </summary>
     public DateTime RefreshTokenExpireTime { get; set; }
+
+    /// <summary>
+    /// The email confirmation code of the user.
+    /// </summary>
     public string? EmailConfirmationCode { get; set; }
 }

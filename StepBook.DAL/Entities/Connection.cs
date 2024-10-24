@@ -1,4 +1,4 @@
-namespace StepBook.API.Models;
+namespace StepBook.Models.Models;
 
 /// <summary>
 /// Represents a connection in the application.

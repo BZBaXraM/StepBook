@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace StepBook.API.Models;
+namespace StepBook.Models.Models;
 
 /// <summary>
 /// Represents a group.
