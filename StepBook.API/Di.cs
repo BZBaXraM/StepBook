@@ -18,6 +18,7 @@ public static class Di
         {
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
             // options.UseNpgsql(configuration.GetConnectionString("DockerConnection"));
+            // options.UseNpgsql(configuration.GetConnectionString("Azure"));
         });
 
 
