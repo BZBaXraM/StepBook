@@ -1,4 +1,4 @@
-namespace StepBook.DAL.Data.Configs;
+namespace StepBook.BuildingBlocks.Configs;
 
 public class EmailConfig
 {

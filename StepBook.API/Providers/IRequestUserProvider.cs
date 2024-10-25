@@ -1,4 +1,4 @@
-using StepBook.DAL.Data.Configs;
+using StepBook.BuildingBlocks.Configs;
 
 namespace StepBook.API.Providers;
 

@@ -1,9 +1,4 @@
-using System.Diagnostics;
-using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using StepBook.DAL.Contracts.Interfaces;
-using StepBook.DAL.Data;
-using StepBook.DAL.Repositories.Interfaces;
 
 namespace StepBook.DAL.Contracts.Classes;
 

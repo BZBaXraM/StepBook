@@ -1,8 +1,3 @@
-using AutoMapper;
-using StepBook.BuildingBlocks.Extensions;
-using StepBook.DAL.Entities;
-using StepBook.DTO.DTOs;
-
 namespace StepBook.BLL.Mappings;
 
 /// <inheritdoc />

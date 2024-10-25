@@ -1,10 +1,3 @@
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using Microsoft.Extensions.Options;
-using MimeKit;
-using StepBook.BLL.Helpers;
-using StepBook.DAL.Data.Configs;
-
 namespace StepBook.BLL.Services;
 
 public class EmailService : IEmailService

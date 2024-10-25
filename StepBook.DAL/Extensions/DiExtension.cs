@@ -1,12 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using StepBook.DAL.Contracts.Classes;
-using StepBook.DAL.Contracts.Interfaces;
-using StepBook.DAL.Data;
-using StepBook.DAL.Repositories.Classes;
-using StepBook.DAL.Repositories.Interfaces;
-
 namespace StepBook.DAL.Extensions;
 
 public static class DiExtension

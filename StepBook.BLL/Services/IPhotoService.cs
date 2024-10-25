@@ -1,6 +1,3 @@
-using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Http;
-
 namespace StepBook.BLL.Services;
 
 /// <summary>

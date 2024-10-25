@@ -1,5 +1,3 @@
-using MimeKit;
-
 namespace StepBook.BLL.Helpers;
 
 /// <summary>

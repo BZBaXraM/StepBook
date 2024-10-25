@@ -1,4 +1,4 @@
-namespace StepBook.DAL.Data.Configs;
+namespace StepBook.BuildingBlocks.Configs;
 
 /// <summary>
 ///  This class is used to define the UserInfo.

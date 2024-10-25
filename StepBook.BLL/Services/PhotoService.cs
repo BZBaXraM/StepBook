@@ -1,8 +1,4 @@
 using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using StepBook.BLL.Helpers;
 
 namespace StepBook.BLL.Services;
 

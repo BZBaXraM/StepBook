@@ -1,12 +1,3 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
-using StepBook.BuildingBlocks.Shared;
-using StepBook.DAL.Data;
-using StepBook.DAL.Entities;
-using StepBook.DAL.Repositories.Interfaces;
-using StepBook.DTO.DTOs;
-
 namespace StepBook.DAL.Repositories.Classes;
 
 /// <summary>

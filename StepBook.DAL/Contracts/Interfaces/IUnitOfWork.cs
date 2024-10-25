@@ -1,5 +1,3 @@
-using StepBook.DAL.Repositories.Interfaces;
-
 namespace StepBook.DAL.Contracts.Interfaces;
 
 /// <summary>

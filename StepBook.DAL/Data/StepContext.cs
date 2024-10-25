@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using StepBook.DAL.Entities;
-
 namespace StepBook.DAL.Data;
 
 /// <summary>

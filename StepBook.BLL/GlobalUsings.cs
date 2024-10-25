@@ -1,0 +1,32 @@
+// Global using directives
+
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Security.Cryptography;
+global using System.Text;
+global using Amazon;
+global using Amazon.Runtime;
+global using Amazon.S3;
+global using Amazon.S3.Model;
+global using Profile = AutoMapper.Profile;
+global using CloudinaryDotNet.Actions;
+global using FluentValidation;
+global using FluentValidation.AspNetCore;
+global using MailKit.Net.Smtp;
+global using MailKit.Security;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Options;
+global using Microsoft.IdentityModel.Tokens;
+global using Microsoft.OpenApi.Models;
+global using MimeKit;
+global using StepBook.BLL.Helpers;
+global using StepBook.BLL.Mappings;
+global using StepBook.BLL.Services;
+global using StepBook.BLL.Validators;
+global using StepBook.BuildingBlocks.Configs;
+global using StepBook.BuildingBlocks.Extensions;
+global using StepBook.DAL.Entities;
+global using StepBook.DTO.DTOs;

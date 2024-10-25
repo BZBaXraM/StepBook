@@ -1,6 +1,3 @@
-using FluentValidation;
-using StepBook.DTO.DTOs;
-
 namespace StepBook.BLL.Validators;
 
 public abstract class RegisterRequestValidator : AbstractValidator<RegisterDto>
