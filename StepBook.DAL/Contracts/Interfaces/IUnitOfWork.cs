@@ -1,6 +1,6 @@
 using StepBook.DAL.Repositories.Interfaces;
 
-namespace StepBook.API.Contracts.Interfaces;
+namespace StepBook.DAL.Contracts.Interfaces;
 
 /// <summary>
 /// The unit of work

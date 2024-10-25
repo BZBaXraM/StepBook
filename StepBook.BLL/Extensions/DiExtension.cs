@@ -1,49 +1,32 @@
-using StepBook.API.Contracts.Interfaces;
-using StepBook.API.Services;
+using System.Text;
+using Amazon;
+using Amazon.Runtime;
+using Amazon.S3;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using StepBook.BLL.Helpers;
 using StepBook.BLL.Mappings;
 using StepBook.BLL.Services;
 using StepBook.BLL.Validators;
-using StepBook.DAL.Contracts.Classes;
-using StepBook.DAL.Data;
 using StepBook.DAL.Data.Configs;
-using StepBook.DAL.Repositories.Classes;
-using StepBook.DAL.Repositories.Interfaces;
 
-namespace StepBook.API;
+namespace StepBook.BLL.Extensions;
 
-/// <summary>
-/// Dependency injection extension methods.
-/// </summary>
-public static class Di
+public static class DiExtension
 {
-    /// <summary>
-    /// Add services to the container.
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="configuration"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection RegisterBll(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddHttpContextAccessor();
-        services.AddDbContext<StepContext>(options =>
-        {
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-            // options.UseNpgsql(configuration.GetConnectionString("DockerConnection"));
-            // options.UseNpgsql(configuration.GetConnectionString("Azure"));
-        });
-
-
         services.AddFluentValidationAutoValidation();
         services.AddAutoMapper(typeof(MappingProfile).Assembly);
         services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
 
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "StepBook.API", Version = "v1" });
-
-            var path = Path.Combine(AppContext.BaseDirectory, "StepBook.API.xml");
-            c.IncludeXmlComments(path);
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Description =
@@ -69,29 +52,12 @@ public static class Di
             });
         });
 
-        return services;
-    }
-
-    /// <summary>
-    /// Add services to the container.
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="configuration"></param>
-    /// <returns></returns>
-    public static IServiceCollection AuthenticationAndAuthorization(this IServiceCollection services,
-        IConfiguration configuration)
-    {
         services.Configure<EmailConfig>(configuration.GetSection("EmailConfig"));
         services.Configure<CloudinaryHelper>(configuration.GetSection("CloudinaryData"));
-        services.AddScoped<IRequestUserProvider, RequestUserProvider>();
         services.AddSingleton<IEmailService, EmailService>();
-        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IPhotoService, PhotoService>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<ILikesRepository, LikesRepository>();
-        services.AddScoped<IMessageRepository, MessageRepository>();
-        services.AddScoped<LogUserActivity>();
+
 
         var awsSetting = configuration.GetSection("AWS");
         var credentials = new BasicAWSCredentials(awsSetting["AccessKey"], awsSetting["Secret"]);
@@ -103,15 +69,10 @@ public static class Di
         services.AddScoped<IBucketService, BucketService>();
 
         services.AddSingleton<IBlackListService, BlackListService>();
-        services.AddSingleton<BlackListMiddleware>();
 
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);
         services.AddSingleton(jwtConfig);
-
-        services.AddSignalR();
-        services.AddSingleton<PresenceTracker>();
-
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -139,6 +100,7 @@ public static class Di
                     }
                 };
             });
+
 
         return services;
     }

@@ -1,4 +1,6 @@
+using StepBook.BLL.Extensions;
 using StepBook.DAL.Data;
+using StepBook.DAL.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +26,16 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
-builder.Services.AuthenticationAndAuthorization(builder.Configuration);
-builder.Services.AddSwagger(builder.Configuration);
+builder.Services.AddScoped<IRequestUserProvider, RequestUserProvider>();
+builder.Services.AddScoped<LogUserActivity>();
 
+
+builder.Services.AddSingleton<BlackListMiddleware>();
+
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<PresenceTracker>();
+builder.Services.RegisterDal(builder.Configuration);
+builder.Services.RegisterBll(builder.Configuration);
 
 builder.Services.AddCors();
 

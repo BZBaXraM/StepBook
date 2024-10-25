@@ -1,6 +1,6 @@
-using StepBook.API.Contracts.Interfaces;
 using StepBook.BuildingBlocks.Extensions;
 using StepBook.BuildingBlocks.Shared;
+using StepBook.DAL.Contracts.Interfaces;
 using StepBook.DAL.Entities;
 using StepBook.DTO.DTOs;
 

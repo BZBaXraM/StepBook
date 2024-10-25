@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using StepBook.API.Contracts.Interfaces;
+using StepBook.DAL.Contracts.Interfaces;
 using StepBook.DAL.Data;
 using StepBook.DAL.Repositories.Interfaces;
 

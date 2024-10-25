@@ -1,4 +1,4 @@
-namespace StepBook.API.Services;
+namespace StepBook.BLL.Services;
 
 /// <summary>
 /// The black list service

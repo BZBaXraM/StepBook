@@ -6,16 +6,8 @@ namespace StepBook.DAL.Data;
 /// <summary>
 /// Database context for the application.
 /// </summary>
-public class StepContext : DbContext
+public class StepContext(DbContextOptions<StepContext> options) : DbContext(options)
 {
-    /// <summary>
-    /// Constructor.
-    /// </summary>
-    /// <param name="options"></param>
-    public StepContext(DbContextOptions<StepContext> options) : base(options)
-    {
-    }
-
     /// <summary>
     /// Users table.
     /// </summary>
