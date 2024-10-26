@@ -164,6 +164,10 @@ namespace StepBook.API.Migrations
                     b.Property<string>("EmailConfirmationToken")
                         .HasColumnType("text");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("ForgotPasswordToken")
                         .HasColumnType("text");
 
@@ -180,12 +184,12 @@ namespace StepBook.API.Migrations
                     b.Property<bool>("IsEmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("KnownAs")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("LastActive")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("LookingFor")
                         .HasColumnType("text");

@@ -16,6 +16,16 @@ public class User
     public required string Email { get; set; }
 
     /// <summary>
+    /// The user's first name
+    /// </summary>
+    public required string FirstName { get; init; }
+
+    /// <summary>
+    /// The user's last name
+    /// </summary>
+    public required string LastName { get; init; }
+
+    /// <summary>
     /// The login username of the user.
     /// </summary>
     public required string UserName { get; set; }
@@ -29,11 +39,6 @@ public class User
     /// The email of the user.
     /// </summary>
     public DateTime DateOfBirth { get; set; }
-
-    /// <summary>
-    /// The user's known as name.
-    /// </summary>
-    public required string KnownAs { get; set; }
 
     /// <summary>
     /// Created date of the user.

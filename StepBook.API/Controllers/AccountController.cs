@@ -20,14 +20,12 @@ public class AccountController(
     /// </summary>
     /// <param name="dto"></param>
     /// <returns></returns>
-    [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> RegisterAsync([FromBody] RegisterDto dto)
+    [HttpPost("register")] // после регистрации отправляется письмо с кодом подтверждения на почту;
+                           // на стороне клиента сделай страницу для ввода кода подтверждения (после регистрации переходи на неё автоматически);
+    public async Task<ActionResult<string>> RegisterAsync([FromBody] RegisterDto dto)
     {
         var user = mapper.Map<User>(dto);
         user.UserName = dto.Username;
-
-
-        user.Password = PasswordHash(dto.Password);
 
         if (await context.Users.AnyAsync(x => x.Email == user.Email))
         {
@@ -39,27 +37,24 @@ public class AccountController(
             return BadRequest("Username already exists");
         }
 
+        user.Password = PasswordHash(dto.Password);
+
         if (!ModelState.IsValid) return BadRequest();
 
-        if (!PasswordVerify(dto.Password, user.Password))
-        {
-            return BadRequest("Invalid password");
-        }
-
-        user.EmailConfirmationToken = jwtService.GenerateEmailConfirmationToken(user);
-        user.RefreshToken = jwtService.GenerateRefreshToken();
+        // Генерация кода подтверждения
+        var confirmationCode = GenerateRandomCode();
+        user.EmailConfirmationCode = confirmationCode;
 
         await context.Users.AddAsync(user);
         await context.SaveChangesAsync();
 
-
-        var confirmLink = Url.Action("ConfirmEmail", "Account",
-            new { token = user.EmailConfirmationToken, email = user.Email }, Request.Scheme);
         await emailService.SendEmailAsync(user.Email, "Confirm your email",
-            $"Please confirm your email by clicking <a href='{confirmLink}'>here</a>.");
+            $"Your confirmation code is: {confirmationCode}");
 
-        return Ok("Registration successful. Please check your email for confirmation link.");
+
+        return Ok("Registration successful. Please check your email for the confirmation code.");
     }
+
 
     /// <summary>
     /// Login a user
@@ -90,7 +85,6 @@ public class AccountController(
             Token = jwtService.GenerateSecurityToken(user),
             RefreshToken = user.RefreshToken,
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs,
             Gender = user.Gender,
         };
     }
@@ -160,7 +154,6 @@ public class AccountController(
             Username = user.UserName,
             Token = jwtService.GenerateSecurityToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs,
             Gender = user.Gender,
         });
     }

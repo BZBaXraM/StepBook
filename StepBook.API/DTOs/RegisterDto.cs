@@ -18,12 +18,12 @@ public class RegisterDto
     /// <summary>
     /// The user's first name
     /// </summary>
-    public required string FirstName { get; init; } = null!;
+    public required string FirstName { get; init; }
 
     /// <summary>
     /// The user's last name
     /// </summary>
-    public required string LastName { get; init; } = null!;
+    public required string LastName { get; init; }
 
     /// <summary>
     /// The user's
