@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace StepBook.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class AdminTest : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,7 +48,9 @@ namespace StepBook.API.Migrations
                     RandomCode = table.Column<string>(type: "text", nullable: true),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     RefreshTokenExpireTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EmailConfirmationCode = table.Column<string>(type: "text", nullable: true)
+                    EmailConfirmationCode = table.Column<string>(type: "text", nullable: true),
+                    Role = table.Column<string>(type: "text", nullable: false),
+                    IsBlackListed = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -71,6 +73,29 @@ namespace StepBook.API.Migrations
                         column: x => x.GroupName,
                         principalTable: "Groups",
                         principalColumn: "Name");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BlackListedUser",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    BlackListedUserId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlackListedUser", x => new { x.UserId, x.BlackListedUserId });
+                    table.ForeignKey(
+                        name: "FK_BlackListedUser_Users_BlackListedUserId",
+                        column: x => x.BlackListedUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BlackListedUser_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -154,6 +179,11 @@ namespace StepBook.API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_BlackListedUser_BlackListedUserId",
+                table: "BlackListedUser",
+                column: "BlackListedUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Connections_GroupName",
                 table: "Connections",
                 column: "GroupName");
@@ -182,6 +212,9 @@ namespace StepBook.API.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "BlackListedUser");
+
             migrationBuilder.DropTable(
                 name: "Connections");
 

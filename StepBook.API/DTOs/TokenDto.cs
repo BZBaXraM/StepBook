@@ -12,7 +12,7 @@ public class TokenDto
     /// <summary>
     /// Refresh token
     /// </summary>
-    public string RefreshToken { get; set; } = default!;
+    public string? RefreshToken { get; set; } 
     /// <summary>
     /// Token expire time
     /// </summary>

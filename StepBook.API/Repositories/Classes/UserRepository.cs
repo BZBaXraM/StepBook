@@ -113,4 +113,11 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
             .Include(p => p.Photos)
             .FirstOrDefaultAsync(u => u.Photos.Any(p => p.Id == photoId));
     }
+
+    public async Task<User> AddUserToBlackListAsync(User user)
+    {
+        context.Users.Update(user);
+        await context.SaveChangesAsync();
+        return user;
+    }
 }

@@ -12,8 +12,8 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20241008193035_Initial")]
-    partial class Initial
+    [Migration("20241029214935_Test")]
+    partial class Test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace StepBook.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("StepBook.API.Controllers.BlackListedUser", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("BlackListedUserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "BlackListedUserId");
+
+                    b.HasIndex("BlackListedUserId");
+
+                    b.ToTable("BlackListedUsers");
+                });
 
             modelBuilder.Entity("StepBook.API.Models.Connection", b =>
                 {
@@ -180,6 +195,9 @@ namespace StepBook.API.Migrations
                     b.Property<string>("Introduction")
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsBlackListed")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsEmailConfirmed")
                         .HasColumnType("boolean");
 
@@ -206,6 +224,10 @@ namespace StepBook.API.Migrations
                     b.Property<DateTime>("RefreshTokenExpireTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -228,6 +250,25 @@ namespace StepBook.API.Migrations
                     b.HasIndex("TargetUserId");
 
                     b.ToTable("Likes");
+                });
+
+            modelBuilder.Entity("StepBook.API.Controllers.BlackListedUser", b =>
+                {
+                    b.HasOne("StepBook.API.Models.User", "BlackList")
+                        .WithMany("BlackListedByUsers")
+                        .HasForeignKey("BlackListedUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("StepBook.API.Models.User", "User")
+                        .WithMany("BlackListedUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BlackList");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("StepBook.API.Models.Connection", b =>
@@ -293,6 +334,10 @@ namespace StepBook.API.Migrations
 
             modelBuilder.Entity("StepBook.API.Models.User", b =>
                 {
+                    b.Navigation("BlackListedByUsers");
+
+                    b.Navigation("BlackListedUsers");
+
                     b.Navigation("LikedByUsers");
 
                     b.Navigation("LikedUsers");

@@ -52,4 +52,5 @@ public interface IUserRepository
     /// <param name="photoId"></param>
     /// <returns></returns>
     Task<User?> GetUserByPhotoId(int photoId);
+    Task<User> AddUserToBlackListAsync(User user);
 }

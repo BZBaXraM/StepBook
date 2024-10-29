@@ -69,6 +69,12 @@ public class AccountController(
             return Unauthorized("Invalid username, email, or email not confirmed.");
         }
 
+        // if user is blacklisted
+        if (await context.BlackListedUsers.AnyAsync(x => x.BlackListedUserId == user.Id))
+        {
+            return Unauthorized("You are blacklisted");
+        }
+
         if (!PasswordVerify(dto.Password, user.Password))
         {
             return Unauthorized("Invalid password");
@@ -131,34 +137,6 @@ public class AccountController(
     }
 
     /// <summary>
-    /// Signin a user with Google
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("signin-google")]
-    public async Task<IActionResult> GoogleSignIn()
-    {
-        var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        if (response.Principal == null) return BadRequest();
-
-        var email = response.Principal.FindFirstValue(ClaimTypes.Email);
-
-        var user = await context.Users.Include(u => u.Photos)
-            .FirstOrDefaultAsync(x => x.Email == email);
-
-        if (user == null) return BadRequest();
-
-
-        return Ok(new UserDto
-        {
-            Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs,
-            Gender = user.Gender,
-        });
-    }
-
-    /// <summary>
     /// Confirm the email of a user using a confirmation code
     /// </summary>
     /// <param name="dto"></param>
@@ -180,31 +158,28 @@ public class AccountController(
     }
 
     /// <summary>
-    /// Confirm the email of a user
+    /// Resend the confirmation code to the email of a user
     /// </summary>
-    /// <param name="token"></param>
-    /// <param name="email"></param>
+    /// <param name="dto"></param>
     /// <returns></returns>
-    [HttpGet("confirm-email")]
-    public async Task<ActionResult> ConfirmEmailAsync([FromQuery] string token, string email)
+    [HttpPost("resend-confirmation-code")]
+    public async Task<ActionResult> ResendConfirmationCodeAsync([FromBody] ResendConfirmationCodeDto dto)
     {
-        var user = await context.Users.SingleOrDefaultAsync(x => x.Email == email);
+        var user = await context.Users.SingleOrDefaultAsync(x => x.Email == dto.Email);
 
         if (user == null)
         {
             return NotFound("User not found");
         }
 
-        var isValid = jwtService.ValidateEmailConfirmationToken(user, token);
-        if (!isValid)
-        {
-            return BadRequest("Invalid token");
-        }
-
-        user.IsEmailConfirmed = true;
+        var confirmationCode = GenerateRandomCode();
+        user.EmailConfirmationCode = confirmationCode;
         await context.SaveChangesAsync();
 
-        return Ok("Email confirmed successfully. You can now log in.");
+        await emailService.SendEmailAsync(user.Email, "Confirm your email",
+            $"Your confirmation code is: {confirmationCode}");
+
+        return Ok("Confirmation code sent to your email");
     }
 
     /// <summary>

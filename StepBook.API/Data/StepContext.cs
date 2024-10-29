@@ -1,3 +1,5 @@
+using StepBook.API.Controllers;
+
 namespace StepBook.API.Data;
 
 /// <summary>
@@ -38,6 +40,8 @@ public class StepContext : DbContext
     /// </summary>
     public DbSet<Connection> Connections => Set<Connection>();
 
+    public DbSet<BlackListedUser> BlackListedUsers => Set<BlackListedUser>();
+
     /// <summary>
     /// Configure the database context.
     /// </summary>
@@ -72,5 +76,20 @@ public class StepContext : DbContext
             .HasOne(x => x.Sender)
             .WithMany(x => x.MessagesSent)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<BlackListedUser>()
+            .HasKey(b => new { b.UserId, b.BlackListedUserId });
+
+        modelBuilder.Entity<BlackListedUser>()
+            .HasOne(b => b.User)
+            .WithMany(u => u.BlackListedUsers)
+            .HasForeignKey(b => b.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BlackListedUser>()
+            .HasOne(b => b.BlackList)
+            .WithMany(u => u.BlackListedByUsers)
+            .HasForeignKey(b => b.BlackListedUserId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

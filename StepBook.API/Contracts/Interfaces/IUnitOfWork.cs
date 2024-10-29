@@ -1,5 +1,3 @@
-using StepBook.API.Repositories.Interfaces;
-
 namespace StepBook.API.Contracts.Interfaces;
 
 /// <summary>

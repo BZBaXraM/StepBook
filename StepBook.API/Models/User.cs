@@ -1,3 +1,5 @@
+using StepBook.API.Controllers;
+
 namespace StepBook.API.Models;
 
 /// <summary>
@@ -130,5 +132,29 @@ public class User
     /// Refresh token expire time.
     /// </summary>
     public DateTime RefreshTokenExpireTime { get; set; }
+
+    /// <summary>
+    /// The email confirmation code of the user.
+    /// </summary>
     public string? EmailConfirmationCode { get; set; }
+
+    /// <summary>
+    /// The role of the user.
+    /// </summary>
+    public string Role { get; set; } = "User";
+
+    /// <summary>
+    /// Is the user blacklisted?
+    /// </summary>
+    public bool IsBlackListed { get; set; }
+
+    /// <summary>
+    /// List of blacklisted users.
+    /// </summary>
+    public ICollection<BlackListedUser> BlackListedUsers { get; set; } = [];
+
+    /// <summary>
+    /// List of users blacklisted by the current user.
+    /// </summary>
+    public ICollection<BlackListedUser> BlackListedByUsers { get; set; } = [];
 }
