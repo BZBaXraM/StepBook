@@ -21,7 +21,7 @@ public class AccountController(
     /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost("register")] // после регистрации отправляется письмо с кодом подтверждения на почту;
-                           // на стороне клиента сделай страницу для ввода кода подтверждения (после регистрации переходи на неё автоматически);
+    // на стороне клиента сделай страницу для ввода кода подтверждения (после регистрации переходи на неё автоматически);
     public async Task<ActionResult<string>> RegisterAsync([FromBody] RegisterDto dto)
     {
         var user = mapper.Map<User>(dto);
@@ -132,6 +132,31 @@ public class AccountController(
     }
 
     /// <summary>
+    /// Resend the confirmation code to the email of a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPost("resend-confirmation-code")]
+    public async Task<ActionResult> ResendConfirmationCodeAsync([FromBody] ResendConfirmationCodeDto dto)
+    {
+        var user = await context.Users.SingleOrDefaultAsync(x => x.Email == dto.Email);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        var confirmationCode = GenerateRandomCode();
+        user.EmailConfirmationCode = confirmationCode;
+        await context.SaveChangesAsync();
+
+        await emailService.SendEmailAsync(user.Email, "Confirm your email",
+            $"Your confirmation code is: {confirmationCode}");
+
+        return Ok("Confirmation code sent to your email");
+    }
+
+    /// <summary>
     /// Signin a user with Google
     /// </summary>
     /// <returns></returns>
@@ -195,34 +220,6 @@ public class AccountController(
         return Ok("Email confirmed successfully. You can now log in.");
     }
 
-
-    /// <summary>
-    /// Confirm the email of a user
-    /// </summary>
-    /// <param name="token"></param>
-    /// <param name="email"></param>
-    /// <returns></returns>
-    [HttpGet("confirm-email")]
-    public async Task<ActionResult> ConfirmEmailAsync([FromQuery] string token, string email)
-    {
-        var user = await context.Users.SingleOrDefaultAsync(x => x.Email == email);
-
-        if (user == null)
-        {
-            return NotFound("User not found");
-        }
-
-        var isValid = jwtService.ValidateEmailConfirmationToken(user, token);
-        if (!isValid)
-        {
-            return BadRequest("Invalid token");
-        }
-
-        user.IsEmailConfirmed = true;
-        await context.SaveChangesAsync();
-
-        return Ok("Email confirmed successfully. You can now log in.");
-    }
 
     /// <summary>
     /// Change the password of a user
