@@ -83,7 +83,7 @@ public class AdminController(StepContext context) : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("blacklist")]
-    public async Task<ActionResult<IEnumerable<BlackListedUser>>> GetBlackListAsync()
+    public async Task<ActionResult<IEnumerable<BlackListedUserDto>>> GetBlackListAsync()
     {
         var currentUser = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name!);
         if (currentUser is null)
@@ -96,6 +96,53 @@ public class AdminController(StepContext context) : ControllerBase
             .Select(x => x.BlackList)
             .ToListAsync();
 
-        return Ok(blackListedUsers);
+        var dto = blackListedUsers.Select(x => new BlackListedUserDto
+        {
+            UserName = x.UserName,
+            KnownAs = x.KnownAs
+        });
+
+        return Ok(dto);
+    }
+
+    /// <summary>
+    /// Get all reports
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("reports")]
+    public async Task<ActionResult<IEnumerable<ReportDto>>> GetReportsAsync()
+    {
+        var reports = await context.Reports
+            .Include(r => r.Reporter)
+            .Include(r => r.Reported)
+            .ToListAsync();
+
+        var dto = reports.Select(x => new ReportDto
+        {
+            ReporterUsername = x.Reporter.UserName,
+            ReportedUsername = x.Reported.UserName,
+            Reason = x.Reason
+        });
+
+        return Ok(dto);
+    }
+
+    /// <summary>
+    /// Delete a user account from the system
+    /// </summary>
+    /// <returns></returns>
+    [HttpDelete("delete-account")]
+    public async Task<ActionResult> DeleteAccountAsync()
+    {
+        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        context.Users.Remove(user);
+        await context.SaveChangesAsync();
+
+        return Ok("Account deleted successfully");
     }
 }

@@ -1,5 +1,3 @@
-using StepBook.API.Controllers;
-
 namespace StepBook.API.Models;
 
 /// <summary>

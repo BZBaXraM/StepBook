@@ -12,8 +12,6 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// builder.Services.AddAuthorizationBuilder()
-//     .AddPolicy("Admin", policy => policy.RequireRole("Admin"));
 
 
 builder.Services.AddAuthorization(options =>

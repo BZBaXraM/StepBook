@@ -9,11 +9,13 @@ public class UnitOfWork(
     StepContext context,
     IUserRepository userRepository,
     ILikesRepository likesRepository,
-    IMessageRepository messageRepository) : IUnitOfWork
+    IMessageRepository messageRepository,
+    IReportRepository reportRepository) : IUnitOfWork
 {
     public IUserRepository UserRepository => userRepository;
     public ILikesRepository LikeRepository => likesRepository;
     public IMessageRepository MessageRepository => messageRepository;
+    public IReportRepository ReportRepository { get; } = reportRepository;
 
     public async Task<bool> Complete()
     {

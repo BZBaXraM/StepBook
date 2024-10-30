@@ -40,7 +40,16 @@ public class StepContext : DbContext
     /// </summary>
     public DbSet<Connection> Connections => Set<Connection>();
 
+    /// <summary>
+    /// Blacklisted users table.
+    /// </summary>
     public DbSet<BlackListedUser> BlackListedUsers => Set<BlackListedUser>();
+
+    /// <summary>
+    /// Reports table.
+    /// </summary>
+    public DbSet<Report> Reports => Set<Report>();
+
 
     /// <summary>
     /// Configure the database context.
@@ -91,5 +100,18 @@ public class StepContext : DbContext
             .WithMany(u => u.BlackListedByUsers)
             .HasForeignKey(b => b.BlackListedUserId)
             .OnDelete(DeleteBehavior.NoAction);
+
+
+        modelBuilder.Entity<Report>()
+            .HasOne(r => r.Reporter)
+            .WithMany()
+            .HasForeignKey(r => r.ReporterId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Report>()
+            .HasOne(r => r.Reported)
+            .WithMany()
+            .HasForeignKey(r => r.ReportedId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

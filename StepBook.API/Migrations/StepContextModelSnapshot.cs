@@ -22,7 +22,7 @@ namespace StepBook.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("StepBook.API.Controllers.BlackListedUser", b =>
+            modelBuilder.Entity("StepBook.API.Models.BlackListedUser", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -147,6 +147,36 @@ namespace StepBook.API.Migrations
                     b.ToTable("Photos");
                 });
 
+            modelBuilder.Entity("StepBook.API.Models.Report", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ReportedId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReporterId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportedId");
+
+                    b.HasIndex("ReporterId");
+
+                    b.ToTable("Reports");
+                });
+
             modelBuilder.Entity("StepBook.API.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -249,7 +279,7 @@ namespace StepBook.API.Migrations
                     b.ToTable("Likes");
                 });
 
-            modelBuilder.Entity("StepBook.API.Controllers.BlackListedUser", b =>
+            modelBuilder.Entity("StepBook.API.Models.BlackListedUser", b =>
                 {
                     b.HasOne("StepBook.API.Models.User", "BlackList")
                         .WithMany("BlackListedByUsers")
@@ -303,6 +333,25 @@ namespace StepBook.API.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("StepBook.API.Models.Report", b =>
+                {
+                    b.HasOne("StepBook.API.Models.User", "Reported")
+                        .WithMany()
+                        .HasForeignKey("ReportedId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("StepBook.API.Models.User", "Reporter")
+                        .WithMany()
+                        .HasForeignKey("ReporterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Reported");
+
+                    b.Navigation("Reporter");
                 });
 
             modelBuilder.Entity("StepBook.API.Models.UserLike", b =>

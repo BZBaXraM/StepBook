@@ -20,6 +20,8 @@ public interface IUnitOfWork
     /// </summary>
     IMessageRepository MessageRepository { get; }
 
+    IReportRepository ReportRepository { get; }
+
     /// <summary>
     /// Save all changes
     /// </summary>

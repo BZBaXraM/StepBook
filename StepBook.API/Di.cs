@@ -79,6 +79,7 @@ public static class Di
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ILikesRepository, LikesRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IReportRepository, ReportRepository>();
         services.AddScoped<LogUserActivity>();
 
         var awsSetting = configuration.GetSection("AWS");

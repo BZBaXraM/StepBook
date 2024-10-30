@@ -1,4 +1,3 @@
-
 namespace StepBook.API.Mappings;
 
 /// <inheritdoc />
@@ -24,5 +23,8 @@ public class MappingProfile : Profile
         CreateMap<DateTime?, DateTime?>().ConvertUsing(d => d.HasValue
             ? DateTime.SpecifyKind(d.Value, DateTimeKind.Utc)
             : null);
+        CreateMap<Report, ReportDto>()
+            .ForMember(dest => dest.ReporterUsername, opt => opt.MapFrom(src => src.Reporter.UserName))
+            .ForMember(dest => dest.ReportedUsername, opt => opt.MapFrom(src => src.Reported.UserName));
     }
 }

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace StepBook.API.Migrations
 {
     /// <inheritdoc />
-    public partial class AdminTest : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -76,7 +76,7 @@ namespace StepBook.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BlackListedUser",
+                name: "BlackListedUsers",
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "integer", nullable: false),
@@ -84,14 +84,14 @@ namespace StepBook.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BlackListedUser", x => new { x.UserId, x.BlackListedUserId });
+                    table.PrimaryKey("PK_BlackListedUsers", x => new { x.UserId, x.BlackListedUserId });
                     table.ForeignKey(
-                        name: "FK_BlackListedUser_Users_BlackListedUserId",
+                        name: "FK_BlackListedUsers_Users_BlackListedUserId",
                         column: x => x.BlackListedUserId,
                         principalTable: "Users",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_BlackListedUser_Users_UserId",
+                        name: "FK_BlackListedUsers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -178,9 +178,37 @@ namespace StepBook.API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Reports",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ReporterId = table.Column<int>(type: "integer", nullable: false),
+                    ReportedId = table.Column<int>(type: "integer", nullable: false),
+                    Reason = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reports", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reports_Users_ReportedId",
+                        column: x => x.ReportedId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reports_Users_ReporterId",
+                        column: x => x.ReporterId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_BlackListedUser_BlackListedUserId",
-                table: "BlackListedUser",
+                name: "IX_BlackListedUsers_BlackListedUserId",
+                table: "BlackListedUsers",
                 column: "BlackListedUserId");
 
             migrationBuilder.CreateIndex(
@@ -207,13 +235,23 @@ namespace StepBook.API.Migrations
                 name: "IX_Photos_UserId",
                 table: "Photos",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reports_ReportedId",
+                table: "Reports",
+                column: "ReportedId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reports_ReporterId",
+                table: "Reports",
+                column: "ReporterId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BlackListedUser");
+                name: "BlackListedUsers");
 
             migrationBuilder.DropTable(
                 name: "Connections");
@@ -226,6 +264,9 @@ namespace StepBook.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "Photos");
+
+            migrationBuilder.DropTable(
+                name: "Reports");
 
             migrationBuilder.DropTable(
                 name: "Groups");

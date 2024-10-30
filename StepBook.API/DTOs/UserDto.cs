@@ -13,7 +13,7 @@ public class UserDto
     /// <summary>
     /// The token
     /// </summary>
-    public required string Token { get; set; }
+    public string? Token { get; set; }
 
     /// <summary>
     /// The refresh token
@@ -28,7 +28,7 @@ public class UserDto
     /// <summary>
     /// The known as
     /// </summary>
-    public required string KnownAs { get; set; }
+    public string? KnownAs { get; set; }
 
     /// <summary>
     /// The gender

@@ -9,14 +9,17 @@ public class BlackListedUser
     /// The user id.
     /// </summary>
     public int UserId { get; set; }
+
     /// <summary>
     /// The user.
     /// </summary>
     public User User { get; set; } = default!;
+
     /// <summary>
     /// The blacklisted user id.
     /// </summary>
     public int BlackListedUserId { get; set; }
+
     /// <summary>
     /// The blacklisted user.
     /// </summary>

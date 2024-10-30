@@ -293,26 +293,6 @@ public class AccountController(
         return Ok("Password reset successfully");
     }
 
-    /// <summary>
-    /// Delete the account of a user
-    /// </summary>
-    /// <returns></returns>
-    [HttpDelete("delete-account")]
-    [Authorize]
-    public async Task<ActionResult> DeleteAccountAsync()
-    {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
-        if (user == null)
-        {
-            return NotFound("User not found");
-        }
-
-        context.Users.Remove(user);
-        await context.SaveChangesAsync();
-
-        return Ok("Account deleted successfully");
-    }
-
     private string GenerateRandomCode(int length = 6)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
