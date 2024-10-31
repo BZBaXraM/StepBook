@@ -121,7 +121,8 @@ public class AdminController(StepContext context) : ControllerBase
         {
             ReporterUsername = x.Reporter.UserName,
             ReportedUsername = x.Reported.UserName,
-            Reason = x.Reason
+            Reason = x.Reason,
+            CreatedAt = x.CreatedAt
         });
 
         return Ok(dto);

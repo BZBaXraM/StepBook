@@ -23,5 +23,5 @@ public class ReportDto
     /// <summary>
     /// The date and time the report was created.
     /// </summary>
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
