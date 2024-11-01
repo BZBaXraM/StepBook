@@ -13,7 +13,7 @@ public class AdminController(StepContext context) : ControllerBase
     /// </summary>
     /// <param name="username"></param>
     /// <returns></returns>
-    [HttpPost("add-to-blacklist/{username}")]
+    [HttpPost("add-to-blacklist/{username}")] // api/admin/add-to-blacklist/{username}
     public async Task<ActionResult> AddToBlackListAsync([FromRoute] string username)
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == username);
@@ -131,11 +131,12 @@ public class AdminController(StepContext context) : ControllerBase
     /// <summary>
     /// Delete a user account from the system
     /// </summary>
+    /// <param name="username"></param>
     /// <returns></returns>
-    [HttpDelete("delete-account")]
-    public async Task<ActionResult> DeleteAccountAsync()
+    [HttpDelete("delete-user-account/{username}")]
+    public async Task<ActionResult> DeleteUserAccountAsync([FromRoute] string username)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
+        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == username);
         if (user == null)
         {
             return NotFound("User not found");
@@ -145,5 +146,23 @@ public class AdminController(StepContext context) : ControllerBase
         await context.SaveChangesAsync();
 
         return Ok("Account deleted successfully");
+    }
+
+    /// <summary>
+    /// Get all users
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("users")]
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersAsync()
+    {
+        var users = await context.Users.ToListAsync();
+        var dto = users.Select(x => new UserDto
+        {
+            Username = x.UserName,
+            KnownAs = x.KnownAs,
+            Gender = x.Gender
+        });
+
+        return Ok(dto);
     }
 }
