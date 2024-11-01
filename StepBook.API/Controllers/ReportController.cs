@@ -15,7 +15,7 @@ public class ReportController(IReportRepository reportRepository, IUserRepositor
     /// <param name="username"></param>
     /// <param name="reportDto"></param>
     /// <returns></returns>
-    [HttpPost("add-report-to-user/{username}")] 
+    [HttpPost("add-report-to-user/{username}")]
     public async Task<ActionResult> AddReportToUser([FromRoute] string username, [FromBody] ReportCreateDto reportDto)
     {
         var reporterId = User.GetUserId();

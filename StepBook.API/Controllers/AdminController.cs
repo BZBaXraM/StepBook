@@ -109,7 +109,7 @@ public class AdminController(StepContext context) : ControllerBase
     /// Get all reports
     /// </summary>
     /// <returns></returns>
-    [HttpGet("reports")]
+    [HttpGet("reports")] // api/admin/reports
     public async Task<ActionResult<IEnumerable<ReportDto>>> GetReportsAsync()
     {
         var reports = await context.Reports
