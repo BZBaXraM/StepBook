@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.SignalR;
-using StepBook.BuildingBlocks.Extensions;
 
 namespace StepBook.API.Hubs;
 

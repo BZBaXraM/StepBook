@@ -14,3 +14,7 @@ global using StepBook.API.Middleware;
 global using StepBook.API.Hubs;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authentication.Cookies;
+global using StepBook.BuildingBlocks.Extensions;
+global using StepBook.DAL.Entities;
+global using StepBook.DAL.Repositories.Interfaces;
+global using StepBook.DTO.DTOs;

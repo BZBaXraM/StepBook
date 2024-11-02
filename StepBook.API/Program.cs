@@ -16,6 +16,14 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c => c.Type == "Role" && c.Value == "Admin")));
+});
+
+
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("/Logs/StepBook.log", rollingInterval: RollingInterval.Day)
@@ -28,7 +36,6 @@ builder.Logging.AddSerilog(logger);
 
 builder.Services.AddScoped<IRequestUserProvider, RequestUserProvider>();
 builder.Services.AddScoped<LogUserActivity>();
-
 
 builder.Services.AddSingleton<BlackListMiddleware>();
 
