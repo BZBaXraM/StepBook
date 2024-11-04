@@ -112,6 +112,7 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
 
         return BadRequest("Problem deleting the message");
     }
+
     /// <summary>
     /// Count of new messages
     /// </summary>

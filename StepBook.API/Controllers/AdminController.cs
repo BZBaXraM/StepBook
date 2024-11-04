@@ -139,15 +139,22 @@ public class AdminController(StepContext context) : ControllerBase
     public async Task<ActionResult> DeleteUserAccountAsync([FromRoute] string username)
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == username);
-        if (user == null)
+        if (user is null)
         {
             return NotFound("User not found");
         }
 
-        context.Users.Remove(user);
-        await context.SaveChangesAsync();
+        var messages = context.Messages.Where(m => m.SenderId == user.Id);
+        context.Messages.RemoveRange(messages);
 
-        return Ok("Account deleted successfully");
+        var reports = context.Reports.Where(r => r.ReportedId == user.Id);
+        context.Reports.RemoveRange(reports);
+
+        context.Users.Remove(user);
+
+        if (await context.SaveChangesAsync() > 0) return NoContent();
+
+        return BadRequest("Failed to delete user account");
     }
 
     /// <summary>
