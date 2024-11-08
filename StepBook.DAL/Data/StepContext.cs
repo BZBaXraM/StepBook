@@ -29,6 +29,16 @@ public class StepContext(DbContextOptions<StepContext> options) : DbContext(opti
     /// Connections table.
     /// </summary>
     public DbSet<Connection> Connections => Set<Connection>();
+    
+    /// <summary>
+    /// Blacklisted users table.
+    /// </summary>
+    public DbSet<BlackListedUser> BlackListedUsers => Set<BlackListedUser>();
+
+    /// <summary>
+    /// Reports table.
+    /// </summary>
+    public DbSet<Report> Reports => Set<Report>();
 
     /// <summary>
     /// Configure the database context.
@@ -63,6 +73,34 @@ public class StepContext(DbContextOptions<StepContext> options) : DbContext(opti
         modelBuilder.Entity<Message>()
             .HasOne(x => x.Sender)
             .WithMany(x => x.MessagesSent)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<BlackListedUser>()
+            .HasKey(b => new { b.UserId, b.BlackListedUserId });
+
+        modelBuilder.Entity<BlackListedUser>()
+            .HasOne(b => b.User)
+            .WithMany(u => u.BlackListedUsers)
+            .HasForeignKey(b => b.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BlackListedUser>()
+            .HasOne(b => b.BlackList)
+            .WithMany(u => u.BlackListedByUsers)
+            .HasForeignKey(b => b.BlackListedUserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
+        modelBuilder.Entity<Report>()
+            .HasOne(r => r.Reporter)
+            .WithMany()
+            .HasForeignKey(r => r.ReporterId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Report>()
+            .HasOne(r => r.Reported)
+            .WithMany()
+            .HasForeignKey(r => r.ReportedId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

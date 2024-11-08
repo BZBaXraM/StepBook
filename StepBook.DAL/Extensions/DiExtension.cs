@@ -16,6 +16,7 @@ public static class DiExtension
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ILikesRepository, LikesRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IReportRepository, ReportRepository>();
 
         return services;
     }

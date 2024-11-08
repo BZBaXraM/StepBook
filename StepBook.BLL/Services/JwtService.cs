@@ -20,7 +20,9 @@ public class JwtService(JwtConfig config, IBlackListService blackListService) : 
         {
             Subject = new ClaimsIdentity([
                 new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                new Claim("Role", user.Role)
+
             ]),
             Expires = DateTime.UtcNow.AddHours(config.Expiration),
             SigningCredentials =

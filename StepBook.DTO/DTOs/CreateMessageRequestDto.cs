@@ -19,9 +19,4 @@ public class CreateMessageRequestDto
     /// File URL.
     /// </summary>
     public string? FileUrl { get; set; }
-
-    /// <summary>
-    /// Message type.
-    /// </summary>
-    public string? MessageType { get; set; }
 }

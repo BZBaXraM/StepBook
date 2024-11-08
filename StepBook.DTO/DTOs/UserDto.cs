@@ -13,7 +13,7 @@ public class UserDto
     /// <summary>
     /// The token
     /// </summary>
-    public required string Token { get; set; }
+    public string? Token { get; set; }
 
     /// <summary>
     /// The refresh token
