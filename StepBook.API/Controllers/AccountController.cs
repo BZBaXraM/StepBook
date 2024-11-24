@@ -163,32 +163,6 @@ public class AccountController(
     }
 
     /// <summary>
-    /// Resend the confirmation code to the email of a user
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <returns></returns>
-    [HttpPost("resend-confirmation-code")]
-    public async Task<ActionResult> ResendConfirmationCodeAsync([FromBody] ResendConfirmationCodeDto dto)
-    {
-        var user = await context.Users.SingleOrDefaultAsync(x => x.Email == dto.Email);
-
-        if (user == null)
-        {
-            return NotFound("User not found");
-        }
-
-        var confirmationCode = GenerateRandomCode();
-        user.EmailConfirmationCode = confirmationCode;
-        await context.SaveChangesAsync();
-
-        await emailService.SendEmailAsync(user.Email, "Confirm your email",
-            $"Your confirmation code is: {confirmationCode}");
-
-        return Ok("Confirmation code sent to your email");
-    }
-
-
-    /// <summary>
     /// Change the password of a user
     /// </summary>
     /// <param name="dto"></param>
