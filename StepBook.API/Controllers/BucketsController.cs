@@ -50,4 +50,11 @@ public class BucketsController(IBucketService service) : ControllerBase
         var files = await service.GetAllFilesAsync();
         return Ok(files);
     }
+    
+    [HttpDelete("delete-file")]
+    public async Task<IActionResult> DeleteFile(string fileName)
+    {
+        await service.DeleteFileAsync(fileName);
+        return Ok();
+    }
 }
