@@ -52,4 +52,15 @@ public class BucketService(IAmazonS3 amazonS3) : IBucketService
 
         return response.S3Objects.Select(x => $"{BucketUrl}{x.Key}").ToList();
     }
+
+    public async Task DeleteFileAsync(string fileName)
+    {
+        var deleteObjectRequest = new DeleteObjectRequest
+        {
+            BucketName = BucketName,
+            Key = fileName
+        };
+
+        await amazonS3.DeleteObjectAsync(deleteObjectRequest);
+    }
 }
