@@ -92,7 +92,7 @@ public class AccountController(
             Token = jwtService.GenerateSecurityToken(user),
             RefreshToken = user.RefreshToken,
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs,
+            FirstName = user.FirstName,
             Gender = user.Gender,
         };
     }
@@ -178,9 +178,9 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        user.Password = PasswordHash(dto.CurrentPassword);
+        user.Password = PasswordHash(dto.CurrentPassword!);
 
-        if (!PasswordVerify(dto.CurrentPassword, user.Password))
+        if (!PasswordVerify(dto.CurrentPassword!, user.Password))
         {
             return BadRequest("Invalid password");
         }
@@ -190,7 +190,7 @@ public class AccountController(
             return BadRequest("Passwords do not match");
         }
 
-        user.Password = PasswordHash(dto.NewPassword);
+        user.Password = PasswordHash(dto.NewPassword!);
 
 
         await context.SaveChangesAsync();
@@ -214,7 +214,7 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        user.UserName = dto.NewUsername;
+        user.UserName = dto.NewUsername!;
         await context.SaveChangesAsync();
 
         return Ok("Username changed successfully");

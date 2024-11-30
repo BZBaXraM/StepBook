@@ -51,6 +51,11 @@ public class BucketsController(IBucketService service) : ControllerBase
         return Ok(files);
     }
     
+    /// <summary>
+    /// Delete file from cloud
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
     [HttpDelete("delete-file")]
     public async Task<IActionResult> DeleteFile(string fileName)
     {

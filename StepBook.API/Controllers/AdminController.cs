@@ -101,7 +101,7 @@ public class AdminController(StepContext context) : ControllerBase
         var dto = blackListedUsers.Select(x => new BlackListedUserDto
         {
             UserName = x.UserName,
-            KnownAs = x.KnownAs
+            FirstName = x.FirstName
         });
 
         return Ok(dto);
@@ -168,7 +168,7 @@ public class AdminController(StepContext context) : ControllerBase
         var dto = users.Select(x => new UserDto
         {
             Username = x.UserName,
-            KnownAs = x.KnownAs,
+            FirstName = x.FirstName,
             Gender = x.Gender
         });
 
