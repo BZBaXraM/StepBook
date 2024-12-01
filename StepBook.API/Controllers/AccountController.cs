@@ -43,7 +43,6 @@ public class AccountController(
 
         if (!ModelState.IsValid) return BadRequest();
 
-        // Генерация кода подтверждения
         var confirmationCode = GenerateRandomCode();
         user.EmailConfirmationCode = confirmationCode;
 
@@ -72,7 +71,6 @@ public class AccountController(
             return Unauthorized("Invalid username, email, or email not confirmed.");
         }
 
-        // if user is blacklisted
         if (await context.BlackListedUsers.AnyAsync(x => x.BlackListedUserId == user.Id))
         {
             return Unauthorized("You are blacklisted");
@@ -149,14 +147,17 @@ public class AccountController(
     [HttpPost("confirm-email-code")]
     public async Task<ActionResult> ConfirmEmailCodeAsync([FromBody] ConfirmEmailCodeDto dto)
     {
-        var user = await context.Users.SingleOrDefaultAsync(x => x.EmailConfirmationCode == dto.Code);
+        var user = await context.Users.FirstOrDefaultAsync(x => 
+            x.EmailConfirmationCode == dto.Code && 
+            !x.IsEmailConfirmed);
 
         if (user == null)
         {
-            return NotFound("User not found");
+            return BadRequest("Invalid or already used confirmation code");
         }
 
         user.IsEmailConfirmed = true;
+        user.EmailConfirmationCode = null;
         await context.SaveChangesAsync();
 
         return Ok("Email confirmed successfully. You can now log in.");
@@ -178,9 +179,12 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        user.Password = PasswordHash(dto.CurrentPassword!);
+        if (string.IsNullOrEmpty(dto.CurrentPassword))
+        {
+            return BadRequest("Current password is required");
+        }
 
-        if (!PasswordVerify(dto.CurrentPassword!, user.Password))
+        if (!PasswordVerify(dto.CurrentPassword, user.Password))
         {
             return BadRequest("Invalid password");
         }
@@ -190,8 +194,7 @@ public class AccountController(
             return BadRequest("Passwords do not match");
         }
 
-        user.Password = PasswordHash(dto.NewPassword!);
-
+        user.Password = PasswordHash(dto.NewPassword);
 
         await context.SaveChangesAsync();
 
