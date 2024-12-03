@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using StepBook.BLL.Services;
 using StepBook.DAL.Data;
 
@@ -37,6 +38,11 @@ public class AccountController(
         if (await context.Users.AnyAsync(x => x.UserName == user.UserName))
         {
             return BadRequest("Username already exists");
+        }
+
+        if (!Regex.IsMatch(user.Email, @"^[^@\s]+@[^@\s]+\.\w+$"))
+        {
+            return BadRequest("Invalid email format");
         }
 
         user.Password = PasswordHash(dto.Password);
@@ -147,17 +153,20 @@ public class AccountController(
     [HttpPost("confirm-email-code")]
     public async Task<ActionResult> ConfirmEmailCodeAsync([FromBody] ConfirmEmailCodeDto dto)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => 
-            x.EmailConfirmationCode == dto.Code && 
-            !x.IsEmailConfirmed);
+        var user = await context.Users.SingleOrDefaultAsync(x => x.EmailConfirmationCode == dto.Code);
 
         if (user == null)
         {
-            return BadRequest("Invalid or already used confirmation code");
+            return NotFound("User not found");
+        }
+
+        if (user.EmailConfirmationCodeExpireTime < DateTime.UtcNow)
+        {
+            user.EmailConfirmationCode = GenerateRandomCode();
+            user.EmailConfirmationCodeExpireTime = DateTime.UtcNow.AddMinutes(5);
         }
 
         user.IsEmailConfirmed = true;
-        user.EmailConfirmationCode = null;
         await context.SaveChangesAsync();
 
         return Ok("Email confirmed successfully. You can now log in.");
@@ -217,7 +226,7 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        user.UserName = dto.NewUsername!;
+        user.UserName = dto.NewUsername;
         await context.SaveChangesAsync();
 
         return Ok("Username changed successfully");
