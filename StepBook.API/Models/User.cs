@@ -16,16 +16,6 @@ public class User
     public required string Email { get; set; }
 
     /// <summary>
-    /// The user's first name
-    /// </summary>
-    public required string FirstName { get; init; }
-
-    /// <summary>
-    /// The user's last name
-    /// </summary>
-    public required string LastName { get; init; }
-
-    /// <summary>
     /// The login username of the user.
     /// </summary>
     public required string UserName { get; set; }
@@ -40,6 +30,10 @@ public class User
     /// </summary>
     public DateTime DateOfBirth { get; set; }
 
+    public required string FirstName { get; set; }
+
+    public required string LastName { get; set; }
+
     /// <summary>
     /// Created date of the user.
     /// </summary>
@@ -49,6 +43,8 @@ public class User
     /// Last active date of the user.
     /// </summary>
     public DateTime LastActive { get; set; } = DateTime.UtcNow;
+
+    public DateTime EmailConfirmationCodeExpireTime { get; set; }
 
     /// <summary>
     /// Gender of the user.
@@ -131,7 +127,6 @@ public class User
     /// </summary>
     public string? RefreshToken { get; set; }
 
-
     /// <summary>
     /// Refresh token expire time.
     /// </summary>
@@ -141,4 +136,24 @@ public class User
     /// The email confirmation code of the user.
     /// </summary>
     public string? EmailConfirmationCode { get; set; }
+
+    /// <summary>
+    /// The role of the user.
+    /// </summary>
+    public string Role { get; set; } = "User";
+
+    /// <summary>
+    /// Is the user blacklisted?
+    /// </summary>
+    public bool IsBlackListed { get; set; }
+
+    /// <summary>
+    /// List of blacklisted users.
+    /// </summary>
+    public ICollection<BlackListedUser> BlackListedUsers { get; set; } = [];
+
+    /// <summary>
+    /// List of users blacklisted by the current user.
+    /// </summary>
+    public ICollection<BlackListedUser> BlackListedByUsers { get; set; } = [];
 }

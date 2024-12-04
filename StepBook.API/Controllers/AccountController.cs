@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace StepBook.API.Controllers;
 
 /// <summary>
@@ -20,8 +22,7 @@ public class AccountController(
     /// </summary>
     /// <param name="dto"></param>
     /// <returns></returns>
-    [HttpPost("register")] // после регистрации отправляется письмо с кодом подтверждения на почту;
-    // на стороне клиента сделай страницу для ввода кода подтверждения (после регистрации переходи на неё автоматически);
+    [HttpPost("register")]
     public async Task<ActionResult<string>> RegisterAsync([FromBody] RegisterDto dto)
     {
         var user = mapper.Map<User>(dto);
@@ -37,11 +38,15 @@ public class AccountController(
             return BadRequest("Username already exists");
         }
 
+        if (!Regex.IsMatch(user.Email, @"^[^@\s]+@[^@\s]+\.\w+$"))
+        {
+            return BadRequest("Invalid email format");
+        }
+
         user.Password = PasswordHash(dto.Password);
 
         if (!ModelState.IsValid) return BadRequest();
 
-        // Генерация кода подтверждения
         var confirmationCode = GenerateRandomCode();
         user.EmailConfirmationCode = confirmationCode;
 
@@ -54,7 +59,6 @@ public class AccountController(
 
         return Ok("Registration successful. Please check your email for the confirmation code.");
     }
-
 
     /// <summary>
     /// Login a user
@@ -71,6 +75,11 @@ public class AccountController(
             return Unauthorized("Invalid username, email, or email not confirmed.");
         }
 
+        if (await context.BlackListedUsers.AnyAsync(x => x.BlackListedUserId == user.Id))
+        {
+            return Unauthorized("You are blacklisted");
+        }
+
         if (!PasswordVerify(dto.Password, user.Password))
         {
             return Unauthorized("Invalid password");
@@ -85,9 +94,11 @@ public class AccountController(
             Token = jwtService.GenerateSecurityToken(user),
             RefreshToken = user.RefreshToken,
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+            FirstName = user.FirstName,
             Gender = user.Gender,
         };
     }
+
 
     /// <summary>
     /// Refresh the token of a user
@@ -131,73 +142,6 @@ public class AccountController(
         return Ok("Logged out successfully");
     }
 
-    /// <summary>
-    /// Resend the confirmation code to the email of a user
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <returns></returns>
-    [HttpPost("resend-confirmation-code")]
-    public async Task<ActionResult> ResendConfirmationCodeAsync([FromBody] ResendConfirmationCodeDto dto)
-    {
-        var user = await context.Users.SingleOrDefaultAsync(x => x.Email == dto.Email);
-
-        if (user == null)
-        {
-            return NotFound("User not found");
-        }
-
-        var confirmationCode = GenerateRandomCode();
-        user.EmailConfirmationCode = confirmationCode;
-        await context.SaveChangesAsync();
-
-        await emailService.SendEmailAsync(user.Email, "Confirm your email",
-            $"Your confirmation code is: {confirmationCode}");
-
-        return Ok("Confirmation code sent to your email");
-    }
-
-    /// <summary>
-    /// Signin a user with Google
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("signin-google")]
-    public async Task<IActionResult> GoogleSignIn()
-    {
-        var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        if (response.Principal == null) return BadRequest();
-
-        var email = response.Principal.FindFirstValue(ClaimTypes.Email);
-
-        var user = await context.Users.Include(u => u.Photos)
-            .FirstOrDefaultAsync(x => x.Email == email);
-
-        if (user == null) return BadRequest();
-
-
-        return Ok(new UserDto
-        {
-            Username = user.UserName,
-            Token = jwtService.GenerateSecurityToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-            Gender = user.Gender,
-        });
-    }
-
-    /// <summary>
-    /// Login with Google
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("login-google")]
-    public IActionResult GoogleLogin()
-    {
-        var properties = new AuthenticationProperties
-        {
-            RedirectUri = Url.Action("GoogleSignIn"),
-            Items = { { "scheme", GoogleDefaults.AuthenticationScheme } }
-        };
-
-        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
-    }
 
     /// <summary>
     /// Confirm the email of a user using a confirmation code
@@ -214,12 +158,17 @@ public class AccountController(
             return NotFound("User not found");
         }
 
+        if (user.EmailConfirmationCodeExpireTime < DateTime.UtcNow)
+        {
+            user.EmailConfirmationCode = GenerateRandomCode();
+            user.EmailConfirmationCodeExpireTime = DateTime.UtcNow.AddMinutes(5);
+        }
+
         user.IsEmailConfirmed = true;
         await context.SaveChangesAsync();
 
         return Ok("Email confirmed successfully. You can now log in.");
     }
-
 
     /// <summary>
     /// Change the password of a user
@@ -237,7 +186,10 @@ public class AccountController(
             return NotFound("User not found");
         }
 
-        user.Password = PasswordHash(dto.CurrentPassword);
+        if (string.IsNullOrEmpty(dto.CurrentPassword))
+        {
+            return BadRequest("Current password is required");
+        }
 
         if (!PasswordVerify(dto.CurrentPassword, user.Password))
         {
@@ -250,7 +202,6 @@ public class AccountController(
         }
 
         user.Password = PasswordHash(dto.NewPassword);
-
 
         await context.SaveChangesAsync();
 
@@ -299,13 +250,12 @@ public class AccountController(
         user.RandomCode = resetCode;
         await context.SaveChangesAsync();
 
-        const string resetLink = "поставь ссылку на страницу сброса пароля, которую ты сделал в клиентской части!!!";
+        const string resetLink = "http://localhost:4200/reset-password";
         await emailService.SendEmailAsync(user.Email, "Reset your password",
             $"Your password reset code is: {resetCode}. You can also reset your password by clicking <a href='{resetLink}'>here</a>.");
 
         return Ok("Password reset code sent to your email");
     }
-
 
     /// <summary>
     /// Reset the password of a user

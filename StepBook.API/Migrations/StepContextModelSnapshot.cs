@@ -22,6 +22,21 @@ namespace StepBook.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("StepBook.API.Models.BlackListedUser", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("BlackListedUserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "BlackListedUserId");
+
+                    b.HasIndex("BlackListedUserId");
+
+                    b.ToTable("BlackListedUsers");
+                });
+
             modelBuilder.Entity("StepBook.API.Models.Connection", b =>
                 {
                     b.Property<string>("ConnectionId")
@@ -132,6 +147,36 @@ namespace StepBook.API.Migrations
                     b.ToTable("Photos");
                 });
 
+            modelBuilder.Entity("StepBook.API.Models.Report", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ReportedId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReporterId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportedId");
+
+                    b.HasIndex("ReporterId");
+
+                    b.ToTable("Reports");
+                });
+
             modelBuilder.Entity("StepBook.API.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -161,6 +206,9 @@ namespace StepBook.API.Migrations
                     b.Property<string>("EmailConfirmationCode")
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("EmailConfirmationCodeExpireTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("EmailConfirmationToken")
                         .HasColumnType("text");
 
@@ -180,6 +228,9 @@ namespace StepBook.API.Migrations
 
                     b.Property<string>("Introduction")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsBlackListed")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsEmailConfirmed")
                         .HasColumnType("boolean");
@@ -207,6 +258,10 @@ namespace StepBook.API.Migrations
                     b.Property<DateTime>("RefreshTokenExpireTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -229,6 +284,25 @@ namespace StepBook.API.Migrations
                     b.HasIndex("TargetUserId");
 
                     b.ToTable("Likes");
+                });
+
+            modelBuilder.Entity("StepBook.API.Models.BlackListedUser", b =>
+                {
+                    b.HasOne("StepBook.API.Models.User", "BlackList")
+                        .WithMany("BlackListedByUsers")
+                        .HasForeignKey("BlackListedUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("StepBook.API.Models.User", "User")
+                        .WithMany("BlackListedUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BlackList");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("StepBook.API.Models.Connection", b =>
@@ -268,6 +342,25 @@ namespace StepBook.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("StepBook.API.Models.Report", b =>
+                {
+                    b.HasOne("StepBook.API.Models.User", "Reported")
+                        .WithMany()
+                        .HasForeignKey("ReportedId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("StepBook.API.Models.User", "Reporter")
+                        .WithMany()
+                        .HasForeignKey("ReporterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Reported");
+
+                    b.Navigation("Reporter");
+                });
+
             modelBuilder.Entity("StepBook.API.Models.UserLike", b =>
                 {
                     b.HasOne("StepBook.API.Models.User", "SourceUser")
@@ -294,6 +387,10 @@ namespace StepBook.API.Migrations
 
             modelBuilder.Entity("StepBook.API.Models.User", b =>
                 {
+                    b.Navigation("BlackListedByUsers");
+
+                    b.Navigation("BlackListedUsers");
+
                     b.Navigation("LikedByUsers");
 
                     b.Navigation("LikedUsers");

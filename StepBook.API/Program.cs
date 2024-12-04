@@ -12,18 +12,12 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-    }).AddCookie()
-    .AddGoogle(options =>
-    {
-        options.ClientId = builder.Configuration["Google:client_id"]!;
-        options.ClientSecret = builder.Configuration["Google:client_secret"]!;
-    });
-
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c => c.Type == "Role" && c.Value == "Admin")));
+});
 
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -37,7 +31,6 @@ builder.Logging.AddSerilog(logger);
 
 builder.Services.AuthenticationAndAuthorization(builder.Configuration);
 builder.Services.AddSwagger(builder.Configuration);
-
 
 builder.Services.AddCors();
 

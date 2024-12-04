@@ -8,12 +8,12 @@ public class RegisterDto
     /// <summary>
     /// The user's email
     /// </summary>
-    public required string Email { get; init; } = null!;
+    public required string Email { get; init; }
 
     /// <summary>
     /// The username
     /// </summary>
-    public required string Username { get; init; } = null!;
+    public required string Username { get; init; }
 
     /// <summary>
     /// The user's first name
@@ -28,25 +28,25 @@ public class RegisterDto
     /// <summary>
     /// The user's
     /// </summary>
-    public string Gender { get; init; } = null!;
+    public required string Gender { get; init; }
 
     /// <summary>
     /// The user's date of birth
     /// </summary>
-    public DateTime DateOfBirth { get; init; }
+    public required DateTime DateOfBirth { get; init; }
 
     /// <summary>
     /// The user's city
     /// </summary>
-    public string City { get; init; } = null!;
+    public required string City { get; init; }
 
     /// <summary>
     /// The user's country
     /// </summary>
-    public string Country { get; init; } = null!;
+    public required string Country { get; init; }
 
     /// <summary>
     /// The password
     /// </summary>
-    public required string Password { get; set; } = null!;
+    public required string Password { get; set; }
 }

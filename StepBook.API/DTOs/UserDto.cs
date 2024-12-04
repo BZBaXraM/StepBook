@@ -13,7 +13,7 @@ public class UserDto
     /// <summary>
     /// The token
     /// </summary>
-    public required string Token { get; set; }
+    public string? Token { get; set; }
 
     /// <summary>
     /// The refresh token
@@ -24,6 +24,11 @@ public class UserDto
     /// The photo URL
     /// </summary>
     public string? PhotoUrl { get; set; }
+
+    /// <summary>
+    /// The first name
+    /// </summary>
+    public required string FirstName { get; set; }
 
     /// <summary>
     /// The gender

@@ -42,6 +42,3 @@ global using StepBook.API.Repositories.Classes;
 global using StepBook.API.Repositories.Interfaces;
 global using StepBook.API.Services;
 global using Amazon.S3.Model;
-global using Microsoft.AspNetCore.Authentication;
-global using Microsoft.AspNetCore.Authentication.Cookies;
-global using Microsoft.AspNetCore.Authentication.Google;
