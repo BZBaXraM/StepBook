@@ -25,10 +25,8 @@ public class MemberDto
     /// </summary>
     public int Age { get; init; }
 
-    /// <summary>
-    /// The known as
-    /// </summary>
-    public string KnownAs { get; init; } = null!;
+    public string FirstName { get; init; } = null!;
+    public string LastName { get; init; } = null!;
 
     /// <summary>
     /// Created
@@ -53,7 +51,7 @@ public class MemberDto
     /// <summary>
     /// Looking for
     /// </summary>
-    public string? LookingFor { get; init; } 
+    public string? LookingFor { get; init; }
 
     /// <summary>
     /// Interests

@@ -25,10 +25,7 @@ public class UserDto
     /// </summary>
     public string? PhotoUrl { get; set; }
 
-    /// <summary>
-    /// The known as
-    /// </summary>
-    public required string KnownAs { get; set; }
+    public required string FirstName { get; set; }
 
     /// <summary>
     /// The gender

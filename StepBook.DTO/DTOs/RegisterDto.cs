@@ -15,10 +15,8 @@ public class RegisterDto
     /// </summary>
     public required string Username { get; init; }
 
-    /// <summary>
-    /// The user's known as name
-    /// </summary>
-    public required string KnownAs { get; init; }
+    public required string FirstName { get; init; }
+    public required string LastName { get; init; }
 
     /// <summary>
     /// The user's

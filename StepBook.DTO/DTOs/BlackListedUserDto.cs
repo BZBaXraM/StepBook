@@ -10,5 +10,5 @@ public class BlackListedUserDto
     /// <summary>
     /// The known as name of the user.
     /// </summary>
-    public required string KnownAs { get; set; }
+    public required string FirstName { get; set; }
 }

@@ -42,24 +42,4 @@ public class EmailService : IEmailService
 
         await client.DisconnectAsync(true);
     }
-
-    private MimeMessage CreateEmailMessage(EmailHelper helper, string confirmLink)
-    {
-        var emailMessage = new MimeMessage();
-        emailMessage.From.Add(new MailboxAddress("Step", _config.From));
-        emailMessage.To.AddRange(helper.To);
-        emailMessage.Subject = helper.Subject;
-
-        var htmlContent = File.ReadAllText(helper.HtmlFilePath!);
-        htmlContent = htmlContent.Replace("{{Link}}", confirmLink);
-
-        var bodyBuilder = new BodyBuilder
-        {
-            HtmlBody = htmlContent
-        };
-
-        emailMessage.Body = bodyBuilder.ToMessageBody();
-
-        return emailMessage;
-    }
 }

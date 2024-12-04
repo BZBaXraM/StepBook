@@ -30,10 +30,9 @@ public class User
     /// </summary>
     public DateTime DateOfBirth { get; set; }
 
-    /// <summary>
-    /// The user's known as name.
-    /// </summary>
-    public required string KnownAs { get; set; }
+    public required string FirstName { get; set; }
+
+    public required string LastName { get; set; }
 
     /// <summary>
     /// Created date of the user.
@@ -44,6 +43,8 @@ public class User
     /// Last active date of the user.
     /// </summary>
     public DateTime LastActive { get; set; } = DateTime.UtcNow;
+
+    public DateTime EmailConfirmationCodeExpireTime { get; set; }
 
     /// <summary>
     /// Gender of the user.
