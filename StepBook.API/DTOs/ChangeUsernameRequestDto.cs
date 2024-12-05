@@ -8,5 +8,5 @@ public class ChangeUsernameRequestDto
     /// <summary>
     /// New username
     /// </summary>
-    public string NewUsername { get; set; } = null!;
+    public required string NewUsername { get; set; }
 }

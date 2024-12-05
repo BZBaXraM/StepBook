@@ -7,6 +7,8 @@ namespace StepBook.API.Controllers;
 /// </summary>
 /// <param name="context"></param>
 /// <param name="jwtService"></param>
+/// <param name="emailService"></param>
+/// <param name="blackListService"></param> 
 [ServiceFilter(typeof(LogUserActivity))]
 [Route("api/[controller]")]
 [ApiController]
