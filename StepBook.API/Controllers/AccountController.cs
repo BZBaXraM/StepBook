@@ -203,7 +203,7 @@ public class AccountController(
             return BadRequest("Passwords do not match");
         }
 
-        user.Password = PasswordHash(dto.NewPassword);
+        user.Password = PasswordHash(dto.NewPassword!);
 
         await context.SaveChangesAsync();
 
