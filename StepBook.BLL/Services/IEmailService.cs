@@ -19,4 +19,6 @@ public interface IEmailService
     /// <param name="message"></param>
     /// <returns></returns>
     Task SendAsync(MimeMessage message);
+    
+    Task SendConfirmationEmailAsync(string email, string code);
 }

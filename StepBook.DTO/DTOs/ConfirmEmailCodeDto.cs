@@ -7,5 +7,5 @@ public class ConfirmEmailCodeDto
 {   /// <summary>
     /// The code to confirm the email.
     /// </summary>
-    public string? Code { get; set; }
+    public required string Code { get; set; }
 }

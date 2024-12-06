@@ -44,7 +44,7 @@ public class User
     /// </summary>
     public DateTime LastActive { get; set; } = DateTime.UtcNow;
 
-    public DateTime EmailConfirmationCodeExpireTime { get; set; }
+    public DateTime? EmailConfirmationCodeExpireTime { get; set; }
 
     /// <summary>
     /// Gender of the user.
