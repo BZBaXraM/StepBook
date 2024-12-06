@@ -21,4 +21,11 @@ public interface IEmailService
     /// <param name="message"></param>
     /// <returns></returns>
     Task SendAsync(MimeMessage message);
+    /// <summary>
+    /// Send confirmation email
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="confirmLink"></param>
+    /// <returns></returns>
+    Task SendConfirmationEmailAsync(string email, string confirmLink);
 }

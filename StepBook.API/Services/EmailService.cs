@@ -69,4 +69,12 @@ public class EmailService : IEmailService
 
         return emailMessage;
     }
+    
+    public async Task SendConfirmationEmailAsync(string email, string code)
+    {
+        const string subject = "StepBook - Email Confirmation";
+        var message = $"<p>Your confirmation code is: {code}</p>";
+
+        await SendEmailAsync(email, subject, message);
+    }
 }

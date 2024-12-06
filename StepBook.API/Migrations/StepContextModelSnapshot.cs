@@ -206,7 +206,7 @@ namespace StepBook.API.Migrations
                     b.Property<string>("EmailConfirmationCode")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("EmailConfirmationCodeExpireTime")
+                    b.Property<DateTime?>("EmailConfirmationCodeExpireTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EmailConfirmationToken")

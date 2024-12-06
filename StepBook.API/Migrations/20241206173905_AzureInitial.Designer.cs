@@ -12,8 +12,8 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20241204214120_Initial")]
-    partial class Initial
+    [Migration("20241206173905_AzureInitial")]
+    partial class AzureInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -209,7 +209,7 @@ namespace StepBook.API.Migrations
                     b.Property<string>("EmailConfirmationCode")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("EmailConfirmationCodeExpireTime")
+                    b.Property<DateTime?>("EmailConfirmationCodeExpireTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EmailConfirmationToken")

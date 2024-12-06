@@ -49,17 +49,10 @@ public class AccountController(
 
         if (!ModelState.IsValid) return BadRequest();
 
-        var confirmationCode = GenerateRandomCode();
-        user.EmailConfirmationCode = confirmationCode;
-
         await context.Users.AddAsync(user);
         await context.SaveChangesAsync();
 
-        await emailService.SendEmailAsync(user.Email, "Confirm your email",
-            $"Your confirmation code is: {confirmationCode}");
-
-
-        return Ok("Registration successful. Please check your email for the confirmation code.");
+        return Ok("Registration successful. Please request your email confirmation code.");
     }
 
     /// <summary>
@@ -70,9 +63,10 @@ public class AccountController(
     {
         var user = await context.Users
             .Include(u => u.Photos)
-            .FirstOrDefaultAsync(x => x.UserName == dto.UsernameOrEmail || x.Email == dto.UsernameOrEmail);
+            .FirstOrDefaultAsync(x =>
+                (x.UserName == dto.UsernameOrEmail || x.Email == dto.UsernameOrEmail) && x.IsEmailConfirmed);
 
-        if (user == null || !user.IsEmailConfirmed)
+        if (user == null)
         {
             return Unauthorized("Invalid username, email, or email not confirmed.");
         }
@@ -164,13 +158,20 @@ public class AccountController(
         {
             user.EmailConfirmationCode = GenerateRandomCode();
             user.EmailConfirmationCodeExpireTime = DateTime.UtcNow.AddMinutes(5);
+
+            await context.SaveChangesAsync();
+            return BadRequest("Code expired. A new code has been sent to your email.");
         }
 
         user.IsEmailConfirmed = true;
+        user.EmailConfirmationCode = null;
+        user.EmailConfirmationCodeExpireTime = null;
+
         await context.SaveChangesAsync();
 
         return Ok("Email confirmed successfully. You can now log in.");
     }
+
 
     /// <summary>
     /// Change the password of a user
@@ -303,6 +304,31 @@ public class AccountController(
         await context.SaveChangesAsync();
 
         return Ok("Account deleted successfully");
+    }
+
+    /// <summary>
+    /// Request a confirmation code to confirm the email of a user
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPost("request-confirmation-code")]
+    public async Task<ActionResult> RequestConfirmationCode([FromBody] RequestConfirmationCodeDto dto)
+    {
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+
+        if (user == null || user.IsEmailConfirmed)
+        {
+            return BadRequest("Invalid request or email already confirmed.");
+        }
+
+        user.EmailConfirmationCode = GenerateRandomCode();
+        user.EmailConfirmationCodeExpireTime = DateTime.UtcNow.AddMinutes(5);
+
+        await context.SaveChangesAsync();
+
+        await emailService.SendConfirmationEmailAsync(user.Email, user.EmailConfirmationCode);
+
+        return Ok("Confirmation code sent to your email.");
     }
 
     private string GenerateRandomCode(int length = 6)
