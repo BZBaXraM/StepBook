@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using StepBook.BLL.Exceptions;
 using StepBook.BLL.Services;
 using StepBook.DAL.Data;
 
@@ -34,27 +35,31 @@ public class AccountController(
 
         if (await context.Users.AnyAsync(x => x.Email == user.Email))
         {
-            return BadRequest("Email already exists");
+            // return BadRequest("Email already exists");
+            return BadRequest(new RegisterException("Email already exists"));
         }
 
         if (await context.Users.AnyAsync(x => x.UserName == user.UserName))
         {
-            return BadRequest("Username already exists");
+            // return BadRequest("Username already exists");
+            return BadRequest(new RegisterException("Username already exists"));
         }
 
         if (!Regex.IsMatch(user.Email, @"^[^@\s]+@[^@\s]+\.\w+$"))
         {
-            return BadRequest("Invalid email format");
+            // return BadRequest("Invalid email format");
+            return BadRequest(new RegisterException("Invalid email format"));
         }
 
         user.Password = PasswordHash(dto.Password);
 
-        if (!ModelState.IsValid) return BadRequest();
+        if (!ModelState.IsValid)
+            return BadRequest(new RegisterException("Invalid data", ModelState.IsValid.ToString()));
 
         await context.Users.AddAsync(user);
         await context.SaveChangesAsync();
 
-        return Ok("Registration successful. Please request your email confirmation code.");
+        return Ok(new RegisterResponse(true, "Registration successful. Please request your email confirmation code."));
     }
 
     /// <summary>
@@ -70,17 +75,17 @@ public class AccountController(
 
         if (user == null)
         {
-            return Unauthorized("Invalid username, email, or email not confirmed.");
+            return Unauthorized(new LoginException("Invalid username, email, or email not confirmed."));
         }
 
         if (await context.BlackListedUsers.AnyAsync(x => x.BlackListedUserId == user.Id))
         {
-            return Unauthorized("You are blacklisted");
+            return Unauthorized(new LoginException("You are blacklisted"));
         }
 
         if (!PasswordVerify(dto.Password, user.Password))
         {
-            return Unauthorized("Invalid password");
+            return Unauthorized(new LoginException("Invalid password"));
         }
 
         user.RefreshToken = jwtService.GenerateRefreshToken();
