@@ -12,7 +12,7 @@ using StepBook.API.Data;
 namespace StepBook.API.Migrations
 {
     [DbContext(typeof(StepContext))]
-    [Migration("20241206173905_AzureInitial")]
+    [Migration("20241213113023_AzureInitial")]
     partial class AzureInitial
     {
         /// <inheritdoc />
