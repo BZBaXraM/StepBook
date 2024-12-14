@@ -167,7 +167,7 @@ public class AccountController(
             user.EmailConfirmationCodeExpireTime = DateTime.UtcNow.AddMinutes(5);
 
             await context.SaveChangesAsync();
-            return BadRequest("Code expired. A new code has been sent to your email.");
+            return BadRequest("Code expired. Please request a new code.");
         }
 
         user.IsEmailConfirmed = true;
