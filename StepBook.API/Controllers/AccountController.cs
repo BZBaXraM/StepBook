@@ -154,7 +154,7 @@ public class AccountController(
     [HttpPost("confirm-email-code")]
     public async Task<ActionResult> ConfirmEmailCodeAsync([FromBody] ConfirmEmailCodeDto dto)
     {
-        var user = await context.Users.SingleOrDefaultAsync(x => x.EmailConfirmationCode == dto.Code);
+        var user = await context.Users.FirstOrDefaultAsync(x => x.EmailConfirmationCode == dto.Code);
 
         if (user == null)
         {
