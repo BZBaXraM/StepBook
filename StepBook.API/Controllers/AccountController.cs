@@ -329,7 +329,7 @@ public class AccountController(
         }
 
         user.EmailConfirmationCode = GenerateRandomCode();
-        user.EmailConfirmationCodeExpireTime = DateTime.UtcNow.AddMinutes(5);
+        user.EmailConfirmationCodeExpireTime = DateTime.UtcNow.AddMinutes(5); // 5 minutes
 
         await context.SaveChangesAsync();
 
