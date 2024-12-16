@@ -21,6 +21,7 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     public async Task<IEnumerable<User>> GetUsersAsync()
     {
         return await context.Users
+            .Where(x => x.IsEmailConfirmed)
             .Include(p => p.Photos)
             .ToListAsync();
     }
@@ -33,6 +34,7 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     public async Task<User?> GetUserByIdAsync(int id)
     {
         return await context.Users
+            .Where(x => x.IsEmailConfirmed)
             .Include(p => p.Photos)
             .FirstOrDefaultAsync(u => u.Id == id);
     }
@@ -45,8 +47,9 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     public async Task<User?> GetUserByUsernameAsync(string username)
     {
         return await context.Users
+            .Where(x => x.IsEmailConfirmed)
             .Include(p => p.Photos)
-            .SingleOrDefaultAsync(u => u.UserName == username);
+            .FirstOrDefaultAsync(u => u.UserName == username);
     }
 
     /// <summary>
@@ -58,7 +61,8 @@ public class UserRepository(StepContext context, IMapper mapper) : IUserReposito
     {
         var query = context.Users.AsQueryable();
 
-        query = query.Where(u => u.UserName != pageParams.CurrentUsername);
+        query = query.Where(u => u.UserName != pageParams.CurrentUsername)
+            .Where(u => u.IsEmailConfirmed);
 
         if (pageParams.Gender != null)
         {

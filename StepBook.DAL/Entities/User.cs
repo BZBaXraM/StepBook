@@ -31,7 +31,6 @@ public class User
     public DateTime DateOfBirth { get; set; }
 
     public required string FirstName { get; set; }
-
     public required string LastName { get; set; }
 
     /// <summary>
@@ -101,16 +100,10 @@ public class User
     /// </summary>
     public ICollection<Message> MessagesReceived { get; set; } = [];
 
-
     /// <summary>
     /// Is the email of the user confirmed?
     /// </summary>
     public bool IsEmailConfirmed { get; set; }
-
-    /// <summary>
-    /// The email confirmation token of the user.
-    /// </summary>
-    public string? EmailConfirmationToken { get; set; }
 
     /// <summary>
     /// The forgot password token of the user.
