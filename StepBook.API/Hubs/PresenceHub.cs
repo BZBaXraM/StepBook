@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.SignalR;
-
 namespace StepBook.API.Hubs;
 
 /// <summary>

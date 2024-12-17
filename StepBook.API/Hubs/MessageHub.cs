@@ -35,9 +35,9 @@ public class MessageHub(
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var group = await RemoveFromMessageGroup();
-        
+
         await Clients.Group(group.Name).SendAsync("UpdatedGroup", group);
-        
+
         await base.OnDisconnectedAsync(exception);
     }
 
@@ -91,9 +91,27 @@ public class MessageHub(
 
         if (await unitOfWork.Complete())
         {
+            await UpdateNewMessagesCount(recipient.UserName);
+
             await Clients.Group(groupName).SendAsync("NewMessage", mapper.Map<MessageDto>(message));
         }
     }
+
+    /// <summary>
+    /// Update new messages count.
+    /// </summary>
+    /// <param name="recipientUsername"></param>
+    public async Task UpdateNewMessagesCount(string recipientUsername)
+    {
+        // Получить количество новых сообщений для получателя
+        var newMessagesCount = await unitOfWork.MessageRepository.CountOfNewMessagesAsync(recipientUsername);
+        Console.WriteLine($"New messages count for {recipientUsername}: {newMessagesCount}");
+
+        // Отправить обновленное значение счетчика клиенту
+        await Clients.User(recipientUsername).SendAsync("ReceiveNewMessagesCount", newMessagesCount);
+    }
+
+
 
     private async Task<Group> AddToGroup(string groupName)
     {
