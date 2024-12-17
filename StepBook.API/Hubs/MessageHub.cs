@@ -101,17 +101,14 @@ public class MessageHub(
     /// Update new messages count.
     /// </summary>
     /// <param name="recipientUsername"></param>
-    public async Task UpdateNewMessagesCount(string recipientUsername)
+    private async Task UpdateNewMessagesCount(string recipientUsername)
     {
-        // Получить количество новых сообщений для получателя
         var newMessagesCount = await unitOfWork.MessageRepository.CountOfNewMessagesAsync(recipientUsername);
+
         Console.WriteLine($"New messages count for {recipientUsername}: {newMessagesCount}");
 
-        // Отправить обновленное значение счетчика клиенту
         await Clients.User(recipientUsername).SendAsync("ReceiveNewMessagesCount", newMessagesCount);
     }
-
-
 
     private async Task<Group> AddToGroup(string groupName)
     {
