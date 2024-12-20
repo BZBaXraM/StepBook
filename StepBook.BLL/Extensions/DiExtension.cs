@@ -41,6 +41,8 @@ public static class DiExtension
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IPhotoService, PhotoService>();
 
+        services.AddSingleton<RegisterRequestValidator>();
+
 
         var awsSetting = configuration.GetSection("AWS");
         var credentials = new BasicAWSCredentials(awsSetting["AccessKey"], awsSetting["Secret"]);

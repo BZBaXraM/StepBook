@@ -2,8 +2,10 @@
 
 ## Описание проекта
 
+
+
 StepBook - это социальная сеть, которая объединяет людей, учащихся в STEP IT Academy. Пользователи могут создавать
-профили, добавлять других пользователей в друзья, обмениваться сообщениями и ставить лайки друг-другу.
+профили, обмениваться сообщениями и ставить лайки друг-другу.
 
 ## Технологии
 
@@ -15,6 +17,25 @@ StepBook - это социальная сеть, которая объединя
 - PostgreSQL
 - Docker
 - Swagger
+- JWT
+- Serilog
+- Amazon S3 (для хранения файлов)
+- Azure (Azure PostgreSQL)
+- CloudinaryData (для хранения фотографий пользователей)
+
+## Архитектура проекта
+
+Проект построен на основе N-Tier архитектуры. В решении присутствуют следующие проекты:
+
+- StepBook.API - проект API
+- StepBook.BLL - бизнес-логика
+- StepBook.DAL - доступ к данным
+- StepBook.DTO - Data Transfer Objects
+- StepBook.BuildingBlocks - общие классы и методы
+
+## Клиентское приложение
+
+Одностраничное приложение на Angular
 
 ## Запуск проекта
 
@@ -31,12 +52,34 @@ StepBook - это социальная сеть, которая объединя
 - POST /api/account/register - регистрация пользователя
 - POST /api/account/login - авторизация пользователя
 - POST /api/account/refresh-token - обновление токена
-- GET /api/account/email-confirm - подтверждение email
+- POST /api/account/logout - выход из аккаунта
+- GET /api/account/email-confirm-code - подтверждение email
 - PUT /api/account/change-password - изменение пароля
+- PUT /api/account/change-username - изменение логина пользователя
 - POST /api/account/forgot-password - восстановление пароля
 - POST /api/account/reset-password - сброс пароля
-- GET /api/account/sign-google - авторизация через Google
-- GET /api/account/login-google - вход через Google
+- DELETE /api/account/delete-account - удаление аккаунта
+- POST /api/account/request-confirmation-code - запрос кода подтверждения
+
+### Admin
+
+- POST /api/admin/add-to-blacklist/{username} - добавить пользователя в черный список
+- POST /api/admin/remove-from-blacklist/{username} - удалить пользователя из черного списка
+- GET /api/admin/blacklist - получить список пользователей в черном списке
+- GET /api/admin/reports - получить список жалоб
+- DELETE /api/admin/delete-user-account/{username} - удалить аккаунт пользователя
+- GET /api/admin/users - получить список пользователей
+
+### Report
+
+- POST /api/report/add-report-to-user/{username} - отправить жалобу на пользователя
+
+### Buckets
+
+- POST /api/buckets/upload-file - загрузить файл
+- GET /api/buckets/get-file-url - получить URL файла
+- GET /api/buckets/get-all-files - получить список файлов
+- DELETE /api/buckets/delete-file - удалить файл
 
 ### Likes
 

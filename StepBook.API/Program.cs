@@ -1,4 +1,6 @@
+using StepBook.API.HostedServices;
 using StepBook.BLL.Extensions;
+using StepBook.BLL.Validators;
 using StepBook.DAL.Data;
 using StepBook.DAL.Extensions;
 
@@ -43,6 +45,10 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<PresenceTracker>();
 builder.Services.RegisterDal(builder.Configuration);
 builder.Services.RegisterBll(builder.Configuration);
+
+// builder.Services.AddSingleton<RegisterRequestValidator>();
+
+builder.Services.AddHostedService<ClearingUnconfirmedEmails>();
 
 builder.Services.AddCors();
 

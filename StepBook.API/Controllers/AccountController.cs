@@ -1,6 +1,6 @@
-using System.Text.RegularExpressions;
 using StepBook.BLL.Exceptions;
 using StepBook.BLL.Services;
+using StepBook.BLL.Validators;
 using StepBook.DAL.Data;
 
 namespace StepBook.API.Controllers;
@@ -20,6 +20,7 @@ public class AccountController(
     IJwtService jwtService,
     IEmailService emailService,
     IBlackListService blackListService,
+    RegisterRequestValidator registerRequestValidator,
     IMapper mapper) : ControllerBase
 {
     /// <summary>
@@ -35,20 +36,19 @@ public class AccountController(
 
         if (await context.Users.AnyAsync(x => x.Email == user.Email))
         {
-            // return BadRequest("Email already exists");
             return BadRequest(new RegisterException("Email already exists"));
         }
 
         if (await context.Users.AnyAsync(x => x.UserName == user.UserName))
         {
-            // return BadRequest("Username already exists");
             return BadRequest(new RegisterException("Username already exists"));
         }
 
-        if (!Regex.IsMatch(user.Email, @"^[^@\s]+@[^@\s]+\.\w+$"))
+        var validationResult = await registerRequestValidator.ValidateAsync(dto);
+
+        if (!validationResult.IsValid)
         {
-            // return BadRequest("Invalid email format");
-            return BadRequest(new RegisterException("Invalid email format"));
+            return BadRequest(new RegisterException("Invalid email data", validationResult.ToString()));
         }
 
         user.Password = PasswordHash(dto.Password);

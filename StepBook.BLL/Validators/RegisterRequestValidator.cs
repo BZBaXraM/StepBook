@@ -1,12 +1,12 @@
 namespace StepBook.BLL.Validators;
 
-public abstract class RegisterRequestValidator : AbstractValidator<RegisterDto>
+public class RegisterRequestValidator : AbstractValidator<RegisterDto>
 {
     /// <inheritdoc />
-    protected RegisterRequestValidator()
+    public RegisterRequestValidator()
     {
         RuleFor(x => x.Username).Username();
-        RuleFor(x => x.Email).EmailAddress();
+        RuleFor(x => x.Email).EmailAddress().Matches(RegexPatterns.Email);
         RuleFor(x => x.Password).NotEmpty().MinimumLength(8).MaximumLength(30);
     }
 }

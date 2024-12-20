@@ -39,4 +39,10 @@
       <ProjectReference Include="..\StepBook.DTO\StepBook.DTO.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
 </Project>
