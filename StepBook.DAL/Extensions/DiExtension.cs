@@ -8,7 +8,7 @@ public static class DiExtension
         services.AddDbContext<StepContext>(options =>
         {
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-            // options.UseNpgsql(configuration.GetConnectionString("DockerConnection"));
+            // options.UseNpgsql(configuration.GetConnectionString("Database"));
             // options.UseNpgsql(configuration.GetConnectionString("Azure"));
         });
 
