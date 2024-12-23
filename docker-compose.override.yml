@@ -1,0 +1,28 @@
+services:
+  stepbook-db:
+    container_name: stepbook-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=StepBookDockerDb
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  stepbook.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__Database=Server=stepbook-db;Port=5432;Database=StepBookDockerDb;User Id=postgres;Password=postgres;Include Error Detail=true
+    depends_on:
+      - stepbook-db
+    ports:
+      - "6000:8080"
+      - "6060:8081"
+    volumes:
+      - ~/.aspnet/https:/https:ro

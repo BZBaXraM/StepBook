@@ -1,0 +1,13 @@
+services:
+  stepbook-db:
+    image: postgres:latest
+
+  stepbook.api:
+    image: ${DOCKER_REGISTRY-}stepbook.api
+    build:
+      context: .
+      dockerfile: StepBook.Api/Dockerfile
+
+
+volumes:
+  postgres_data:
