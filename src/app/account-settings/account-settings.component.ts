@@ -8,11 +8,10 @@ import { Router } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
-	selector: 'app-account-settings',
-	standalone: true,
-	imports: [FormsModule, MatTabsModule],
-	templateUrl: './account-settings.component.html',
-	styleUrl: './account-settings.component.css',
+    selector: 'app-account-settings',
+    imports: [FormsModule, MatTabsModule],
+    templateUrl: './account-settings.component.html',
+    styleUrl: './account-settings.component.css'
 })
 export class AccountSettingsComponent {
 	accountService = inject(AccountService);

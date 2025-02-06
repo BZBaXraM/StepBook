@@ -5,11 +5,10 @@ import { LikesService } from '../../services/likes.service';
 import { PresenceService } from '../../services/presence.service';
 
 @Component({
-	selector: 'app-member-card',
-	standalone: true,
-	imports: [RouterLink],
-	templateUrl: './member-card.component.html',
-	styleUrl: './member-card.component.css',
+    selector: 'app-member-card',
+    imports: [RouterLink],
+    templateUrl: './member-card.component.html',
+    styleUrl: './member-card.component.css'
 })
 export class MemberCardComponent {
 	private likeService = inject(LikesService);

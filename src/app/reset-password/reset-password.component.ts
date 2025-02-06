@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { AccountService } from '../services/account.service';
 import { Router } from '@angular/router';
-import { MatInput } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { ResetPassword } from '../models/reset-password.model';
@@ -9,8 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
 	selector: 'app-reset-password',
-	standalone: true,
-	imports: [MatInput, FormsModule, NgIf],
+	imports: [FormsModule, NgIf],
 	templateUrl: './reset-password.component.html',
 	styleUrl: './reset-password.component.css',
 })

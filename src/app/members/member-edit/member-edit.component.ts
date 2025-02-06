@@ -8,7 +8,6 @@ import {
 import { Member } from '../../models/member.model';
 import { AccountService } from '../../services/account.service';
 import { MembersService } from '../../services/members.service';
-import { GalleryComponent } from 'ng-gallery';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -26,9 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 
 @Component({
 	selector: 'app-member-edit',
-	standalone: true,
 	imports: [
-		GalleryComponent,
 		TabsModule,
 		FormsModule,
 		PhotoEditorComponent,

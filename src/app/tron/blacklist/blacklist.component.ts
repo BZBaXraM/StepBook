@@ -6,11 +6,10 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import {NgIf} from "@angular/common";
 
 @Component({
-	selector: 'app-blacklist',
-	standalone: true,
-	imports: [MatTableModule, MatCardModule, MatPaginatorModule, NgIf],
-	templateUrl: './blacklist.component.html',
-	styleUrl: './blacklist.component.css',
+    selector: 'app-blacklist',
+    imports: [MatTableModule, MatCardModule, MatPaginatorModule, NgIf],
+    templateUrl: './blacklist.component.html',
+    styleUrl: './blacklist.component.css'
 })
 export class BlacklistComponent implements OnInit {
 	adminService = inject(AdminService);

@@ -10,11 +10,10 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-	selector: 'app-report-content-dialog',
-	standalone: true,
-	imports: [FormsModule, MatDialogModule, MatFormFieldModule],
-	templateUrl: './report-content-dialog.component.html',
-	styleUrls: ['./report-content-dialog.component.css'],
+    selector: 'app-report-content-dialog',
+    imports: [FormsModule, MatDialogModule, MatFormFieldModule],
+    templateUrl: './report-content-dialog.component.html',
+    styleUrls: ['./report-content-dialog.component.css']
 })
 export class ReportContentDialogComponent {
 	private reportService = inject(ReportService);

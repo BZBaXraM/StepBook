@@ -20,20 +20,19 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-	selector: 'app-chat',
-	standalone: true,
-	imports: [
-		TimeagoModule,
-		NgIf,
-		MatCardModule,
-		MatListModule,
-		MatIconModule,
-		CommonModule,
-		FormsModule,
-		MatFormFieldModule,
-	],
-	templateUrl: './chat.component.html',
-	styleUrl: './chat.component.css',
+    selector: 'app-chat',
+    imports: [
+        TimeagoModule,
+        NgIf,
+        MatCardModule,
+        MatListModule,
+        MatIconModule,
+        CommonModule,
+        FormsModule,
+        MatFormFieldModule,
+    ],
+    templateUrl: './chat.component.html',
+    styleUrl: './chat.component.css'
 })
 export class ChatComponent implements AfterViewChecked {
 	private scrollMe = viewChild<ElementRef<HTMLElement>>('scrollMe');

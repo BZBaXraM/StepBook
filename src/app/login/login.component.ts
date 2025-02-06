@@ -6,23 +6,18 @@ import { MatInputModule } from '@angular/material/input';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { MatButtonModule } from '@angular/material/button';
 import { ToastrService } from 'ngx-toastr';
-import { MatIcon } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { MatCardHeader } from '@angular/material/card';
 import { NgIf } from '@angular/common';
 
 @Component({
 	selector: 'app-login',
-	standalone: true,
 	imports: [
 		FormsModule,
 		BsDropdownModule,
 		MatInputModule,
 		MatButtonModule,
 		RouterLink,
-		MatIcon,
 		MatCardModule,
-		MatCardHeader,
 		NgIf,
 	],
 	templateUrl: './login.component.html',

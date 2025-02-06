@@ -21,20 +21,19 @@ import { RequestConfirmCodeDialogComponent } from '../request-confirm-code-dialo
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-	selector: 'app-register',
-	standalone: true,
-	templateUrl: './register.component.html',
-	styleUrl: './register.component.css',
-	imports: [
-		ReactiveFormsModule,
-		MatRadioModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatDatepickerModule,
-		MatNativeDateModule,
-		MatIconModule,
-		MatButtonModule,
-	],
+    selector: 'app-register',
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.css',
+    imports: [
+        ReactiveFormsModule,
+        MatRadioModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatIconModule,
+        MatButtonModule,
+    ]
 })
 export class RegisterComponent implements OnInit {
 	private accountService = inject(AccountService);

@@ -1,24 +1,19 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RegisterComponent } from '../register/register.component';
 import { Router, RouterLink } from '@angular/router';
 import { AccountService } from '../services/account.service';
 import { MatCardModule } from '@angular/material/card';
-import { MatCardHeader } from '@angular/material/card';
 
 @Component({
 	selector: 'app-home',
-	standalone: true,
 	imports: [
 		MatButtonModule,
-		MatIconButton,
 		MatIconModule,
 		RouterLink,
 		RegisterComponent,
 		MatCardModule,
-		MatCardHeader,
 	],
 	templateUrl: './home.component.html',
 	styleUrl: './home.component.css',

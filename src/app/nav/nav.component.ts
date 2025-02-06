@@ -12,7 +12,6 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MessageService } from '../services/message.service';
-import { MatIcon } from '@angular/material/icon';
 import { PresenceService } from '../services/presence.service';
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -24,14 +23,12 @@ import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
 	selector: 'app-nav',
-	standalone: true,
 	imports: [
 		FormsModule,
 		BsDropdownModule,
 		MatButtonModule,
 		RouterLink,
 		RouterLinkActive,
-		MatIcon,
 		HasRoleDirective,
 		MatToolbarModule,
 		MatMenuModule,

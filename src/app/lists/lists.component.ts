@@ -6,16 +6,15 @@ import { MemberCardComponent } from '../members/member-card/member-card.componen
 import { PageChangedEvent, PaginationModule } from 'ngx-bootstrap/pagination';
 
 @Component({
-	selector: 'app-lists',
-	standalone: true,
-	imports: [
-		ButtonsModule,
-		FormsModule,
-		MemberCardComponent,
-		PaginationModule,
-	],
-	templateUrl: './lists.component.html',
-	styleUrl: './lists.component.css',
+    selector: 'app-lists',
+    imports: [
+        ButtonsModule,
+        FormsModule,
+        MemberCardComponent,
+        PaginationModule,
+    ],
+    templateUrl: './lists.component.html',
+    styleUrl: './lists.component.css'
 })
 export class ListsComponent implements OnInit, OnDestroy {
 	likeService = inject(LikesService);

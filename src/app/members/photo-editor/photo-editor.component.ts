@@ -13,18 +13,17 @@ import { MatCardModule } from '@angular/material/card';
 import { catchError, of } from 'rxjs';
 
 @Component({
-	selector: 'app-photo-editor',
-	standalone: true,
-	imports: [
-		CommonModule,
-		MatProgressBarModule,
-		MatButtonModule,
-		MatIconModule,
-		MatTooltipModule,
-		MatCardModule,
-	],
-	templateUrl: './photo-editor.component.html',
-	styleUrl: './photo-editor.component.css',
+    selector: 'app-photo-editor',
+    imports: [
+        CommonModule,
+        MatProgressBarModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTooltipModule,
+        MatCardModule,
+    ],
+    templateUrl: './photo-editor.component.html',
+    styleUrl: './photo-editor.component.css'
 })
 export class PhotoEditorComponent implements OnInit {
 	private accountService = inject(AccountService);

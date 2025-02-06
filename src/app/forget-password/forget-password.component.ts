@@ -1,29 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { AccountService } from '../services/account.service';
-import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
 import { ForgetPassword } from '../models/forget.password.model';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../environments/environment';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardContent } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
 	selector: 'app-forget-password',
-	standalone: true,
-	imports: [
-		RouterLink,
-		FormsModule,
-		MatInput,
-		MatCardModule,
-		MatButtonModule,
-		MatCardContent,
-		MatIconModule,
-		MatFormFieldModule,
-	],
+	imports: [FormsModule, MatButtonModule, MatIconModule, MatFormFieldModule],
 	templateUrl: './forget-password.component.html',
 	styleUrl: './forget-password.component.css',
 })

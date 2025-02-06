@@ -20,21 +20,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
-	selector: 'app-message-form',
-	standalone: true,
-	imports: [
-		FormsModule,
-		NgClass,
-		NgIf,
-		PickerComponent,
-		MatFormFieldModule,
-		MatInputModule,
-		MatIconModule,
-		MatButtonModule,
-		MatTooltipModule,
-	],
-	templateUrl: './message-form.component.html',
-	styleUrl: './message-form.component.css',
+    selector: 'app-message-form',
+    imports: [
+        FormsModule,
+        NgClass,
+        NgIf,
+        PickerComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTooltipModule,
+    ],
+    templateUrl: './message-form.component.html',
+    styleUrl: './message-form.component.css'
 })
 export class MessageFormComponent implements OnInit {
 	readonly messageForm = viewChild<NgForm>('messageForm');

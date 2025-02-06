@@ -10,11 +10,10 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-	selector: 'app-request-confirm-code-dialog',
-	standalone: true,
-	imports: [FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule],
-	templateUrl: './request-confirm-code-dialog.component.html',
-	styleUrl: './request-confirm-code-dialog.component.css',
+    selector: 'app-request-confirm-code-dialog',
+    imports: [FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule],
+    templateUrl: './request-confirm-code-dialog.component.html',
+    styleUrl: './request-confirm-code-dialog.component.css'
 })
 export class RequestConfirmCodeDialogComponent {
 	private accountService = inject(AccountService);

@@ -4,14 +4,11 @@ import { Member } from '../../models/member.model';
 import { MemberCardComponent } from '../member-card/member-card.component';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgFor, NgIf } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
-import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { NgFor } from '@angular/common';
 
 @Component({
 	selector: 'app-search-member',
-	standalone: true,
-	imports: [MemberCardComponent, FormsModule, NgFor, NgIf, MatIcon, MatHint, MatLabel, MatFormField],
+	imports: [MemberCardComponent, FormsModule, NgFor],
 	templateUrl: './search-member.component.html',
 	styleUrl: './search-member.component.css',
 })

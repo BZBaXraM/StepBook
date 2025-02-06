@@ -16,17 +16,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { RequestConfirmCodeDialogComponent } from '../request-confirm-code-dialog/request-confirm-code-dialog.component';
 
 @Component({
-	selector: 'app-confirm-email',
-	standalone: true,
-	imports: [
-		MatFormFieldModule,
-		MatInputModule,
-		MatButtonModule,
-		ReactiveFormsModule,
-		NgIf,
-	],
-	templateUrl: './confirm-email.component.html',
-	styleUrl: './confirm-email.component.css',
+    selector: 'app-confirm-email',
+    imports: [
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        ReactiveFormsModule,
+        NgIf,
+    ],
+    templateUrl: './confirm-email.component.html',
+    styleUrl: './confirm-email.component.css'
 })
 export class ConfirmEmailComponent {
 	form: FormGroup = new FormGroup({

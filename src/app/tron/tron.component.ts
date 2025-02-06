@@ -10,19 +10,18 @@ import { ToastrService } from 'ngx-toastr';
 import { RouterLink } from '@angular/router';
 
 @Component({
-	selector: 'app-tron',
-	standalone: true,
-	imports: [
-		CommonModule,
-		MatCardModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatButtonModule,
-		FormsModule,
-		RouterLink,
-	],
-	templateUrl: './tron.component.html',
-	styleUrl: './tron.component.css',
+    selector: 'app-tron',
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        FormsModule,
+        RouterLink,
+    ],
+    templateUrl: './tron.component.html',
+    styleUrl: './tron.component.css'
 })
 export class TronComponent {
 	private adminService = inject(AdminService);

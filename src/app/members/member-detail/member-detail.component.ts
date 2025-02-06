@@ -24,17 +24,16 @@ import { ReportContentDialogComponent } from '../../report-content-dialog/report
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-	selector: 'app-member-detail',
-	standalone: true,
-	imports: [
-		TabsModule,
-		GalleryModule,
-		TimeagoModule,
-		DatePipe,
-		MemberMessagesComponent,
-	],
-	templateUrl: './member-detail.component.html',
-	styleUrl: './member-detail.component.css',
+    selector: 'app-member-detail',
+    imports: [
+        TabsModule,
+        GalleryModule,
+        TimeagoModule,
+        DatePipe,
+        MemberMessagesComponent,
+    ],
+    templateUrl: './member-detail.component.html',
+    styleUrl: './member-detail.component.css'
 })
 export class MemberDetailComponent implements OnInit, OnDestroy {
 	readonly memberTabs = viewChild<TabsetComponent>('memberTabs');
