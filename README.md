@@ -2,8 +2,6 @@
 
 ## Описание проекта
 
-
-
 StepBook - это социальная сеть, которая объединяет людей, учащихся в STEP IT Academy. Пользователи могут создавать
 профили, обмениваться сообщениями и ставить лайки друг-другу.
 
@@ -14,13 +12,13 @@ StepBook - это социальная сеть, которая объединя
 - SignalR
 - AutoMapper
 - FluentValidation
-- PostgreSQL
+- PostgresSQL
 - Docker
 - Swagger
 - JWT
 - Serilog
 - Amazon S3 (для хранения файлов)
-- Azure (Azure PostgreSQL)
+- Azure (Azure PostgresSQL)
 - CloudinaryData (для хранения фотографий пользователей)
 
 ## Архитектура проекта

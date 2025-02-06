@@ -135,7 +135,7 @@ public class AdminController(StepContext context) : ControllerBase
     /// </summary>
     /// <param name="username"></param>
     /// <returns></returns>
-    [HttpDelete("delete-user-account/{username}")]
+    [HttpDelete("delete-user-account/{username}")] // api/admin/delete-user-account/{username}
     public async Task<ActionResult> DeleteUserAccountAsync([FromRoute] string username)
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == username);
@@ -149,6 +149,22 @@ public class AdminController(StepContext context) : ControllerBase
 
         var reports = context.Reports.Where(r => r.ReportedId == user.Id);
         context.Reports.RemoveRange(reports);
+
+        var blackListedUsers =
+            context.BlackListedUsers.Where(b => b.BlackListedUserId == user.Id || b.UserId == user.Id);
+
+        context.BlackListedUsers.RemoveRange(blackListedUsers);
+
+        var receivedMessages = context.Messages.Where(m => m.RecipientId == user.Id);
+        context.Messages.RemoveRange(receivedMessages);
+
+        var sentLikes = context.Likes.Where(l => l.TargetUserId == user.Id);
+        context.Likes.RemoveRange(sentLikes);
+
+        var receivedLikes = context.Likes.Where(l => l.TargetUserId == user.Id);
+        context.Likes.RemoveRange(receivedLikes);
+
+        await context.SaveChangesAsync();
 
         context.Users.Remove(user);
 
